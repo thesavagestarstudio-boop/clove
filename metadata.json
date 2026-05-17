@@ -1,0 +1,8 @@
+{
+  "name": "CLOVE Restaurant",
+  "description": "Modern fusion Indian restaurant with a luxury editorial aesthetic. Featuring ancient roots and modern flavors in Duluth, GA.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
