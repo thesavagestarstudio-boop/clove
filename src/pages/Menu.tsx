@@ -21,9 +21,9 @@ const menuData: MenuCategory[] = [
   {
     name: 'Appetizers',
     items: [
-      { id: 'app-1', name: 'Samosa Duo', price: '7.99', desc: 'Crispy pastry filled with spiced potatoes and peas', img: 'https://images.unsplash.com/photo-1601050633647-81a310dcb4aa?w=500&q=85' },
-      { id: 'app-2', name: 'Onion Bhajia', price: '8.99', desc: 'Crispy onion fritters with chickpea flour and spices', img: 'https://images.unsplash.com/photo-1626132644529-0797435f9923?w=500&q=85' },
-      { id: 'app-3', name: 'Paneer Tikka', price: '12.99', desc: 'Grilled cottage cheese marinated in yogurt and spices', img: 'https://images.unsplash.com/photo-1567184109411-47a7a39466eb?w=500&q=85' },
+      { id: 'app-1', name: 'Samosa Duo', price: '7.99', desc: 'Crispy pastry filled with spiced potatoes and peas', img: 'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=500&q=85' },
+      { id: 'app-2', name: 'Onion Bhajia', price: '8.99', desc: 'Crispy onion fritters with chickpea flour and spices', img: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=500&q=85' },
+      { id: 'app-3', name: 'Paneer Tikka', price: '12.99', desc: 'Grilled cottage cheese marinated in yogurt and spices', img: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500&q=85' },
     ]
   },
   {
@@ -31,7 +31,7 @@ const menuData: MenuCategory[] = [
     items: [
       { id: 'chk-1', name: 'Butter Chicken', price: '18.99', desc: 'Tender chicken in a creamy, aromatic tomato sauce', img: 'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=500&q=85' },
       { id: 'chk-2', name: 'Chicken Tikka Masala', price: '19.99', desc: 'Char-grilled chicken in a robustly spiced masala sauce', img: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=500&q=85' },
-      { id: 'chk-3', name: 'Chicken Vindaloo', price: '18.99', desc: 'Spicy and tangy chicken curry with potatoes', img: 'https://images.unsplash.com/photo-1541518763669-279f00ed51ef?w=500&q=85' },
+      { id: 'chk-3', name: 'Chicken Vindaloo', price: '18.99', desc: 'Spicy and tangy chicken curry with potatoes', img: 'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=500&q=85' },
     ]
   },
   {
@@ -47,15 +47,15 @@ const menuData: MenuCategory[] = [
     items: [
       { id: 'rice-1', name: 'Chicken Biryani', price: '17.99', desc: 'Fragrant basmati, saffron, and slow-cooked chicken', img: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&q=85' },
       { id: 'rice-2', name: 'Vegetable Biryani', price: '15.99', desc: 'Aromatic rice with garden fresh vegetables and spices', img: 'https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=500&q=85' },
-      { id: 'rice-3', name: 'Jeera Rice', price: '6.99', desc: 'Basmati rice tempered with cumin seeds', img: 'https://images.unsplash.com/photo-1512058560366-cd24270083cd?w=500&q=85' },
+      { id: 'rice-3', name: 'Jeera Rice', price: '6.99', desc: 'Basmati rice tempered with cumin seeds', img: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&q=85' },
     ]
   },
   {
     name: 'Breads',
     items: [
       { id: 'brd-1', name: 'Garlic Naan', price: '4.99', desc: 'Traditional leavened bread topped with fresh garlic', img: 'https://images.unsplash.com/photo-1610192244261-3f33de3f55e4?w=500&q=85' },
-      { id: 'brd-2', name: 'Butter Naan', price: '4.50', desc: 'Soft and pillowy bread glazed with melted butter', img: 'https://images.unsplash.com/photo-1561634913-2d93962638da?w=500&q=85' },
-      { id: 'brd-3', name: 'Stuffed Paratha', price: '6.99', desc: 'Flaky whole wheat bread stuffed with spiced potatoes', img: 'https://images.unsplash.com/photo-1505253716362-afaba1d3cbd3?w=500&q=85' },
+      { id: 'brd-2', name: 'Butter Naan', price: '4.50', desc: 'Soft and pillowy bread glazed with melted butter', img: 'https://images.unsplash.com/photo-1610192244261-3f33de3f55e4?w=500&q=85' },
+      { id: 'brd-3', name: 'Stuffed Paratha', price: '6.99', desc: 'Flaky whole wheat bread stuffed with spiced potatoes', img: 'https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=500&q=85' },
     ]
   },
   {
@@ -75,8 +75,8 @@ const menuData: MenuCategory[] = [
   {
     name: 'Sides',
     items: [
-      { id: 'sid-1', name: 'Raita', price: '3.99', desc: 'Refreshing yogurt with cucumber, carrots and light spices', img: 'https://images.unsplash.com/photo-1505253716362-afaba1d3cbd3?w=500&q=85' },
-      { id: 'sid-2', name: 'Mango Chutney', price: '2.50', desc: 'Sweet and tangy preserve made from semi-ripe mangoes', img: 'https://images.unsplash.com/photo-1601050633647-81a310dcb4aa?w=500&q=85' },
+      { id: 'sid-1', name: 'Raita', price: '3.99', desc: 'Refreshing yogurt with cucumber, carrots and light spices', img: 'https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=500&q=85' },
+      { id: 'sid-2', name: 'Mango Chutney', price: '2.50', desc: 'Sweet and tangy preserve made from semi-ripe mangoes', img: 'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=500&q=85' },
     ]
   },
   {
@@ -89,7 +89,7 @@ const menuData: MenuCategory[] = [
   {
     name: 'Desserts',
     items: [
-      { id: 'dst-1', name: 'Gulab Jamun', price: '6.99', desc: 'Soft milk dumplings soaked in rose-scented syrup', img: 'https://images.unsplash.com/photo-1571112750286-fbd1c77ec8bc?w=500&q=85' },
+      { id: 'dst-1', name: 'Gulab Jamun', price: '6.99', desc: 'Soft milk dumplings soaked in rose-scented syrup', img: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=500&q=85' },
       { id: 'dst-2', name: 'Gajar Halwa', price: '7.99', desc: 'Sweetened carrot pudding with nuts and aromatic cardamom', img: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=500&q=85' },
     ]
   }
@@ -128,7 +128,7 @@ export default function Menu({ addToCart, selectedTime, setSelectedTime, timeSlo
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             const id = entry.target.id.replace('cat-', '')
-            const found = menuData.find(c => c.name.replace(/\s/g,'') === id)
+            const found = menuData.find(c => c.name.replace(/[^a-zA-Z0-9]/g, '') === id)
             if (found) setActiveCategory(found.name)
           }
         })
@@ -152,9 +152,15 @@ export default function Menu({ addToCart, selectedTime, setSelectedTime, timeSlo
     isScrollingRef.current = true
     setActiveCategory(cat)
     
-    const id = `cat-${cat.replace(/\s/g,'')}`
+    const id = `cat-${cat.replace(/[^a-zA-Z0-9]/g, '')}`
     if (lenis) {
-      lenis.scrollTo(`#${id}`, { offset: -100 })
+      try {
+        lenis.scrollTo(`#${id}`, { offset: -100 })
+      } catch (e) {
+        // Fallback if Lenis fails
+        const el = document.getElementById(id)
+        if (el) el.scrollIntoView({ behavior: 'smooth' })
+      }
     } else {
       const el = document.getElementById(id)
       if (el) {
@@ -324,29 +330,40 @@ export default function Menu({ addToCart, selectedTime, setSelectedTime, timeSlo
         {/* Menu Sections */}
         {filteredMenuData.length > 0 ? (
           filteredMenuData.map(category => (
-            <section key={category.name} id={`cat-${category.name.replace(/\s/g,'')}`} className="mb-14 scroll-mt-[140px] lg:scroll-mt-[100px]">
+            <section key={category.name} id={`cat-${category.name.replace(/[^a-zA-Z0-9]/g, '')}`} className="mb-14 scroll-mt-[140px] lg:scroll-mt-[100px]">
               <h2 className="font-playfair text-[28px] sm:text-[34px] font-bold text-charcoal mb-1">{category.name}</h2>
               <div className="w-10 h-0.5 bg-amber-spice mb-6" />
               <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
                 {category.items.map(item => (
-                  <div key={item.id} className="bg-white border border-linen-dark/35 hover:border-amber-spice/60 rounded-xl transition-all duration-300 group overflow-hidden flex flex-col sm:flex-row h-auto sm:h-[180px]">
-                    <div className="w-full sm:w-[180px] h-[180px] sm:h-full relative overflow-hidden flex-shrink-0">
-                      <img src={item.img} alt={item.name} className="w-full h-full object-cover group-hover:scale-[1.07] transition-transform duration-700" />
-                    </div>
-                    <div className="p-4 flex-1 flex flex-col">
+                  <div key={item.id} className="bg-[#D8CBB8] rounded-2xl border border-linen-dark/15 sm:border-linen-dark/35 hover:border-amber-spice/60 transition-all duration-300 group flex flex-row items-center sm:items-stretch h-auto sm:h-[180px] py-4 sm:py-0 sm:overflow-hidden px-4 sm:px-0">
+                    {/* Mobile Text Content (Left) */}
+                    <div className="flex-1 pr-4 sm:p-4 flex flex-col justify-center sm:justify-start order-1 sm:order-2">
                       <div className="flex-1">
-                        <h3 className="font-semibold text-[16px] text-charcoal">{item.name}</h3>
-                        <p className="text-[13px] text-stone font-light mt-1.5 leading-[1.6] line-clamp-2">{item.desc}</p>
+                        <h3 className="font-playfair font-bold uppercase text-[18px] sm:normal-case sm:font-sans sm:font-semibold sm:text-[16px] text-charcoal tracking-wide sm:tracking-normal">{item.name}</h3>
+                        <p className="text-[15px] sm:text-[13px] text-charcoal/80 sm:text-stone font-light mt-1 sm:mt-1.5 leading-[1.3] sm:leading-[1.6] line-clamp-2">{item.desc}</p>
                       </div>
-                      <div className="flex items-center justify-between mt-4">
-                        <span className="font-playfair font-bold text-[20px] text-charcoal">${item.price}</span>
+                      <div className="mt-3 sm:mt-4 flex items-center justify-between">
+                        <span className="font-sans sm:font-playfair text-[15px] sm:text-[20px] text-charcoal sm:font-bold">${item.price}</span>
+                        {/* Desktop add button */}
                         <button 
                           onClick={() => addToCart(item)}
-                          className="bg-amber-spice text-charcoal px-4 py-2 text-[11px] tracking-[2px] uppercase font-medium hover:bg-amber-deep transition-colors duration-200 rounded-lg"
+                          className="hidden sm:block bg-amber-spice text-charcoal px-4 py-2 text-[11px] tracking-[2px] uppercase font-medium hover:bg-amber-deep transition-colors duration-200 rounded-lg"
                         >
                           + Add
                         </button>
                       </div>
+                    </div>
+
+                    {/* Image Content (Right) */}
+                    <div className="w-[110px] h-[110px] sm:w-[180px] sm:h-full relative flex-shrink-0 order-2 sm:order-1 sm:overflow-hidden rounded-2xl sm:rounded-none ml-2 sm:ml-0">
+                      <img src={item.img} alt={item.name} className="w-full h-full object-cover sm:group-hover:scale-[1.07] transition-transform duration-700 rounded-2xl sm:rounded-none" />
+                      {/* Mobile add button (floating +) */}
+                      <button
+                        onClick={() => addToCart(item)}
+                        className="sm:hidden absolute -bottom-1 -right-1 bg-white w-9 h-9 rounded-full flex items-center justify-center shadow-[0_2px_10px_rgba(0,0,0,0.15)] text-charcoal hover:bg-linen-light transition-colors z-10"
+                      >
+                        <Plus size={20} strokeWidth={2.5} />
+                      </button>
                     </div>
                   </div>
                 ))}

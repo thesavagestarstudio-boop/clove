@@ -21,7 +21,7 @@ export default function App() {
 
   // Generate time slots (same as in Menu before)
   const timeSlots = [
-    'Today at 12:00 PM', 'Today at 1:00 PM', 'Today at 2:00 PM', 'Today at 3:00 PM', 
+    'Today at 12:00 PM', 'Today at 1:00 PM', 'Today at 2:00 PM', 'Today at 3:00 PM',
     'Tomorrow at 11:00 AM', 'Tomorrow at 12:00 PM', 'Tomorrow at 1:00 PM', 'Tomorrow at 2:00 PM'
   ]
 
@@ -52,19 +52,19 @@ export default function App() {
     <BrowserRouter>
       <SmoothScroll>
         <div className="min-h-screen flex flex-col">
-          <Header 
-            onLoginClick={() => setIsLoginOpen(true)} 
+          <Header
+            onLoginClick={() => setIsLoginOpen(true)}
             onCartClick={() => setIsCartOpen(true)}
-            cartCount={cartCount} 
+            cartCount={cartCount}
           />
-          
+
           <main className="flex-1">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/about" element={<About />} />
               <Route path="/menu" element={
-                <Menu 
-                  addToCart={addToCart} 
+                <Menu
+                  addToCart={addToCart}
                   selectedTime={selectedTime}
                   setSelectedTime={setSelectedTime}
                   timeSlots={timeSlots}
@@ -73,15 +73,15 @@ export default function App() {
               <Route path="/contact" element={<Contact />} />
             </Routes>
           </main>
-          
+
           <Footer />
-          
-          <LoginModal 
-            isOpen={isLoginOpen} 
-            onClose={() => setIsLoginOpen(false)} 
+
+          <LoginModal
+            isOpen={isLoginOpen}
+            onClose={() => setIsLoginOpen(false)}
           />
 
-          <CartDrawer 
+          <CartDrawer
             isOpen={isCartOpen}
             onClose={() => setIsCartOpen(false)}
             cart={cart}
@@ -93,7 +93,7 @@ export default function App() {
 
           {/* Global Cart FAB */}
           {cartCount > 0 && !isCartOpen && (
-            <button 
+            <button
               onClick={() => setIsCartOpen(true)}
               className="fixed bottom-6 right-6 bg-charcoal text-cream w-16 h-16 rounded-full flex items-center justify-center shadow-2xl z-[60] animate-bounce group"
             >
