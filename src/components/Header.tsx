@@ -28,16 +28,18 @@ export default function Header({ onLoginClick, onCartClick, cartCount }: HeaderP
   }, [mobileOpen])
 
   useMotionValueEvent(scrollY, "change", (latest) => {
-    const previous = scrollY.getPrevious() ?? 0;
-    const scrollingDown = latest > previous;
     if (location.pathname === '/menu') {
       setHidden(false);
       return;
     }
-    if (scrollingDown && latest > 100) {
+    const previous = scrollY.getPrevious() ?? 0;
+    const scrollingDown = latest > previous;
+    const threshold = typeof window !== 'undefined' ? window.innerHeight : 0;
+    if (scrollingDown) {
       setHidden(true);
     } else {
-      setHidden(false);
+      // scrolling up: show only when within first viewport
+      setHidden(latest > threshold);
     }
   })
 
