@@ -28,15 +28,16 @@ export default function Header({ onLoginClick, onCartClick, cartCount }: HeaderP
   }, [mobileOpen])
 
   useMotionValueEvent(scrollY, "change", (latest) => {
+    const previous = scrollY.getPrevious() ?? 0;
+    const scrollingDown = latest > previous;
     if (location.pathname === '/menu') {
-      setHidden(false)
-      return
+      setHidden(false);
+      return;
     }
-    const previous = scrollY.getPrevious() ?? 0
-    if (latest > previous && latest > 150) {
-      setHidden(true)
+    if (scrollingDown && latest > 100) {
+      setHidden(true);
     } else {
-      setHidden(false)
+      setHidden(false);
     }
   })
 
@@ -66,22 +67,24 @@ export default function Header({ onLoginClick, onCartClick, cartCount }: HeaderP
           hidden: { y: '-100%' },
         }}
         animate={hidden ? 'hidden' : 'visible'}
-        transition={{ duration: 0.35, ease: 'easeInOut' }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         className="fixed top-0 left-0 right-0 z-50"
         style={{ backgroundColor: isMenu ? '#D8CBB8' : 'transparent' }}
       >
         <div className="max-w-[1400px] mx-auto px-10 h-[76px] flex items-center justify-between">
 
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-3 group">
-            <svg width="20" height="20" viewBox="0 0 20 20" className="text-amber-spice">
-              <ellipse cx="10" cy="10" rx="3.5" ry="8" stroke="currentColor" strokeWidth="1.3" fill="none"/>
-              <ellipse cx="10" cy="10" rx="8" ry="3.5" stroke="currentColor" strokeWidth="1.3" fill="none"/>
-              <circle cx="10" cy="10" r="2" fill="currentColor"/>
-            </svg>
-            <span className="font-playfair text-[20px] font-bold tracking-[7px] uppercase group-hover:text-amber-spice transition-colors duration-300" style={{ color: dynamicColor }}>
-              CLOVE
-            </span>
+          <Link to="/" className="flex items-center group">
+            <img
+              src="/officiallogo.png"
+              alt="CLOVE Logo"
+              className="h-[38px] w-auto object-contain transition-all duration-300"
+              style={{
+                filter: (location.pathname === '/about' || location.pathname === '/menu')
+                  ? 'brightness(0)'
+                  : 'none'
+              }}
+            />
           </Link>
 
           {/* Desktop Nav */}

@@ -16,13 +16,24 @@ export default function Home() {
   const colRef = useRef<HTMLDivElement>(null)
 
   useGSAP(() => {
-    // Hero Animations
-    gsap.from('.hero-reveal', {
-      y: 72,
+    // Hero Animations — 3D letter reveal
+    gsap.from('.hero-letter', {
+      y: 80,
+      rotateX: -85,
       opacity: 0,
-      duration: 1.3,
-      stagger: 0.14,
-      ease: 'power3.out'
+      duration: 1.2,
+      stagger: 0.04,
+      ease: 'power4.out',
+      transformOrigin: 'center bottom -30px'
+    })
+
+    // Buttons reveal
+    gsap.from('.hero-reveal', {
+      y: 30,
+      opacity: 0,
+      duration: 1,
+      delay: 0.7,
+      ease: 'power2.out'
     })
 
     // Parallax hero image
@@ -49,6 +60,24 @@ export default function Home() {
           trigger: el,
           start: 'top 85%',
           toggleActions: 'play none none none'
+        }
+      })
+    })
+
+    // Banner letter reveal
+    const bannerLetterContainers = gsap.utils.toArray('.banner-letters') as HTMLElement[]
+    bannerLetterContainers.forEach((container) => {
+      gsap.from(container.querySelectorAll('.banner-letter'), {
+        y: 80,
+        rotateX: -85,
+        opacity: 0,
+        duration: 1.2,
+        stagger: 0.04,
+        ease: 'power4.out',
+        transformOrigin: 'center bottom -30px',
+        scrollTrigger: {
+          trigger: container,
+          start: 'top 85%',
         }
       })
     })
@@ -81,7 +110,7 @@ export default function Home() {
   return (
     <div ref={containerRef} className="overflow-x-hidden">
       {/* SECTION 1 — HERO */}
-      <section ref={heroRef} className="relative h-screen flex items-center justify-center overflow-hidden">
+      <section ref={heroRef} className="relative h-[100dvh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img
             src="https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=1920&q=90"
@@ -91,10 +120,18 @@ export default function Home() {
           <div className="absolute inset-0 bg-charcoal/65" />
         </div>
         
-        <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
-          <h1 className="hero-reveal font-playfair font-normal uppercase leading-[0.88] mb-8"
-              style={{ fontSize: 'clamp(44px, 9vw, 100px)', color: '#b6a68b' }}>
-            Modern<br/>Fusion.
+        <div className="relative z-10 text-center px-6 max-w-4xl mx-auto [perspective:1200px]">
+          <h1 className="font-playfair font-normal uppercase leading-[1.05] mb-8 select-none [transform-style:preserve-3d]"
+              style={{ fontSize: 'clamp(38px, 7.5vw, 80px)', color: '#b6a68b' }}>
+            {['Indian', 'Fusion', 'Restaurant.'].map((word, wi) => (
+              <span key={wi} className="block">
+                {word.split('').map((char, ci) => (
+                  <span key={ci} className="inline-block hero-letter origin-bottom">
+                    {char}
+                  </span>
+                ))}
+              </span>
+            ))}
           </h1>
           <div className="hero-reveal flex gap-4 justify-center flex-wrap">
             <Link to="/menu"
@@ -149,24 +186,39 @@ export default function Home() {
           </Link>
         </div>
         
-        <div className="w-full md:w-1/2 h-[400px] md:h-auto relative overflow-hidden slide-r">
-          <img
-            src="https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=900&q=85"
-            alt="Signature dish"
-            className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
-          />
+        <div className="w-full md:w-1/2 flex flex-col slide-r">
+          {/* Text block */}
+          <div className="bg-linen px-8 sm:px-14 py-14 flex flex-col justify-center flex-1">
+            <p className="font-inter text-[11px] tracking-[4px] uppercase text-amber-deep mb-5">Our Story</p>
+            <h2 className="font-playfair font-black uppercase text-charcoal leading-[0.92] mb-8"
+                style={{ fontSize: 'clamp(28px, 3.2vw, 50px)' }}>
+              Signature<br/>Dishes.<br/>Classic Roots.
+            </h2>
+            <p className="font-inter text-[15px] text-stone font-normal leading-[1.9] max-w-[480px]">
+              Inspired by the diversity of Indian cuisine and elevated with global influences, Clove offers a dining experience that is bold, vibrant, and unforgettable. From handcrafted cocktails and thoughtfully curated small plates to elevated signature entrées, every dish is designed to celebrate authentic flavors in a fresh, modern way.
+            </p>
+          </div>
+          {/* Image block */}
+          <div className="h-[320px] md:h-[380px] relative overflow-hidden flex-shrink-0">
+            <img
+              src="https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=900&q=85"
+              alt="Signature dish"
+              loading="lazy"
+              decoding="async"
+              className="w-full h-full object-cover hover:scale-105 transition-transform duration-700 will-change-transform"
+            />
+          </div>
         </div>
       </section>
 
       {/* SECTION 3 — PHILOSOPHY */}
       <section ref={philRef} className="bg-charcoal flex min-h-[580px] flex-col md:flex-row">
         <div className="w-full md:w-1/2 px-8 sm:px-16 py-20 flex flex-col justify-center slide-l order-2 md:order-1">
-          <p className="reveal font-inter text-[11px] tracking-[4px] uppercase text-amber-spice mb-5">The Philosophy</p>
-          <h2 className="reveal font-playfair text-[32px] sm:text-[42px] font-bold text-cream leading-[1.1] mb-6">
-            Redefining tradition through a contemporary lens.
+          <h2 className="reveal font-playfair text-[28px] sm:text-[36px] font-bold text-cream leading-[1.3] mb-6 max-w-[500px] uppercase">
+            At Clove, we believe dining is more than just food — it is an experience.
           </h2>
-          <p className="reveal font-inter text-[16px] text-cream-dim font-light leading-[1.9] mb-8 max-w-[420px]">
-            We view Indian cuisine not as a static artifact, but as a living canvas. Our kitchen weaves heritage spices with avant-garde techniques, presenting dishes that honor their origins while engaging the modern palate.
+          <p className="reveal font-inter text-[16px] text-cream-dim font-normal leading-[1.9] mb-8 max-w-[480px]">
+            Our vision is to create a space where culture, community, music, hospitality, and exceptional cuisine come together seamlessly. Whether you are joining us for an intimate dinner, a lively night out, or a special celebration, Clove delivers an atmosphere that is stylish, energetic, and welcoming.
           </p>
           <Link to="/about"
             className="reveal flex items-center gap-3 text-amber-spice text-[12px] tracking-[3px] uppercase font-medium font-inter group w-fit">
@@ -181,7 +233,9 @@ export default function Home() {
             <img
               src="https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800&q=85"
               alt="CLOVE restaurant"
-              className="w-full h-full object-cover relative z-10"
+              loading="lazy"
+              decoding="async"
+              className="w-full h-full object-cover relative z-10 will-change-transform"
             />
           </div>
         </div>
@@ -214,8 +268,8 @@ export default function Home() {
             ].map((item, i) => (
               <div key={i} className={`reveal group cursor-pointer ${item.offset ? 'md:mt-10' : ''}`}>
                 <div className="overflow-hidden mb-5">
-                  <img src={item.img} alt={item.name}
-                    className="w-full h-[240px] object-cover group-hover:scale-[1.06] transition-transform duration-700" />
+                  <img src={item.img} alt={item.name} loading="lazy" decoding="async"
+                    className="w-full h-[240px] object-cover group-hover:scale-[1.06] transition-transform duration-700 will-change-transform" />
                 </div>
                 <div className="flex items-baseline justify-between">
                   <h3 className="font-playfair text-[22px] font-semibold text-charcoal">{item.name}</h3>
@@ -231,20 +285,20 @@ export default function Home() {
       {/* SECTION 5 — TWO BROTHERS EDITORIAL BANNER */}
       <section className="bg-amber-spice py-20 px-8 text-center overflow-hidden relative">
         <div className="max-w-[1200px] mx-auto">
-          <div className="flex items-center justify-center gap-4 sm:gap-8 mb-2">
-            <span className="font-inter text-[11px] tracking-[4px] uppercase text-charcoal/40 hidden sm:inline">Built by</span>
-            <h2 className="font-playfair font-black uppercase text-charcoal leading-[0.88] reveal"
-                style={{ fontSize: 'clamp(48px, 8vw, 100px)' }}>
-              Two Brothers,
-            </h2>
-            <span className="font-inter text-[11px] tracking-[4px] uppercase text-charcoal/40 hidden sm:inline">With Love</span>
-          </div>
-          <h2 className="font-playfair font-black uppercase text-charcoal leading-[0.88] mb-8 reveal"
-              style={{ fontSize: 'clamp(48px, 8vw, 100px)' }}>
-            Duluth, Georgia.
+          <h2 className="font-playfair font-bold text-charcoal leading-[1.1] mb-6 banner-letters uppercase"
+              style={{ fontSize: 'clamp(28px, 4vw, 48px)' }}>
+            {'LOCATED IN DULUTH, GEORGIA, CLOVE.'.split(' ').map((word, wordIndex, arr) => (
+              <span key={wordIndex} className="inline-block whitespace-nowrap mr-[0.25em] last:mr-0">
+                {word.split('').map((char, charIndex) => (
+                  <span key={charIndex} className="banner-letter inline-block">
+                    {char}
+                  </span>
+                ))}
+              </span>
+            ))}
           </h2>
-          <p className="font-inter text-[16px] text-stone font-light max-w-md mx-auto leading-[1.9] mb-10 reveal">
-            CLOVE was born not from a business plan, but from a dinner table. Every dish we serve carries that memory forward.
+          <p className="font-inter text-[16px] text-stone font-normal max-w-2xl mx-auto leading-[1.9] mb-10 reveal">
+            Our culinary team combines traditional Indian techniques with contemporary presentation to craft dishes that feel both familiar and exciting. Every ingredient, flavor, and detail is thoughtfully chosen to create a modern interpretation of Indian dining.
           </p>
           <Link to="/about"
             className="inline-block bg-charcoal text-cream px-10 py-4 text-[12px] tracking-[3px] uppercase font-medium hover:bg-charcoal-mid transition-colors duration-300 reveal">
@@ -253,23 +307,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SECTION 6 — THREE FOOD PHOTOS */}
-      <section className="flex min-h-screen flex-col md:flex-row bg-charcoal">
-        {[
-          'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=1200&q=85', 
-          'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=1200&q=85',   
-          'https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=1200&q=85', 
-        ].map((src, i) => (
-          <div key={i} className="flex-1 min-h-[40vh] md:min-h-screen relative overflow-hidden group border-b md:border-b-0 md:border-r border-charcoal last:border-0">
-            <img 
-              src={src} 
-              alt="Culinary detail" 
-              className="w-full h-full object-cover grayscale brightness-90 group-hover:grayscale-0 group-hover:brightness-100 group-hover:scale-105 transition-all duration-1000" 
-            />
-            <div className="absolute inset-0 bg-charcoal/20 group-hover:bg-transparent transition-colors duration-700" />
-          </div>
-        ))}
-      </section>
+
     </div>
   )
 }

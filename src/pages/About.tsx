@@ -11,12 +11,24 @@ export default function About() {
   const containerRef = useRef<HTMLDivElement>(null)
 
   useGSAP(() => {
-    gsap.from('.about-reveal', {
-      y: 72,
+    // 3D Letter Reveal
+    gsap.from('.letter-reveal', {
+      y: 80,
+      rotateX: -85,
       opacity: 0,
-      duration: 1.3,
-      stagger: 0.14,
-      ease: 'power3.out'
+      duration: 1.2,
+      stagger: 0.04,
+      ease: 'power4.out',
+      transformOrigin: 'center bottom -30px'
+    })
+
+    // Arrow Reveal
+    gsap.from('.arrow-reveal', {
+      y: 30,
+      opacity: 0,
+      duration: 1,
+      delay: 0.6,
+      ease: 'power2.out'
     })
 
     const reveals = gsap.utils.toArray('.reveal') as HTMLElement[]
@@ -59,15 +71,19 @@ export default function About() {
   return (
     <div ref={containerRef} className="overflow-x-hidden">
       {/* SECTION 1 — HERO */}
-      <section className="bg-[#D8CBB8] min-h-screen flex items-center justify-center text-center px-6 md:px-12 relative">
+      <section className="bg-[#D8CBB8] min-h-screen flex items-center justify-center text-center px-6 md:px-12 relative [perspective:1200px]">
         <div className="w-full flex flex-col items-center justify-center">
-          <h1 className="about-reveal font-playfair font-normal uppercase text-charcoal leading-[0.9] sm:leading-[0.85] tracking-tighter text-[42px] sm:text-[75px] mb-4 sm:mb-[-36px]">
-            Built by<br/>Two Brothers.
+          <h1 className="font-playfair font-normal uppercase text-charcoal leading-[0.9] sm:leading-[0.85] tracking-tighter text-[42px] sm:text-[75px] select-none [transform-style:preserve-3d]">
+            {"ABOUT US".split("").map((char, idx) => (
+              <span
+                key={idx}
+                className="inline-block letter-reveal origin-bottom"
+              >
+                {char === " " ? "\u00A0" : char}
+              </span>
+            ))}
           </h1>
-          <p className="about-reveal font-playfair italic text-amber-deep mt-4 sm:mt-8 opacity-90 leading-relaxed text-[15px] sm:text-[17.8px] mb-8 sm:mb-[-86px]">
-            Modern Fusion. Ancient Roots.
-          </p>
-          <div className="about-reveal text-charcoal/10 text-3xl mt-16 animate-bounce">↓</div>
+          <div className="arrow-reveal text-charcoal/10 text-3xl mt-16 animate-bounce">↓</div>
         </div>
       </section>
 
@@ -82,7 +98,9 @@ export default function About() {
             <img 
               src={src} 
               alt="Restaurant interior" 
-              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 grayscale group-hover:grayscale-0 brightness-75 group-hover:brightness-100" 
+              loading="lazy"
+              decoding="async"
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 grayscale group-hover:grayscale-0 brightness-75 group-hover:brightness-100 will-change-transform" 
             />
             <div className="absolute inset-0 bg-charcoal/30 group-hover:bg-transparent transition-colors duration-700" />
           </div>
@@ -93,20 +111,16 @@ export default function About() {
       <section className="story-section bg-linen py-20 px-8 sm:px-16 overflow-hidden">
         <div className="max-w-[1400px] mx-auto flex flex-col md:flex-row gap-16 items-center">
           <div className="w-full md:w-1/2 slide-l">
-            <p className="font-inter text-[11px] tracking-[4px] uppercase text-amber-deep mb-4">THE FOUNDERS</p>
             <h2 className="font-playfair text-[32px] sm:text-[44px] font-bold text-charcoal leading-[1.1]">
-              A Shared Dream, A Shared Kitchen
+              WELCOME TO CLOVE
             </h2>
             <div className="w-14 h-0.5 bg-amber-spice my-6" />
             <div className="space-y-6">
-              <p className="font-inter text-[16px] text-stone font-light leading-[1.9]">
-                CLOVE was born not from a business plan, but from a dinner table. Two brothers — raised on their mother's recipes, their grandmother's spice blends, and the aroma of cardamom on winter mornings — decided to share that inheritance with Duluth.
+              <p className="font-inter text-[16px] text-stone font-normal leading-[1.9]">
+                Clove is a Indian fusion restaurant where tradition meets innovation, bringing together the rich flavors of India with contemporary culinary creativity. Our culinary team combines traditional Indian techniques with contemporary presentation to craft dishes that feel both familiar and exciting. Every ingredient, flavor, and detail is thoughtfully chosen to create a modern interpretation of Indian dining. Located in Duluth, Georgia, Clove is redefining Indian fusion cuisine by offering a sophisticated yet approachable experience designed for today’s generation of food lovers.
               </p>
-              <p className="font-inter text-[16px] text-stone font-light leading-[1.9]">
-                What started as a family passion became a culinary philosophy: take the bold, layered traditions of Indian cooking and weave them into something contemporary. Modern techniques, ancient soul.
-              </p>
-              <p className="font-inter text-[16px] text-stone font-light leading-[1.9]">
-                At CLOVE, every dish is a bridge between memory and innovation. We are not just serving food — we are passing something forward.
+              <p className="font-inter text-[18px] text-amber-deep font-medium italic mt-8">
+                Clove — where flavor, culture, and creativity come together.
               </p>
             </div>
           </div>
@@ -115,7 +129,7 @@ export default function About() {
             <div className="relative">
               <div className="absolute inset-0 bg-amber-spice translate-x-6 translate-y-6 -z-10" />
               <img src="https://images.unsplash.com/photo-1529543544282-ea669407fca3?w=600&q=85"
-                alt="The founders" className="w-full h-[500px] sm:h-[600px] object-cover relative z-10" />
+                alt="The founders" loading="lazy" decoding="async" className="w-full h-[500px] sm:h-[600px] object-cover relative z-10 will-change-transform" />
             </div>
           </div>
         </div>
