@@ -2,7 +2,7 @@
 import { useEffect } from 'react'
 import { X } from 'lucide-react'
 import { motion, AnimatePresence } from 'motion/react'
-import { supabase } from '../lib/supabase'
+import { isSupabaseConfigured, supabase } from '../lib/supabase'
 
 interface LoginModalProps {
   isOpen: boolean
@@ -24,13 +24,20 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
   const handleGoogleLogin = async () => {
     try {
+      if (!isSupabaseConfigured) {
+        throw new Error('Missing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY')
+      }
+
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
+        options: {
+          redirectTo: window.location.origin,
+        },
       })
       if (error) throw error
     } catch (error: any) {
       console.error('Login error:', error)
-      alert("Login failed! Have you added your real Supabase URL and Anon Key to .env.local yet? Check the console for details.")
+      alert("Login failed. Make sure VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are set in Vercel, and add your Vercel domain to Supabase Auth redirect URLs.")
     }
   }
 
