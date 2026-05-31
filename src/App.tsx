@@ -1,7 +1,10 @@
 "use client"
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { Session } from '@supabase/supabase-js'
+import { supabase } from './lib/supabase'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { ShoppingBag } from 'lucide-react'
+import { ShoppingBag, Check } from 'lucide-react'
+import { motion, AnimatePresence } from 'motion/react'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import SmoothScroll from './components/SmoothScroll'
@@ -18,6 +21,38 @@ export default function App() {
   const [isCartOpen, setIsCartOpen] = useState(false)
   const [cart, setCart] = useState<CartItem[]>([])
   const [selectedTime, setSelectedTime] = useState('Today at 2:00 PM')
+  const [session, setSession] = useState<Session | null>(null)
+  const [toastMessage, setToastMessage] = useState<string | null>(null)
+
+  const showNotification = (msg: string) => {
+    setToastMessage(msg)
+    setTimeout(() => setToastMessage(null), 4000)
+  }
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session)
+    })
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      setSession(session)
+      
+      if (event === 'SIGNED_IN') {
+        setIsLoginOpen(false)
+        showNotification('Successfully logged in')
+      } else if (event === 'SIGNED_OUT') {
+        showNotification('Successfully logged out')
+      }
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
+  }
 
   // Generate time slots (same as in Menu before)
   const timeSlots = [
@@ -54,8 +89,10 @@ export default function App() {
         <div className="min-h-screen flex flex-col">
           <Header
             onLoginClick={() => setIsLoginOpen(true)}
+            onLogoutClick={handleLogout}
             onCartClick={() => setIsCartOpen(true)}
             cartCount={cartCount}
+            session={session}
           />
 
           <main className="flex-1">
@@ -105,6 +142,23 @@ export default function App() {
             </button>
           )}
         </div>
+
+        {/* Global Toast Notification */}
+        <AnimatePresence>
+          {toastMessage && (
+            <motion.div
+              initial={{ opacity: 0, y: 40, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 20, scale: 0.9 }}
+              className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[200] bg-charcoal text-cream px-6 py-3.5 rounded-full text-[11px] tracking-[2px] uppercase shadow-2xl flex items-center gap-3 border border-linen-dark/20 backdrop-blur-md"
+            >
+              <div className="w-5 h-5 rounded-full bg-amber-spice/20 flex items-center justify-center">
+                <Check size={12} className="text-amber-spice" />
+              </div>
+              {toastMessage}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </SmoothScroll>
     </BrowserRouter>
   )

@@ -1,17 +1,21 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { User, ShoppingBag, Menu, X } from 'lucide-react'
+import { User, ShoppingBag, Menu, X, LogOut } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
-import { motion, useScroll, useMotionValueEvent } from 'motion/react'
+import { motion, useScroll, useMotionValueEvent, AnimatePresence } from 'motion/react'
+import { Session } from '@supabase/supabase-js'
 
 interface HeaderProps {
   onLoginClick: () => void
+  onLogoutClick: () => void
   onCartClick: () => void
   cartCount: number
+  session: Session | null
 }
 
-export default function Header({ onLoginClick, onCartClick, cartCount }: HeaderProps) {
+export default function Header({ onLoginClick, onLogoutClick, onCartClick, cartCount, session }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false)
   const [hidden, setHidden] = useState(false)
   const location = useLocation()
   const { scrollY } = useScroll()
@@ -106,9 +110,53 @@ export default function Header({ onLoginClick, onCartClick, cartCount }: HeaderP
 
           {/* Actions */}
           <div className="flex items-center gap-1">
-            <button onClick={onLoginClick} aria-label="Login" className="p-2.5 hover:text-amber-spice transition-colors" style={{ color: dynamicColor }}>
-              <User size={20} />
-            </button>
+            {session ? (
+              <div className="relative">
+                <button 
+                  onClick={() => setProfileMenuOpen(!profileMenuOpen)} 
+                  aria-label="Profile" 
+                  className="p-2.5 hover:opacity-80 transition-opacity flex items-center justify-center"
+                >
+                  {session.user?.user_metadata?.avatar_url ? (
+                    <img 
+                      src={session.user.user_metadata.avatar_url} 
+                      alt="Profile" 
+                      className="w-[22px] h-[22px] rounded-full object-cover shadow-sm border border-charcoal/10" 
+                    />
+                  ) : (
+                    <div className="w-[22px] h-[22px] rounded-full bg-charcoal text-cream flex items-center justify-center text-[10px] font-bold">
+                      {session.user?.email?.charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                </button>
+                <AnimatePresence>
+                  {profileMenuOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      className="absolute top-full right-0 mt-2 bg-linen border border-linen-dark p-2 min-w-[160px] z-50 flex flex-col shadow-xl"
+                    >
+                      <div className="px-4 py-3 border-b border-linen-dark/50 mb-2">
+                        <p className="text-[10px] uppercase tracking-[1px] text-stone">Signed in as</p>
+                        <p className="text-[12px] font-medium text-charcoal truncate">{session.user?.email}</p>
+                      </div>
+                      <button 
+                        onClick={() => { onLogoutClick(); setProfileMenuOpen(false) }} 
+                        className="text-left px-4 py-2.5 text-[11px] tracking-[2px] uppercase text-charcoal hover:bg-amber-spice transition-colors flex items-center gap-3"
+                      >
+                        <LogOut size={14} />
+                        Log Out
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ) : (
+              <button onClick={onLoginClick} aria-label="Login" title="Login" className="p-2.5 hover:text-amber-spice transition-colors" style={{ color: dynamicColor }}>
+                <User size={20} />
+              </button>
+            )}
             <button onClick={onCartClick} aria-label="Cart" className="relative p-2.5 hover:text-amber-spice transition-colors" style={{ color: dynamicColor }}>
               <ShoppingBag size={20} />
               {cartCount > 0 && (
@@ -142,10 +190,17 @@ export default function Header({ onLoginClick, onCartClick, cartCount }: HeaderP
           ))}
         </nav>
         <div className="mt-12 flex gap-4">
-          <button onClick={() => { onLoginClick(); setMobileOpen(false) }}
-            className="border border-linen-dark/40 text-cream px-6 py-3 text-[12px] tracking-[2px] uppercase">
-            Log In
-          </button>
+          {session ? (
+            <button onClick={() => { onLogoutClick(); setMobileOpen(false) }}
+              className="border border-linen-dark/40 text-cream px-6 py-3 text-[12px] tracking-[2px] uppercase">
+              Log Out
+            </button>
+          ) : (
+            <button onClick={() => { onLoginClick(); setMobileOpen(false) }}
+              className="border border-linen-dark/40 text-cream px-6 py-3 text-[12px] tracking-[2px] uppercase">
+              Log In
+            </button>
+          )}
           <Link to="/menu" onClick={() => setMobileOpen(false)}
             className="bg-amber-spice text-charcoal px-6 py-3 text-[12px] tracking-[2px] uppercase font-medium">
             Order Pickup
