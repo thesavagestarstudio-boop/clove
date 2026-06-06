@@ -57,6 +57,12 @@ export default defineConfig(({mode}) => {
                     },
                     body
                   });
+                  if (!cloverRes.ok) {
+                    const errText = await cloverRes.text();
+                    res.writeHead(cloverRes.status, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ error: errText || 'Clover pay error' }));
+                    return;
+                  }
                   const data = await cloverRes.json();
                   res.writeHead(200, { 'Content-Type': 'application/json' });
                   res.end(JSON.stringify(data));
