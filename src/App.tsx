@@ -127,6 +127,8 @@ export default function App() {
             setSelectedTime={setSelectedTime}
             timeSlots={timeSlots}
             showNotification={showNotification}
+            isLoggedIn={!!session}
+            openLoginModal={() => setIsLoginOpen(true)}
           />
 
           {/* Global Cart FAB */}

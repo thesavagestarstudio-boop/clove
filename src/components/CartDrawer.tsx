@@ -12,6 +12,8 @@ interface CartDrawerProps {
   setSelectedTime: (time: string) => void
   timeSlots: string[]
   showNotification?: (msg: string) => void
+  isLoggedIn: boolean
+  openLoginModal: () => void
 }
 
 export default function CartDrawer({ 
@@ -22,7 +24,9 @@ export default function CartDrawer({
   selectedTime,
   setSelectedTime,
   timeSlots,
-  showNotification
+  showNotification,
+  isLoggedIn,
+  openLoginModal
 }: CartDrawerProps) {
   const [isCheckingOut, setIsCheckingOut] = useState(false)
   const subtotal = cart.reduce((acc, i) => acc + parseFloat(i.price) * i.qty, 0)
@@ -40,6 +44,15 @@ export default function CartDrawer({
   }, [isOpen])
 
   const handleCheckout = async () => {
+    if (!isLoggedIn) {
+      if (showNotification) {
+        showNotification('Please log in to checkout')
+      }
+      onClose()
+      openLoginModal()
+      return
+    }
+
     if (cart.length === 0 || isCheckingOut) return
 
     setIsCheckingOut(true)
