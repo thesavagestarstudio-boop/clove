@@ -71,7 +71,12 @@ export default function CartDrawer({
 
       if (!res.ok) {
         const errText = await res.text()
-        throw new Error(errText || 'Failed to initialize Clover Checkout')
+        let parsedErr = errText
+        try {
+          const errObj = JSON.parse(errText)
+          parsedErr = errObj.error || errObj.message || errText
+        } catch (e) {}
+        throw new Error(parsedErr || 'Failed to initialize Clover Checkout')
       }
 
       const data = await res.json()
@@ -82,7 +87,7 @@ export default function CartDrawer({
       }
     } catch (err: any) {
       console.error('Checkout error:', err)
-      const errorMsg = 'Checkout failed. Please try again.'
+      const errorMsg = `Checkout failed: ${err.message}`
       if (showNotification) {
         showNotification(errorMsg)
       } else {
