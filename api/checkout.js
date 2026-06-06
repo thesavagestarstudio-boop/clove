@@ -18,6 +18,7 @@ export default async function handler(req, res) {
     return
   }
 
+  const merchantId = process.env.CLOVER_MERCHANT_ID || 'QR0WTC2AX35P1'
   const paymentToken = process.env.CLOVER_PAYMENT_TOKEN || process.env.CLOVER_ACCESS_TOKEN || '6b4dc5c6-8037-d747-f87c-ef3cd67434c7'
 
   try {
@@ -25,6 +26,7 @@ export default async function handler(req, res) {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${paymentToken}`,
+        'X-Clover-Merchant-Id': merchantId,
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       },

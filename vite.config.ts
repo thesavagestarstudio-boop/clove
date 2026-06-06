@@ -52,6 +52,7 @@ export default defineConfig(({mode}) => {
                     method: 'POST',
                     headers: {
                       'Authorization': `Bearer ${paymentToken}`,
+                      'X-Clover-Merchant-Id': merchantId,
                       'Content-Type': 'application/json',
                       'Accept': 'application/json'
                     },
