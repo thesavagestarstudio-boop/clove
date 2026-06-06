@@ -21,7 +21,7 @@ export default async function handler(req, res) {
   const paymentToken = process.env.CLOVER_PAYMENT_TOKEN || process.env.CLOVER_ACCESS_TOKEN || '6b4dc5c6-8037-d747-f87c-ef3cd67434c7'
 
   try {
-    const cloverRes = await fetch(`https://api.clover.com/v1/checkout`, {
+    const cloverRes = await fetch(`https://api.clover.com/invoicingcheckoutservice/v1/checkouts`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${paymentToken}`,

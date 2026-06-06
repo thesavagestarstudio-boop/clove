@@ -48,7 +48,7 @@ export default defineConfig(({mode}) => {
                 const merchantId = env.VITE_CLOVER_MERCHANT_ID || 'QR0WTC2AX35P1';
                 const paymentToken = env.VITE_CLOVER_PAYMENT_TOKEN || env.VITE_CLOVER_ACCESS_TOKEN || '6b4dc5c6-8037-d747-f87c-ef3cd67434c7';
                 try {
-                  const cloverRes = await fetch(`https://api.clover.com/v1/checkout`, {
+                  const cloverRes = await fetch(`https://api.clover.com/invoicingcheckoutservice/v1/checkouts`, {
                     method: 'POST',
                     headers: {
                       'Authorization': `Bearer ${paymentToken}`,
