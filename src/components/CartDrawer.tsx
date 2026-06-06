@@ -1,5 +1,5 @@
 'use client'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { ShoppingBag, X, Minus, Plus } from 'lucide-react'
 import { CartItem } from '../types'
 
@@ -11,6 +11,7 @@ interface CartDrawerProps {
   selectedTime: string
   setSelectedTime: (time: string) => void
   timeSlots: string[]
+  showNotification?: (msg: string) => void
 }
 
 export default function CartDrawer({ 
@@ -20,8 +21,10 @@ export default function CartDrawer({
   changeQty,
   selectedTime,
   setSelectedTime,
-  timeSlots
+  timeSlots,
+  showNotification
 }: CartDrawerProps) {
+  const [isCheckingOut, setIsCheckingOut] = useState(false)
   const subtotal = cart.reduce((acc, i) => acc + parseFloat(i.price) * i.qty, 0)
 
   // Lock body scroll when drawer is open
@@ -35,6 +38,60 @@ export default function CartDrawer({
       document.body.style.overflow = 'unset'
     }
   }, [isOpen])
+
+  const handleCheckout = async () => {
+    if (cart.length === 0 || isCheckingOut) return
+
+    setIsCheckingOut(true)
+    try {
+      const checkoutUrl = '/api/checkout'
+
+      const payload = {
+        customer: {
+          email: "customer@clovekitchen.com"
+        },
+        shoppingCart: {
+          lineItems: cart.map(item => ({
+            name: item.name,
+            unitQty: item.qty,
+            price: Math.round(parseFloat(item.price) * 100)
+          }))
+        },
+        redirectUrl: `${window.location.origin}/`
+      }
+
+      const res = await fetch(checkoutUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      })
+
+      if (!res.ok) {
+        const errText = await res.text()
+        throw new Error(errText || 'Failed to initialize Clover Checkout')
+      }
+
+      const data = await res.json()
+      if (data.href) {
+        window.location.href = data.href
+      } else {
+        throw new Error('No checkout URL returned from Clover')
+      }
+    } catch (err: any) {
+      console.error('Checkout error:', err)
+      const errorMsg = 'Checkout failed. Please try again.'
+      if (showNotification) {
+        showNotification(errorMsg)
+      } else {
+        alert(errorMsg)
+      }
+    } finally {
+      setIsCheckingOut(false)
+    }
+  }
 
   return (
     <>
@@ -147,12 +204,18 @@ export default function CartDrawer({
             </div>
           </div>
 
-          <button className={`w-full py-4 text-[11px] tracking-[3px] uppercase font-bold transition-all duration-400 group ${
-            cart.length > 0 
-            ? 'bg-charcoal text-cream hover:bg-amber-spice hover:text-charcoal shadow-lg hover:shadow-amber-spice/20' 
-            : 'bg-charcoal/20 text-charcoal/40 cursor-not-allowed border border-linen-dark/20'
-          }`}>
-            <span className="group-hover:tracking-[5px] transition-all duration-500">Checkout Now</span>
+          <button 
+            onClick={handleCheckout}
+            disabled={cart.length === 0 || isCheckingOut}
+            className={`w-full py-4 text-[11px] tracking-[3px] uppercase font-bold transition-all duration-400 group ${
+              cart.length > 0 && !isCheckingOut
+              ? 'bg-charcoal text-cream hover:bg-amber-spice hover:text-charcoal shadow-lg hover:shadow-amber-spice/20' 
+              : 'bg-charcoal/20 text-charcoal/40 cursor-not-allowed border border-linen-dark/20'
+            }`}
+          >
+            <span className="group-hover:tracking-[5px] transition-all duration-500">
+              {isCheckingOut ? 'Processing...' : 'Checkout Now'}
+            </span>
           </button>
         </div>
       </aside>

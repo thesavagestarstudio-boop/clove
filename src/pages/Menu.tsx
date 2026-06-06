@@ -16,88 +16,39 @@ interface MenuProps {
   timeSlots: string[]
 }
 
-// Data
-const menuData: MenuCategory[] = [
-  {
-    name: 'Appetizers',
-    items: [
-      { id: 'app-1', name: 'Samosa Duo', price: '7.99', desc: 'Crispy pastry filled with spiced potatoes and peas', img: 'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=500&q=85' },
-      { id: 'app-2', name: 'Onion Bhajia', price: '8.99', desc: 'Crispy onion fritters with chickpea flour and spices', img: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=500&q=85' },
-      { id: 'app-3', name: 'Paneer Tikka', price: '12.99', desc: 'Grilled cottage cheese marinated in yogurt and spices', img: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500&q=85' },
-    ]
-  },
-  {
-    name: 'Chicken',
-    items: [
-      { id: 'chk-1', name: 'Butter Chicken', price: '18.99', desc: 'Tender chicken in a creamy, aromatic tomato sauce', img: 'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=500&q=85' },
-      { id: 'chk-2', name: 'Chicken Tikka Masala', price: '19.99', desc: 'Char-grilled chicken in a robustly spiced masala sauce', img: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=500&q=85' },
-      { id: 'chk-3', name: 'Chicken Vindaloo', price: '18.99', desc: 'Spicy and tangy chicken curry with potatoes', img: 'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=500&q=85' },
-    ]
-  },
-  {
-    name: 'Vegetarian',
-    items: [
-      { id: 'veg-1', name: 'Palak Paneer', price: '16.99', desc: 'Fresh cottage cheese in vibrant spinach and garlic purée', img: 'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=500&q=85' },
-      { id: 'veg-2', name: 'Dal Makhani', price: '15.99', desc: 'Slow-cooked black lentils, rich with butter and cream', img: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500&q=85' },
-      { id: 'veg-3', name: 'Chana Masala', price: '14.99', desc: 'Chickpeas cooked in a robust blend of spices and tomatoes', img: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=500&q=85' },
-    ]
-  },
-  {
-    name: 'Biryani & Rice',
-    items: [
-      { id: 'rice-1', name: 'Chicken Biryani', price: '17.99', desc: 'Fragrant basmati, saffron, and slow-cooked chicken', img: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&q=85' },
-      { id: 'rice-2', name: 'Vegetable Biryani', price: '15.99', desc: 'Aromatic rice with garden fresh vegetables and spices', img: 'https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=500&q=85' },
-      { id: 'rice-3', name: 'Jeera Rice', price: '6.99', desc: 'Basmati rice tempered with cumin seeds', img: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&q=85' },
-    ]
-  },
-  {
-    name: 'Breads',
-    items: [
-      { id: 'brd-1', name: 'Garlic Naan', price: '4.99', desc: 'Traditional leavened bread topped with fresh garlic', img: 'https://images.unsplash.com/photo-1610192244261-3f33de3f55e4?w=500&q=85' },
-      { id: 'brd-2', name: 'Butter Naan', price: '4.50', desc: 'Soft and pillowy bread glazed with melted butter', img: 'https://images.unsplash.com/photo-1610192244261-3f33de3f55e4?w=500&q=85' },
-      { id: 'brd-3', name: 'Stuffed Paratha', price: '6.99', desc: 'Flaky whole wheat bread stuffed with spiced potatoes', img: 'https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=500&q=85' },
-    ]
-  },
-  {
-    name: 'Lamb & Goat',
-    items: [
-      { id: 'lmb-1', name: 'Lamb Rogan Josh', price: '21.99', desc: 'Slow-braised lamb in rich yogurt and ginger gravy', img: 'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=500&q=85' },
-      { id: 'lmb-2', name: 'Goat Curry', price: '22.99', desc: 'Traditional bone-in goat meat slow-cooked in a robust spice blend', img: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500&q=85' },
-    ]
-  },
-  {
-    name: 'Seafood',
-    items: [
-      { id: 'sfd-1', name: 'Goan Fish Curry', price: '23.99', desc: 'Tender fish pieces in a coconut and tamarind base', img: 'https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=500&q=85' },
-      { id: 'sfd-2', name: 'Shrimp Masala', price: '24.99', desc: 'Succulent shrimp tossed in a spicy onion-tomato gravy', img: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=500&q=85' },
-    ]
-  },
-  {
-    name: 'Sides',
-    items: [
-      { id: 'sid-1', name: 'Raita', price: '3.99', desc: 'Refreshing yogurt with cucumber, carrots and light spices', img: 'https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=500&q=85' },
-      { id: 'sid-2', name: 'Mango Chutney', price: '2.50', desc: 'Sweet and tangy preserve made from semi-ripe mangoes', img: 'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=500&q=85' },
-    ]
-  },
-  {
-    name: 'Drinks',
-    items: [
-      { id: 'drk-1', name: 'Mango Lassi', price: '4.99', desc: 'Creamy yogurt drink blended with sweet mango pulp', img: 'https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=500&q=85' },
-      { id: 'drk-2', name: 'Masala Chai', price: '3.50', desc: 'Spiced Indian tea brewed with milk and aromatic herbs', img: 'https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=500&q=85' },
-    ]
-  },
-  {
-    name: 'Desserts',
-    items: [
-      { id: 'dst-1', name: 'Gulab Jamun', price: '6.99', desc: 'Soft milk dumplings soaked in rose-scented syrup', img: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=500&q=85' },
-      { id: 'dst-2', name: 'Gajar Halwa', price: '7.99', desc: 'Sweetened carrot pudding with nuts and aromatic cardamom', img: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=500&q=85' },
-    ]
-  }
-]
+const categoryImageMap: Record<string, string> = {
+  'Drinks': 'https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=500&q=85',
+  'Desserts': 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=500&q=85',
+  'Parda Biryani': 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&q=85',
+  'Heritage Plates': 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500&q=85',
+  'Small Plates': 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=500&q=85',
+  'Soups': 'https://images.unsplash.com/photo-1547592180-85f173990554?w=500&q=85',
+  'Breads': 'https://images.unsplash.com/photo-1610192244261-3f33de3f55e4?w=500&q=85',
+  'Sides': 'https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=500&q=85',
+  'Signature Curries - Veg': 'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=500&q=85',
+  'Signature Curries - NonVeg': 'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=500&q=85'
+}
+
+function getItemImage(itemName: string, categoryName: string): string {
+  const name = itemName.toLowerCase()
+  if (name.includes('taco')) return 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500&q=85'
+  if (name.includes('samosa')) return 'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=500&q=85'
+  if (name.includes('tikka masala') || name.includes('butter chicken') || name.includes('murgh') || name.includes('curry')) return 'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=500&q=85'
+  if (name.includes('naan') || name.includes('roti') || name.includes('bread') || name.includes('paratha')) return 'https://images.unsplash.com/photo-1610192244261-3f33de3f55e4?w=500&q=85'
+  if (name.includes('biryani') || name.includes('rice') || name.includes('jeera')) return 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&q=85'
+  if (name.includes('chai') || name.includes('lassi') || name.includes('drink') || name.includes('coke') || name.includes('soda')) return 'https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=500&q=85'
+  if (name.includes('jamun') || name.includes('halwa') || name.includes('dessert') || name.includes('kheer')) return 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=500&q=85'
+  if (name.includes('soup') || name.includes('shorba') || name.includes('lentil')) return 'https://images.unsplash.com/photo-1547592180-85f173990554?w=500&q=85'
+
+  return categoryImageMap[categoryName] || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&q=85'
+}
 
 export default function Menu({ addToCart, selectedTime, setSelectedTime, timeSlots }: MenuProps) {
-  const [activeCategory, setActiveCategory] = useState(menuData[0].name)
+  const [menuData, setMenuData] = useState<MenuCategory[]>([])
+  const [activeCategory, setActiveCategory] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   
   const [isTimePickerOpen, setIsTimePickerOpen] = useState(false)
   
@@ -105,6 +56,87 @@ export default function Menu({ addToCart, selectedTime, setSelectedTime, timeSlo
   const tabsRef = useRef<HTMLDivElement>(null)
   const isScrollingRef = useRef(false)
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+  // Fetch Clover menu data
+  useEffect(() => {
+    async function fetchMenu() {
+      const menuUrl = '/api/menu'
+
+      try {
+        setIsLoading(true)
+        
+        const res = await fetch(menuUrl, {
+          headers: {
+            'Accept': 'application/json'
+          }
+        })
+
+        if (!res.ok) {
+          throw new Error('Failed to fetch data from menu API')
+        }
+
+        const data = await res.json()
+        const rawCategories = data.categories?.elements || []
+        const rawItems = data.items?.elements || []
+
+        // Sort categories by sortOrder ascending
+        const sortedCats = rawCategories
+          .filter((cat: any) => !cat.deleted)
+          .sort((a: any, b: any) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
+
+        // Build categories mapping
+        const categoriesMap: Record<string, MenuItem[]> = {}
+        sortedCats.forEach((cat: any) => {
+          categoriesMap[cat.id] = []
+        })
+
+        // Populate items into their categories
+        rawItems.forEach((item: any) => {
+          // Skip if item is hidden, unavailable, or deleted
+          if (item.hidden || !item.available || item.deleted) return
+
+          // Match items to categories
+          const itemCats = item.categories?.elements || []
+          itemCats.forEach((itemCat: any) => {
+            if (categoriesMap[itemCat.id]) {
+              // Convert cents to price string
+              const priceString = item.priceType === 'FIXED' 
+                ? (item.price / 100).toFixed(2) 
+                : '0.00'
+
+              categoriesMap[itemCat.id].push({
+                id: item.id,
+                name: item.name,
+                price: priceString,
+                desc: item.description || '',
+                img: getItemImage(item.name, itemCat.name)
+              })
+            }
+          })
+        })
+
+        // Map to standard MenuCategory array format
+        const structuredMenu: MenuCategory[] = sortedCats
+          .map((cat: any) => ({
+            name: cat.name,
+            items: categoriesMap[cat.id] || []
+          }))
+          .filter(cat => cat.items.length > 0) // Only show categories with items
+
+        setMenuData(structuredMenu)
+        if (structuredMenu.length > 0) {
+          setActiveCategory(structuredMenu[0].name)
+        }
+      } catch (err: any) {
+        console.error('Error fetching Clover menu:', err)
+        setError(err.message || 'Failed to load menu')
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchMenu()
+  }, [])
 
   // Filtered menu data based on search query
   const filteredMenuData = useMemo(() => {
@@ -117,10 +149,12 @@ export default function Menu({ addToCart, selectedTime, setSelectedTime, timeSlo
         item.desc.toLowerCase().includes(searchQuery.toLowerCase())
       )
     })).filter(cat => cat.items.length > 0)
-  }, [searchQuery])
+  }, [searchQuery, menuData])
 
   // Track scroll position to update active category
   useEffect(() => {
+    if (filteredMenuData.length === 0) return
+
     const observer = new IntersectionObserver(
       (entries) => {
         if (isScrollingRef.current) return
@@ -144,7 +178,7 @@ export default function Menu({ addToCart, selectedTime, setSelectedTime, timeSlo
     sections.forEach((section) => observer.observe(section))
 
     return () => observer.disconnect()
-  }, [filteredMenuData])
+  }, [filteredMenuData, menuData])
 
   const lenis = useLenis()
 
@@ -157,7 +191,6 @@ export default function Menu({ addToCart, selectedTime, setSelectedTime, timeSlo
       try {
         lenis.scrollTo(`#${id}`, { offset: -100 })
       } catch (e) {
-        // Fallback if Lenis fails
         const el = document.getElementById(id)
         if (el) el.scrollIntoView({ behavior: 'smooth' })
       }
@@ -195,19 +228,27 @@ export default function Menu({ addToCart, selectedTime, setSelectedTime, timeSlo
           <p className="text-cream/45 text-[13px] mt-1 font-light truncate">3083 Breckinridge Blvd</p>
         </div>
         <nav className="flex-1 py-3">
-          {filteredMenuData.map(cat => (
-            <button 
-               key={cat.name} 
-               onClick={() => scrollTo(cat.name)}
-              className={`w-full text-left px-6 py-3 text-[13px] transition-all duration-200 border-l-2 ${
-                activeCategory === cat.name
-                  ? 'border-amber-spice text-amber-spice bg-amber-spice/5'
-                  : 'border-transparent text-cream/55 hover:text-cream hover:bg-white/5'
-              }`}
-            >
-              {cat.name}
-            </button>
-          ))}
+          {isLoading ? (
+            <div className="space-y-4 px-6 py-4">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <div key={i} className="h-4 w-24 bg-cream/10 rounded animate-pulse" />
+              ))}
+            </div>
+          ) : (
+            filteredMenuData.map(cat => (
+              <button 
+                 key={cat.name} 
+                 onClick={() => scrollTo(cat.name)}
+                className={`w-full text-left px-6 py-3 text-[13px] transition-all duration-200 border-l-2 ${
+                  activeCategory === cat.name
+                    ? 'border-amber-spice text-amber-spice bg-amber-spice/5'
+                    : 'border-transparent text-cream/55 hover:text-cream hover:bg-white/5'
+                }`}
+              >
+                {cat.name}
+              </button>
+            ))
+          )}
         </nav>
       </aside>
 
@@ -216,20 +257,28 @@ export default function Menu({ addToCart, selectedTime, setSelectedTime, timeSlo
         ref={tabsRef}
         className="lg:hidden fixed top-[76px] left-0 right-0 z-40 bg-linen/95 backdrop-blur-md border-b border-linen-dark/30 overflow-x-auto whitespace-nowrap px-4 py-3 hide-scrollbar"
       >
-        {filteredMenuData.map(cat => (
-          <button
-            key={cat.name}
-            onClick={() => scrollTo(cat.name)}
-            data-active={activeCategory === cat.name}
-            className={`inline-block px-4 py-1.5 rounded-full text-[12px] mr-2 border transition-all ${
-              activeCategory === cat.name
-                ? 'bg-amber-spice text-charcoal border-amber-spice font-medium shadow-sm'
-                : 'border-linen-dark/50 text-stone bg-white/30'
-            }`}
-          >
-            {cat.name}
-          </button>
-        ))}
+        {isLoading ? (
+          <div className="flex gap-2">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="inline-block w-20 h-7 rounded-full bg-linen-dark/20 animate-pulse" />
+            ))}
+          </div>
+        ) : (
+          filteredMenuData.map(cat => (
+            <button
+              key={cat.name}
+              onClick={() => scrollTo(cat.name)}
+              data-active={activeCategory === cat.name}
+              className={`inline-block px-4 py-1.5 rounded-full text-[12px] mr-2 border transition-all ${
+                activeCategory === cat.name
+                  ? 'bg-amber-spice text-charcoal border-amber-spice font-medium shadow-sm'
+                  : 'border-linen-dark/50 text-stone bg-white/30'
+              }`}
+            >
+              {cat.name}
+            </button>
+          ))
+        )}
       </div>
 
       {/* MAIN CONTENT */}
@@ -328,7 +377,33 @@ export default function Menu({ addToCart, selectedTime, setSelectedTime, timeSlo
         </div>
 
         {/* Menu Sections */}
-        {filteredMenuData.length > 0 ? (
+        {isLoading ? (
+          <div className="space-y-12">
+            {[1, 2].map((group) => (
+              <div key={group} className="space-y-6">
+                <div className="h-8 w-48 bg-linen-dark/20 rounded animate-pulse" />
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
+                  {[1, 2, 3, 4].map((item) => (
+                    <div key={item} className="bg-linen-light/30 rounded-2xl border border-linen-dark/15 h-[180px] flex items-center p-4 gap-4 animate-pulse">
+                      <div className="flex-1 space-y-3">
+                        <div className="h-5 w-1/2 bg-linen-dark/20 rounded" />
+                        <div className="h-3 w-full bg-linen-dark/20 rounded" />
+                        <div className="h-3 w-2/3 bg-linen-dark/20 rounded" />
+                        <div className="h-6 w-16 bg-linen-dark/20 rounded mt-4" />
+                      </div>
+                      <div className="w-[180px] h-full bg-linen-dark/20 rounded-xl" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : error ? (
+          <div className="text-center py-20">
+            <p className="text-red-500 text-[16px] font-medium">Failed to load the menu</p>
+            <p className="text-stone text-[14px] mt-1 font-light">{error}</p>
+          </div>
+        ) : filteredMenuData.length > 0 ? (
           filteredMenuData.map(category => (
             <section key={category.name} id={`cat-${category.name.replace(/[^a-zA-Z0-9]/g, '')}`} className="mb-14 scroll-mt-[140px] lg:scroll-mt-[100px]">
               <h2 className="font-playfair text-[28px] sm:text-[34px] font-bold text-charcoal mb-1">{category.name}</h2>
@@ -336,7 +411,7 @@ export default function Menu({ addToCart, selectedTime, setSelectedTime, timeSlo
               <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
                 {category.items.map(item => (
                   <div key={item.id} className="bg-[#D8CBB8] rounded-2xl border border-linen-dark/15 sm:border-linen-dark/35 hover:border-amber-spice/60 transition-all duration-300 group flex flex-row items-center sm:items-stretch h-auto sm:h-[180px] py-4 sm:py-0 sm:overflow-hidden px-4 sm:px-0">
-                    {/* Mobile Text Content (Left) */}
+                    {/* Mobile/Desktop Text Content */}
                     <div className="flex-1 pr-4 sm:p-4 flex flex-col justify-center sm:justify-start order-1 sm:order-2">
                       <div className="flex-1">
                         <h3 className="font-playfair font-bold uppercase text-[18px] sm:normal-case sm:font-sans sm:font-semibold sm:text-[16px] text-charcoal tracking-wide sm:tracking-normal">{item.name}</h3>
@@ -344,7 +419,7 @@ export default function Menu({ addToCart, selectedTime, setSelectedTime, timeSlo
                       </div>
                       <div className="mt-3 sm:mt-4 flex items-center justify-between">
                         <span className="font-sans sm:font-playfair text-[15px] sm:text-[20px] text-charcoal sm:font-bold">${item.price}</span>
-                        {/* Desktop add button */}
+                        {/* Add button */}
                         <button 
                           onClick={() => addToCart(item)}
                           className="hidden sm:block bg-amber-spice text-charcoal px-4 py-2 text-[11px] tracking-[2px] uppercase font-medium hover:bg-amber-deep transition-colors duration-200 rounded-lg"
@@ -354,10 +429,10 @@ export default function Menu({ addToCart, selectedTime, setSelectedTime, timeSlo
                       </div>
                     </div>
 
-                    {/* Image Content (Right) */}
+                    {/* Image Content */}
                     <div className="w-[110px] h-[110px] sm:w-[180px] sm:h-full relative flex-shrink-0 order-2 sm:order-1 sm:overflow-hidden rounded-2xl sm:rounded-none ml-2 sm:ml-0">
                       <img src={item.img} alt={item.name} className="w-full h-full object-cover sm:group-hover:scale-[1.07] transition-transform duration-700 rounded-2xl sm:rounded-none" />
-                      {/* Mobile add button (floating +) */}
+                      {/* Mobile add button */}
                       <button
                         onClick={() => addToCart(item)}
                         className="sm:hidden absolute -bottom-1 -right-1 bg-white w-9 h-9 rounded-full flex items-center justify-center shadow-[0_2px_10px_rgba(0,0,0,0.15)] text-charcoal hover:bg-linen-light transition-colors z-10"

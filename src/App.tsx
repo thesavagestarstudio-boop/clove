@@ -126,6 +126,7 @@ export default function App() {
             selectedTime={selectedTime}
             setSelectedTime={setSelectedTime}
             timeSlots={timeSlots}
+            showNotification={showNotification}
           />
 
           {/* Global Cart FAB */}
