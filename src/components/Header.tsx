@@ -141,6 +141,14 @@ export default function Header({ onLoginClick, onLogoutClick, onCartClick, cartC
                         <p className="text-[10px] uppercase tracking-[1px] text-stone">Signed in as</p>
                         <p className="text-[12px] font-medium text-charcoal truncate">{session.user?.email}</p>
                       </div>
+                      <Link 
+                        to="/profile" 
+                        onClick={() => setProfileMenuOpen(false)}
+                        className="text-left px-4 py-2.5 text-[11px] tracking-[2px] uppercase text-charcoal hover:bg-amber-spice transition-colors flex items-center gap-3"
+                      >
+                        <User size={14} />
+                        My Orders
+                      </Link>
                       <button 
                         onClick={() => { onLogoutClick(); setProfileMenuOpen(false) }} 
                         className="text-left px-4 py-2.5 text-[11px] tracking-[2px] uppercase text-charcoal hover:bg-amber-spice transition-colors flex items-center gap-3"
@@ -191,10 +199,16 @@ export default function Header({ onLoginClick, onLogoutClick, onCartClick, cartC
         </nav>
         <div className="mt-12 flex gap-4">
           {session ? (
-            <button onClick={() => { onLogoutClick(); setMobileOpen(false) }}
-              className="border border-linen-dark/40 text-cream px-6 py-3 text-[12px] tracking-[2px] uppercase">
-              Log Out
-            </button>
+            <>
+              <Link to="/profile" onClick={() => setMobileOpen(false)}
+                className="border border-linen-dark/40 text-cream px-6 py-3 text-[12px] tracking-[2px] uppercase">
+                My Orders
+              </Link>
+              <button onClick={() => { onLogoutClick(); setMobileOpen(false) }}
+                className="border border-linen-dark/40 text-cream px-6 py-3 text-[12px] tracking-[2px] uppercase">
+                Log Out
+              </button>
+            </>
           ) : (
             <button onClick={() => { onLoginClick(); setMobileOpen(false) }}
               className="border border-linen-dark/40 text-cream px-6 py-3 text-[12px] tracking-[2px] uppercase">

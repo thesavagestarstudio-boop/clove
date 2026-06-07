@@ -14,6 +14,7 @@ import Home from './pages/Home'
 import About from './pages/About'
 import Menu from './pages/Menu'
 import Contact from './pages/Contact'
+import Profile from './pages/Profile'
 import { CartItem, MenuItem } from './types'
 
 function getSlotsForDate(date: Date, isToday: boolean): string[] {
@@ -101,9 +102,58 @@ export default function App() {
     setTimeout(() => setToastMessage(null), 4000)
   }
  
+  const fetchCart = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('cart_items')
+        .select('*')
+        .eq('user_id', userId)
+      if (error) throw error
+      if (data) {
+        setCart(data.map(item => ({
+          id: item.item_id,
+          name: item.name,
+          price: item.price,
+          qty: item.qty,
+          img: item.img || ''
+        })))
+      }
+    } catch (err) {
+      console.error('Error fetching cart:', err)
+    }
+  }
+
+  const syncLocalCartToSupabase = async (userId: string, localCart: CartItem[]) => {
+    if (localCart.length === 0) {
+      await fetchCart(userId)
+      return
+    }
+    try {
+      for (const item of localCart) {
+        await supabase
+          .from('cart_items')
+          .upsert({
+            user_id: userId,
+            item_id: item.id,
+            name: item.name,
+            price: item.price,
+            qty: item.qty,
+            img: item.img
+          }, { onConflict: 'user_id,item_id' })
+      }
+      await fetchCart(userId)
+    } catch (err) {
+      console.error('Error syncing local cart to database:', err)
+      await fetchCart(userId)
+    }
+  }
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session)
+      if (session) {
+        fetchCart(session.user.id)
+      }
     })
  
     const {
@@ -111,11 +161,13 @@ export default function App() {
     } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session)
       
-      if (event === 'SIGNED_IN') {
+      if (event === 'SIGNED_IN' && session) {
         setIsLoginOpen(false)
         showNotification('Successfully logged in')
+        syncLocalCartToSupabase(session.user.id, cart)
       } else if (event === 'SIGNED_OUT') {
         showNotification('Successfully logged out')
+        setCart([])
       }
     })
  
@@ -135,25 +187,75 @@ export default function App() {
 
   const cartCount = cart.reduce((acc, i) => acc + i.qty, 0)
 
-  const addToCart = (item: MenuItem) => {
+  const addToCart = async (item: MenuItem) => {
+    let finalQty = 1
     setCart(prev => {
       const existing = prev.find(i => i.id === item.id)
       if (existing) {
+        finalQty = existing.qty + 1
         return prev.map(i => i.id === item.id ? { ...i, qty: i.qty + 1 } : i)
       }
       return [...prev, { ...item, qty: 1 }]
     })
     setIsCartOpen(true)
+
+    if (session?.user?.id) {
+      // Look up existing qty in local cart to make sure we send correct total qty
+      const existing = cart.find(i => i.id === item.id)
+      const qtyToSend = existing ? existing.qty + 1 : 1
+      try {
+        await supabase
+          .from('cart_items')
+          .upsert({
+            user_id: session.user.id,
+            item_id: item.id,
+            name: item.name,
+            price: item.price,
+            qty: qtyToSend,
+            img: item.img
+          }, { onConflict: 'user_id,item_id' })
+      } catch (err) {
+        console.error('Error syncing add to cart:', err)
+      }
+    }
   }
 
-  const changeQty = (id: string, delta: number) => {
-    setCart(prev => prev.map(i => {
-      if (i.id === id) {
-        const newQty = Math.max(0, i.qty + delta)
-        return { ...i, qty: newQty }
+  const changeQty = async (id: string, delta: number) => {
+    let finalQty = 0
+    setCart(prev => {
+      const updated = prev.map(i => {
+        if (i.id === id) {
+          finalQty = Math.max(0, i.qty + delta)
+          return { ...i, qty: finalQty }
+        }
+        return i
+      }).filter(i => i.qty > 0)
+      return updated
+    })
+
+    if (session?.user?.id) {
+      try {
+        const targetItem = cart.find(i => i.id === id)
+        if (targetItem) {
+          const qtyToSend = Math.max(0, targetItem.qty + delta)
+          if (qtyToSend === 0) {
+            await supabase
+              .from('cart_items')
+              .delete()
+              .eq('user_id', session.user.id)
+              .eq('item_id', id)
+          } else {
+            await supabase
+              .from('cart_items')
+              .update({ qty: qtyToSend })
+              .eq('user_id', session.user.id)
+              .eq('item_id', id)
+          }
+        }
+      } catch (err) {
+        console.error('Error syncing qty change:', err)
       }
-      return i
-    }).filter(i => i.qty > 0))
+    }
   }
 
   return (
@@ -178,6 +280,7 @@ export default function App() {
                 />
               } />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/profile" element={<Profile />} />
             </Routes>
           </main>
 

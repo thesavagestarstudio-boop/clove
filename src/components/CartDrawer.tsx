@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { ShoppingBag, X, Minus, Plus } from 'lucide-react'
 import { CartItem } from '../types'
 import LoadingSpinner from './LoadingSpinner'
+import { supabase } from '../lib/supabase'
 
 interface CartDrawerProps {
   isOpen: boolean
@@ -95,6 +96,40 @@ export default function CartDrawer({
 
       const data = await res.json()
       if (data.href) {
+        // Save the order to Supabase orders table
+        const { data: userData } = await supabase.auth.getUser()
+        if (userData.user) {
+          const { error: orderError } = await supabase
+            .from('orders')
+            .insert({
+              user_id: userData.user.id,
+              items: cart.map(item => ({
+                id: item.id,
+                name: item.name,
+                price: item.price,
+                qty: item.qty,
+                img: item.img
+              })),
+              subtotal: parseFloat(subtotal.toFixed(2)),
+              tax: parseFloat((subtotal * 0.08).toFixed(2)),
+              total: parseFloat((subtotal * 1.08).toFixed(2)),
+              pickup_time: selectedTime,
+              status: 'completed'
+            })
+          if (orderError) {
+            console.error('Error saving order history:', orderError)
+          }
+
+          // Clear database cart
+          const { error: cartError } = await supabase
+            .from('cart_items')
+            .delete()
+            .eq('user_id', userData.user.id)
+          if (cartError) {
+            console.error('Error clearing cart from database:', cartError)
+          }
+        }
+
         window.location.href = data.href
       } else {
         throw new Error('No checkout URL returned from Clover')
