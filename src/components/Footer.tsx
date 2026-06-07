@@ -1,7 +1,13 @@
 export default function Footer() {
   const footerLinks = [
     { label: 'Visit Us', lines: ['3083 Breckinridge Blvd', 'Suite 210, Duluth GA 30096', '+1 (770) 800-0881', 'info@tasteofclove.com'] },
-    { label: 'Hours', lines: ['Mon – Thu  11AM – 9PM', 'Fri – Sat    11AM – 10PM', 'Sunday      12PM – 8PM'] },
+    { label: 'Hours', lines: [
+      'Mon: Off',
+      'Tue/Wed/Thu: 11AM – 2:45PM, 4:45PM – 9:30PM',
+      'Fri: 11AM – 2:45PM, 4:45PM – 10:30PM',
+      'Saturday: 11AM – 10:30PM',
+      'Sunday: 11AM – 9:30PM'
+    ] },
     { label: 'Follow Us', lines: ['Instagram — @tasteofclove', 'Facebook — @tasteofclove'] },
   ]
 

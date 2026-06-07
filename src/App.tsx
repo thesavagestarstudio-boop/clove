@@ -16,24 +16,96 @@ import Menu from './pages/Menu'
 import Contact from './pages/Contact'
 import { CartItem, MenuItem } from './types'
 
+function getSlotsForDate(date: Date, isToday: boolean): string[] {
+  const day = date.getDay()
+  const slots: string[] = []
+  
+  if (day === 1) {
+    return [] // Closed on Monday
+  }
+  
+  let ranges: { start: number; end: number }[] = []
+  if (day >= 2 && day <= 4) {
+    // Tue, Wed, Thu: 11:00 AM - 2:45 PM, 4:45 PM - 9:30 PM
+    ranges = [
+      { start: 11 * 60, end: 14 * 60 + 45 },
+      { start: 16 * 60 + 45, end: 21 * 60 + 30 }
+    ]
+  } else if (day === 5) {
+    // Fri: 11:00 AM - 2:45 PM, 4:45 PM - 10:30 PM
+    ranges = [
+      { start: 11 * 60, end: 14 * 60 + 45 },
+      { start: 16 * 60 + 45, end: 22 * 60 + 30 }
+    ]
+  } else if (day === 6) {
+    // Sat: 11:00 AM - 10:30 PM
+    ranges = [
+      { start: 11 * 60, end: 22 * 60 + 30 }
+    ]
+  } else if (day === 0) {
+    // Sun: 11:00 AM - 9:30 PM
+    ranges = [
+      { start: 11 * 60, end: 21 * 60 + 30 }
+    ]
+  }
+  
+  const prefix = isToday ? 'Today at ' : 'Tomorrow at '
+  
+  // For today, only show times at least 30 minutes in the future
+  const now = new Date()
+  const currentMinutes = now.getHours() * 60 + now.getMinutes() + 30
+  
+  ranges.forEach(range => {
+    let current = range.start
+    while (current <= range.end) {
+      if (!isToday || current >= currentMinutes) {
+        const hour24 = Math.floor(current / 60)
+        const min = current % 60
+        const ampm = hour24 >= 12 ? 'PM' : 'AM'
+        const hour12 = hour24 % 12 === 0 ? 12 : hour24 % 12
+        const minStr = min < 10 ? `0${min}` : `${min}`
+        slots.push(`${prefix}${hour12}:${minStr} ${ampm}`)
+      }
+      current += 30 // 30 minutes step
+    }
+  })
+  
+  return slots
+}
+
+function generateTimeSlots(): string[] {
+  const today = new Date()
+  const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000)
+  
+  const todaySlots = getSlotsForDate(today, true)
+  const tomorrowSlots = getSlotsForDate(tomorrow, false)
+  
+  const allSlots = [...todaySlots, ...tomorrowSlots]
+  if (allSlots.length === 0) {
+    return ['Next Available Slot']
+  }
+  return allSlots
+}
+
 export default function App() {
   const [isLoginOpen, setIsLoginOpen] = useState(false)
   const [isCartOpen, setIsCartOpen] = useState(false)
   const [cart, setCart] = useState<CartItem[]>([])
-  const [selectedTime, setSelectedTime] = useState('Today at 2:00 PM')
+  const [timeSlots, setTimeSlots] = useState<string[]>([])
+  const [selectedTime, setSelectedTime] = useState('')
   const [session, setSession] = useState<Session | null>(null)
   const [toastMessage, setToastMessage] = useState<string | null>(null)
-
+ 
   const showNotification = (msg: string) => {
     setToastMessage(msg)
     setTimeout(() => setToastMessage(null), 4000)
   }
-
+ 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session)
     })
-
+ 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
@@ -46,19 +118,20 @@ export default function App() {
         showNotification('Successfully logged out')
       }
     })
+ 
+    // Initialize time slots dynamically
+    const slots = generateTimeSlots()
+    setTimeSlots(slots)
+    if (slots.length > 0) {
+      setSelectedTime(slots[0])
+    }
 
     return () => subscription.unsubscribe()
   }, [])
-
+ 
   const handleLogout = async () => {
     await supabase.auth.signOut()
   }
-
-  // Generate time slots (same as in Menu before)
-  const timeSlots = [
-    'Today at 12:00 PM', 'Today at 1:00 PM', 'Today at 2:00 PM', 'Today at 3:00 PM',
-    'Tomorrow at 11:00 AM', 'Tomorrow at 12:00 PM', 'Tomorrow at 1:00 PM', 'Tomorrow at 2:00 PM'
-  ]
 
   const cartCount = cart.reduce((acc, i) => acc + i.qty, 0)
 
@@ -102,9 +175,6 @@ export default function App() {
               <Route path="/menu" element={
                 <Menu
                   addToCart={addToCart}
-                  selectedTime={selectedTime}
-                  setSelectedTime={setSelectedTime}
-                  timeSlots={timeSlots}
                 />
               } />
               <Route path="/contact" element={<Contact />} />

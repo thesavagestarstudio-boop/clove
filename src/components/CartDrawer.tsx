@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import { ShoppingBag, X, Minus, Plus } from 'lucide-react'
 import { CartItem } from '../types'
+import LoadingSpinner from './LoadingSpinner'
 
 interface CartDrawerProps {
   isOpen: boolean
@@ -113,6 +114,7 @@ export default function CartDrawer({
 
   return (
     <>
+      {isCheckingOut && <LoadingSpinner />}
       {/* Overlay */}
       <div 
         className={`fixed inset-0 z-[120] bg-charcoal/15 backdrop-blur-[2px] transition-all duration-500 ${

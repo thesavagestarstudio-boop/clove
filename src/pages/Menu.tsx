@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useMemo } from 'react'
 import { Plus, Minus, ShoppingBag, X, Search, Info, Bike, Utensils, MapPin, Clock, ChevronRight } from 'lucide-react'
 import { MenuItem } from '../types'
 import { useLenis } from '../components/SmoothScroll'
+import LoadingSpinner from '../components/LoadingSpinner'
 
 // Types
 interface MenuCategory {
@@ -11,9 +12,6 @@ interface MenuCategory {
 
 interface MenuProps {
   addToCart: (item: MenuItem) => void
-  selectedTime: string
-  setSelectedTime: (time: string) => void
-  timeSlots: string[]
 }
 
 const categoryImageMap: Record<string, string> = {
@@ -43,14 +41,12 @@ function getItemImage(itemName: string, categoryName: string): string {
   return categoryImageMap[categoryName] || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&q=85'
 }
 
-export default function Menu({ addToCart, selectedTime, setSelectedTime, timeSlots }: MenuProps) {
+export default function Menu({ addToCart }: MenuProps) {
   const [menuData, setMenuData] = useState<MenuCategory[]>([])
   const [activeCategory, setActiveCategory] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  
-  const [isTimePickerOpen, setIsTimePickerOpen] = useState(false)
   
   const mainRef = useRef<HTMLDivElement>(null)
   const tabsRef = useRef<HTMLDivElement>(null)
@@ -207,20 +203,11 @@ export default function Menu({ addToCart, selectedTime, setSelectedTime, timeSlo
     }, 1000)
   }
 
-  // Lock body scroll when time picker is open
-  useEffect(() => {
-    if (isTimePickerOpen) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = 'unset'
-    }
-    return () => {
-      document.body.style.overflow = 'unset'
-    }
-  }, [isTimePickerOpen])
+
 
   return (
     <div className="flex min-h-screen pt-[76px] bg-white font-inter">
+      {isLoading && <LoadingSpinner />}
       {/* SIDEBAR */}
       <aside className="w-[220px] hidden lg:flex flex-shrink-0 bg-charcoal flex-col sticky top-[76px] h-[calc(100vh-76px)] overflow-y-auto border-r border-linen-dark/10">
         <div className="px-6 py-5 border-b border-linen-dark/15">
@@ -307,52 +294,7 @@ export default function Menu({ addToCart, selectedTime, setSelectedTime, timeSlo
                 <p className="text-[14px] text-stone font-light">Pickup from <span className="font-semibold text-charcoal">3083 Breckinridge Blvd, Suite 210, Duluth GA 30096</span></p>
               </div>
             </div>
-            <div 
-              className="flex items-center gap-4 group cursor-pointer"
-              onClick={() => setIsTimePickerOpen(true)}
-            >
-              <div className="w-10 h-10 rounded-full bg-linen-dark/10 flex items-center justify-center text-stone group-hover:bg-amber-spice group-hover:text-charcoal transition-colors">
-                <Clock size={20} />
-              </div>
-              <div className="flex-1 flex items-center justify-between">
-                <p className="text-[14px] text-stone font-light">Pickup <span className="font-semibold text-charcoal">{selectedTime}</span></p>
-                <ChevronRight size={20} className="text-stone/40" />
-              </div>
-            </div>
           </div>
-
-          {/* Simple Time Picker Modal */}
-          {isTimePickerOpen && (
-            <div className="fixed inset-0 z-[110] flex items-center justify-center px-4">
-              <div className="absolute inset-0 bg-charcoal/40 backdrop-blur-sm" onClick={() => setIsTimePickerOpen(false)} />
-              <div 
-                data-lenis-prevent
-                className="bg-white w-full max-w-sm rounded-2xl shadow-2xl relative z-10 flex flex-col p-6 max-h-[70vh]"
-              >
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="font-playfair text-[20px] font-bold">Select Pickup Time</h3>
-                  <button onClick={() => setIsTimePickerOpen(false)} className="p-1 hover:bg-linen-dark/10 rounded-full">
-                    <X size={20} />
-                  </button>
-                </div>
-                <div className="overflow-y-auto grid grid-cols-2 gap-2 pr-1 custom-scrollbar">
-                   {timeSlots.map(time => (
-                     <button
-                        key={time}
-                        onClick={() => { setSelectedTime(time); setIsTimePickerOpen(false); }}
-                        className={`py-2.5 px-3 rounded-lg text-[13px] border transition-all ${
-                          selectedTime === time 
-                          ? 'bg-charcoal text-cream border-charcoal font-medium' 
-                          : 'border-linen-dark/30 text-stone hover:border-charcoal'
-                        }`}
-                     >
-                       {time}
-                     </button>
-                   ))}
-                </div>
-              </div>
-            </div>
-          )}
 
           {/* Search Bar */}
           <div className="relative max-w-2xl">

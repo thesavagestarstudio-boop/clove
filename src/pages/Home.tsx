@@ -52,13 +52,13 @@ export default function Home() {
     const reveals = gsap.utils.toArray('.reveal') as HTMLElement[]
     reveals.forEach((el) => {
       gsap.from(el, {
-        y: 64,
+        y: 40,
         opacity: 0,
-        duration: 1.1,
-        ease: 'power3.out',
+        duration: 0.8,
+        ease: 'power2.out',
         scrollTrigger: {
           trigger: el,
-          start: 'top 85%',
+          start: 'top 95%',
           toggleActions: 'play none none none'
         }
       })
@@ -68,16 +68,16 @@ export default function Home() {
     const bannerLetterContainers = gsap.utils.toArray('.banner-letters') as HTMLElement[]
     bannerLetterContainers.forEach((container) => {
       gsap.from(container.querySelectorAll('.banner-letter'), {
-        y: 80,
-        rotateX: -85,
+        y: 50,
+        rotateX: -45,
         opacity: 0,
-        duration: 1.2,
-        stagger: 0.04,
-        ease: 'power4.out',
-        transformOrigin: 'center bottom -30px',
+        duration: 0.9,
+        stagger: 0.02,
+        ease: 'power3.out',
+        transformOrigin: 'center bottom -20px',
         scrollTrigger: {
           trigger: container,
-          start: 'top 85%',
+          start: 'top 95%',
         }
       })
     })
@@ -113,7 +113,7 @@ export default function Home() {
       <section ref={heroRef} className="relative h-[100dvh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img
-            src="https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=1920&q=90"
+            src="/ChickenTikkaTrilogy.PNG"
             alt="CLOVE cuisine"
             className="hero-img w-full h-full object-cover scale-110"
           />
@@ -151,31 +151,44 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SECTION 2 — SIGNATURE PLATES */}
+      {/* SECTION 2 — SIGNATURE CURRIES */}
       <section ref={sigRef} className="flex min-h-[680px] flex-col md:flex-row">
         <div className="w-full md:w-1/2 bg-amber-spice px-8 sm:px-14 py-20 flex flex-col justify-center slide-l">
-          <div className="flex items-start justify-between mb-10">
-            <h2 className="font-playfair font-black uppercase text-charcoal leading-[0.9]"
-                style={{ fontSize: 'clamp(36px, 4vw, 60px)' }}>
-              Signature<br/>Plates
-            </h2>
-            <Utensils size={28} className="text-charcoal/30 mt-2 flex-shrink-0" />
+          <div className="flex flex-col mb-10">
+            <div className="flex items-start justify-between">
+              <h2 className="font-playfair font-black uppercase text-charcoal leading-[0.9]"
+                  style={{ fontSize: 'clamp(36px, 4vw, 60px)' }}>
+                Signature<br/>Curries
+              </h2>
+              <Utensils size={28} className="text-charcoal/30 mt-2 flex-shrink-0" />
+            </div>
+            <p className="font-inter text-[14px] tracking-[4px] uppercase text-charcoal/70 mt-6 font-bold">
+              Vegetarian (11)
+            </p>
           </div>
           
-          <div className="divide-y divide-charcoal/12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-2">
             {[
-              { name: 'Variety Tray', price: '17.99', desc: 'Samosas, pakoras, bhujia — a celebratory spread for sharing' },
-              { name: 'Butter Chicken', price: '18.99', desc: 'Tender chicken in a creamy, aromatic tomato sauce' },
-              { name: 'Lamb Rogan Josh', price: '21.99', desc: 'Slow-braised lamb in rich yogurt and ginger gravy' },
-              { name: 'Palak Paneer', price: '16.99', desc: 'Fresh cottage cheese in vibrant spinach and garlic purée' },
-              { name: 'Chicken Tikka Masala', price: '19.99', desc: 'Char-grilled chicken in a robustly spiced masala sauce' },
+              { name: 'Clove Dal Makhani', price: '16.00', desc: 'Slow-cooked creamy black lentils' },
+              { name: 'Golden Dal Tadka', price: '15.00', desc: 'Yellow lentils with garlic temper' },
+              { name: 'Signature Veg Nargisi Kofta Curry', price: '18.00' },
+              { name: 'Emerald Palak Paneer', price: '17.00', desc: 'Paneer in creamy spinach curry' },
+              { name: 'Punjabi Chana Masala', price: '15.00', desc: 'Chickpeas in bold spiced gravy' },
+              { name: 'Rajasthani Bhindi', price: '16.00' },
+              { name: 'Paneer Butter Velvet', price: '18.00' },
+              { name: 'Paneer Methi Malai', price: '18.00' },
+              { name: 'Karahi Paneer', price: '17.00' },
+              { name: 'Kashmiri Baingan Khatte', price: '16.00' },
+              { name: 'Sev Subzi', price: '15.00' },
             ].map(dish => (
-              <div key={dish.name} className="py-5">
+              <div key={dish.name} className="py-7 border-b border-charcoal/12">
                 <div className="flex justify-between items-baseline gap-4">
                   <span className="font-inter font-semibold text-[17px] text-charcoal">{dish.name}</span>
                   <span className="font-playfair font-bold text-[17px] text-charcoal flex-shrink-0">${dish.price}</span>
                 </div>
-                <p className="font-inter text-[13px] text-stone font-light mt-1 leading-[1.6]">{dish.desc}</p>
+                {dish.desc && (
+                  <p className="font-inter text-[13px] text-charcoal/80 font-medium mt-1.5 leading-[1.4]">{dish.desc}</p>
+                )}
               </div>
             ))}
           </div>
@@ -188,7 +201,7 @@ export default function Home() {
         
         <div className="w-full md:w-1/2 flex flex-col slide-r">
           {/* Text block */}
-          <div className="bg-linen px-8 sm:px-14 py-14 flex flex-col justify-center flex-1">
+          <div className="bg-linen px-8 sm:px-14 py-10 flex flex-col justify-center flex-1">
             <p className="font-inter text-[11px] tracking-[4px] uppercase text-amber-deep mb-5">Our Story</p>
             <h2 className="font-playfair font-black uppercase text-charcoal leading-[0.92] mb-8"
                 style={{ fontSize: 'clamp(28px, 3.2vw, 50px)' }}>
@@ -199,9 +212,9 @@ export default function Home() {
             </p>
           </div>
           {/* Image block */}
-          <div className="h-[320px] md:h-[380px] relative overflow-hidden flex-shrink-0">
+          <div className="h-[400px] md:h-[480px] relative overflow-hidden flex-shrink-0">
             <img
-              src="https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=900&q=85"
+              src="/CloveDalMakhani.PNG"
               alt="Signature dish"
               loading="lazy"
               decoding="async"
@@ -246,13 +259,13 @@ export default function Home() {
         <div className="max-w-[1400px] mx-auto">
           <div className="flex items-end justify-between mb-14 gap-8 flex-wrap">
             <div>
-              <p className="reveal font-inter text-[11px] tracking-[4px] uppercase text-amber-deep mb-4">Featured</p>
-              <h2 className="reveal font-playfair text-[32px] sm:text-[44px] font-bold text-charcoal leading-[1.05]">
-                The Signature Collection
-              </h2>
-              <p className="reveal font-inter text-[15px] text-stone font-light mt-3 max-w-[440px] leading-[1.8]">
-                Curated masterpieces that define our culinary philosophy. Each plate is a symphony of flavors for the discerning palate.
-              </p>
+              <div className="flex items-center gap-4">
+                <h2 className="reveal font-playfair text-[32px] sm:text-[44px] font-bold text-charcoal leading-[1.05] uppercase">
+                  SIGNATURE CURRIES
+                </h2>
+                <Utensils size={28} className="text-charcoal/30 flex-shrink-0 mt-1 reveal" />
+              </div>
+              <p className="reveal font-inter text-[14px] tracking-[4px] uppercase text-amber-deep mt-4 mb-2 font-bold">NON VEGETARIAN (9)</p>
             </div>
             <Link to="/menu"
               className="reveal border border-charcoal text-charcoal px-5 py-2.5 text-[11px] tracking-[2px] uppercase font-medium font-inter hover:bg-charcoal hover:text-cream transition-all duration-300 whitespace-nowrap flex-shrink-0">
@@ -260,24 +273,107 @@ export default function Home() {
             </Link>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-2">
             {[
-              { name: 'Dal Makhani', price: '15.99', desc: 'Slow-cooked black lentils, rich with butter and cream', img: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500&q=85', offset: false },
-              { name: 'Chicken Biryani', price: '17.99', desc: 'Fragrant basmati, saffron, and slow-cooked chicken', img: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&q=85', offset: true },
-              { name: 'Gulab Jamun', price: '5.99', desc: 'Soft milk dumplings soaked in rose-scented syrup', img: 'https://images.unsplash.com/photo-1571112750286-fbd1c77ec8bc?w=500&q=85', offset: false },
-            ].map((item, i) => (
-              <div key={i} className={`reveal group cursor-pointer ${item.offset ? 'md:mt-10' : ''}`}>
-                <div className="overflow-hidden mb-5">
-                  <img src={item.img} alt={item.name} loading="lazy" decoding="async"
-                    className="w-full h-[240px] object-cover group-hover:scale-[1.06] transition-transform duration-700 will-change-transform" />
+              { name: 'Clove Butter Chicken', price: '18.00' },
+              { name: 'Murgh Shahjahani', price: '19.00' },
+              { name: 'Kebab Chicken Tikka Masala', price: '18.00' },
+              { name: 'Patrani Machi with Malabar Curry', price: '20.00' },
+              { name: 'Rajasthani Laal Maas', price: '20.00' },
+              { name: 'Goat Curry', price: '22.00' },
+              { name: 'Dhaba Chicken Curry - Boneless', price: '18.00' },
+              { name: 'Kadai Fire Chicken', price: '18.00', desc: 'Chicken with peppers and bold spices' },
+              { name: 'Asian Shrimp Curry', price: '20.00' },
+            ].map((dish, i) => (
+              <div key={i} className="py-7 border-b border-charcoal/12">
+                <div className="flex justify-between items-baseline gap-4">
+                  <span className="font-inter font-semibold text-[17px] text-charcoal">{dish.name}</span>
+                  <span className="font-playfair font-bold text-[17px] text-charcoal flex-shrink-0">${dish.price}</span>
                 </div>
-                <div className="flex items-baseline justify-between">
-                  <h3 className="font-playfair text-[22px] font-semibold text-charcoal">{item.name}</h3>
-                  <span className="font-inter text-[14px] text-stone">${item.price}</span>
-                </div>
-                <p className="font-inter text-[14px] text-stone font-light mt-2 leading-[1.7]">{item.desc}</p>
+                {dish.desc && (
+                  <p className="font-inter text-[13px] text-charcoal/80 font-medium mt-1.5 leading-[1.4]">{dish.desc}</p>
+                )}
               </div>
             ))}
+          </div>
+
+          {/* SUBSECTION — SIGNATURE BREAD */}
+          <div className="mt-20 border-t border-charcoal/10 pt-16">
+            <div className="flex items-end justify-between mb-10 gap-8 flex-wrap">
+              <div>
+                <div className="flex items-center gap-4">
+                  <h2 className="reveal font-playfair text-[32px] sm:text-[44px] font-bold text-charcoal leading-[1.05] uppercase">
+                    SIGNATURE BREAD
+                  </h2>
+                  <Utensils size={28} className="text-charcoal/30 flex-shrink-0 mt-1 reveal" />
+                </div>
+                <p className="reveal font-inter text-[14px] tracking-[4px] uppercase text-amber-deep mt-4 font-bold">
+                  SIGNATURE BREAD (8)
+                </p>
+              </div>
+              <Link to="/menu"
+                className="reveal border border-charcoal text-charcoal px-5 py-2.5 text-[11px] tracking-[2px] uppercase font-medium font-inter hover:bg-charcoal hover:text-cream transition-all duration-300 whitespace-nowrap flex-shrink-0">
+                View Full Menu
+              </Link>
+            </div>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-2">
+              {[
+                { name: 'Classic Naan', price: '3.00' },
+                { name: 'Butter Naan', price: '4.00' },
+                { name: 'Garlic Naan', price: '4.00' },
+                { name: 'Bullet Naan', price: '5.00' },
+                { name: 'Tandoori Roti', price: '3.00' },
+                { name: 'Masala Dhaniya Mirchi Roti', price: '5.00' },
+                { name: 'Potatoes Stuffed Parantha (Amrtisari)', price: '7.00' },
+                { name: 'Goat Cheese, Herbs & Jalapeño', price: '8.00' },
+              ].map((dish, i) => (
+                <div key={i} className="py-7 border-b border-charcoal/12">
+                  <div className="flex justify-between items-baseline gap-4">
+                    <span className="font-inter font-semibold text-[17px] text-charcoal">{dish.name}</span>
+                    <span className="font-playfair font-bold text-[17px] text-charcoal flex-shrink-0">${dish.price}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* SUBSECTION — RICE & ACCOMPANIMENTS */}
+          <div className="mt-20 border-t border-charcoal/10 pt-16">
+            <div className="flex items-end justify-between mb-10 gap-8 flex-wrap">
+              <div>
+                <div className="flex items-center gap-4">
+                  <h2 className="reveal font-playfair text-[32px] sm:text-[44px] font-bold text-charcoal leading-[1.05] uppercase">
+                    RICE & ACCOMPANIMENTS
+                  </h2>
+                  <Utensils size={28} className="text-charcoal/30 flex-shrink-0 mt-1 reveal" />
+                </div>
+                <p className="reveal font-inter text-[14px] tracking-[4px] uppercase text-amber-deep mt-4 font-bold">
+                  RICE & ACCOMPANIMENTS (5)
+                </p>
+              </div>
+              <Link to="/menu"
+                className="reveal border border-charcoal text-charcoal px-5 py-2.5 text-[11px] tracking-[2px] uppercase font-medium font-inter hover:bg-charcoal hover:text-cream transition-all duration-300 whitespace-nowrap flex-shrink-0">
+                View Full Menu
+              </Link>
+            </div>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-2">
+              {[
+                { name: 'Jeera Rice', price: '5.00' },
+                { name: 'Vegetable Pulao', price: '6.00' },
+                { name: 'Toasted Garlic Herb Bread', price: '5.00' },
+                { name: 'Mint & Cucumber Raita', price: '4.00' },
+                { name: 'Seasoned Potato', price: '4.00' },
+              ].map((dish, i) => (
+                <div key={i} className="py-7 border-b border-charcoal/12">
+                  <div className="flex justify-between items-baseline gap-4">
+                    <span className="font-inter font-semibold text-[17px] text-charcoal">{dish.name}</span>
+                    <span className="font-playfair font-bold text-[17px] text-charcoal flex-shrink-0">${dish.price}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
