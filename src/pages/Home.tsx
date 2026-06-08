@@ -17,24 +17,37 @@ export default function Home() {
 
   useGSAP(() => {
     // Hero Animations — 3D letter reveal
-    gsap.from('.hero-letter', {
-      y: 80,
-      rotateX: -85,
-      opacity: 0,
-      duration: 1.2,
-      stagger: 0.04,
-      ease: 'power4.out',
-      transformOrigin: 'center bottom -30px'
-    })
+    gsap.fromTo('.hero-letter', 
+      {
+        y: 80,
+        rotateX: -85,
+        opacity: 0,
+      },
+      {
+        y: 0,
+        rotateX: 0,
+        opacity: 1,
+        duration: 1.2,
+        stagger: 0.04,
+        ease: 'power4.out',
+        transformOrigin: 'center bottom -30px'
+      }
+    )
 
     // Buttons reveal
-    gsap.from('.hero-reveal', {
-      y: 30,
-      opacity: 0,
-      duration: 1,
-      delay: 0.7,
-      ease: 'power2.out'
-    })
+    gsap.fromTo('.hero-reveal',
+      {
+        y: 30,
+        opacity: 0,
+      },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 1,
+        delay: 0.7,
+        ease: 'power2.out'
+      }
+    )
 
     // Parallax hero image
     gsap.to('.hero-img', {
