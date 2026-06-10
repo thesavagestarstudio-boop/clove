@@ -134,7 +134,7 @@ export default function About() {
       <section ref={heroRef} className="relative h-[100dvh] flex items-center justify-center overflow-hidden [perspective:1200px]">
         <div className="absolute inset-0 z-0">
           <img
-            src="/Clove Bruschettas.PNG"
+            src="/Clove Bruschettas.jpg"
             alt="CLOVE cuisine"
             className="hero-img w-full h-full object-cover scale-110"
           />
@@ -178,7 +178,7 @@ export default function About() {
           <div className="w-full md:w-1/2 story-image-reveal">
             <div className="relative">
               <div className="absolute inset-0 bg-amber-spice translate-x-6 translate-y-6 -z-10" />
-              <img src="/Rasmalai & Coffee Tiramisu Martini.PNG"
+              <img src="/Rasmalai & Coffee Tiramisu Martini.jpg"
                 alt="Rasmalai & Coffee Tiramisu Martini" loading="lazy" decoding="async" className="w-full h-[500px] sm:h-[600px] object-cover relative z-10 will-change-transform" />
             </div>
           </div>
@@ -246,9 +246,9 @@ export default function About() {
           {/* 3 columns of vertical culinary images */}
           <div className="grid grid-cols-3 gap-3 md:gap-6">
             {[
-              { img: '/Paneer Pocket Rocket.PNG', alt: 'Paneer Pocket Rocket' },
-              { img: '/Saffron Lamb-GheeNi Bites.PNG', alt: 'Saffron Lamb-GheeNi Bites' },
-              { img: '/The Clove Stack Burger.PNG', alt: 'The Clove Stack Burger' }
+              { img: '/Paneer Pocket Rocket.jpg', alt: 'Paneer Pocket Rocket' },
+              { img: '/Saffron Lamb-GheeNi Bites.jpg', alt: 'Saffron Lamb-GheeNi Bites' },
+              { img: '/The Clove Stack Burger.jpg', alt: 'The Clove Stack Burger' }
             ].map((item, idx) => (
               <div key={idx} className="overflow-hidden shadow-2xl aspect-[4/5] bg-charcoal/10 border border-charcoal/5 vision-image-reveal">
                 <img

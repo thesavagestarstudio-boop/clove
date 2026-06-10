@@ -126,7 +126,7 @@ export default function Home() {
       <section ref={heroRef} className="relative h-[100dvh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img
-            src="/ChickenTikkaTrilogy.PNG"
+            src="/ChickenTikkaTrilogy.jpg"
             alt="CLOVE cuisine"
             className="hero-img w-full h-full object-cover scale-110"
           />
@@ -227,7 +227,7 @@ export default function Home() {
           {/* Image block */}
           <div className="h-[400px] md:h-[480px] relative overflow-hidden flex-shrink-0">
             <img
-              src="/CloveDalMakhani.PNG"
+              src="/CloveDalMakhani.jpg"
               alt="Signature dish"
               loading="lazy"
               decoding="async"
