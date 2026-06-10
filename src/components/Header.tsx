@@ -61,9 +61,9 @@ export default function Header({ onLoginClick, onLogoutClick, onCartClick, cartC
   ]
 
   const isHome = location.pathname === '/'
+  const isAbout = location.pathname === '/about'
   const isMenu = location.pathname === '/menu'
-  const isAboutOrMenu = location.pathname === '/about' || location.pathname === '/menu'
-  const dynamicColor = isHome ? '#D8CBB8' : (isAboutOrMenu ? '#000000' : '#49453b')
+  const dynamicColor = (isHome || isAbout) ? '#B7A68B' : (isMenu ? '#000000' : '#49453b')
 
   return (
     <>
@@ -86,7 +86,7 @@ export default function Header({ onLoginClick, onLogoutClick, onCartClick, cartC
               alt="CLOVE Logo"
               className="h-[38px] w-auto object-contain transition-all duration-300"
               style={{
-                filter: (location.pathname === '/about' || location.pathname === '/menu')
+                filter: (location.pathname === '/menu')
                   ? 'brightness(0)'
                   : 'none'
               }}

@@ -226,7 +226,7 @@ export default function Home() {
 
       {/* SECTION 3 — PHILOSOPHY */}
       <section ref={philRef} className="bg-charcoal flex min-h-[580px] flex-col md:flex-row">
-        <div className="w-full md:w-1/2 px-8 sm:px-16 py-20 flex flex-col justify-center slide-l order-2 md:order-1">
+        <div className="w-full md:w-1/2 px-8 sm:px-16 py-20 flex flex-col justify-center slide-l md:order-1">
           <h2 className="reveal font-playfair text-[28px] sm:text-[36px] font-bold text-cream leading-[1.3] mb-6 max-w-[500px] uppercase">
             At Clove, we believe dining is more than just food — it is an experience.
           </h2>
@@ -240,7 +240,7 @@ export default function Home() {
           </Link>
         </div>
         
-        <div className="w-full md:w-1/2 h-[400px] md:h-auto relative flex items-center justify-center bg-charcoal-mid p-8 sm:p-14 slide-r order-1 md:order-2">
+        <div className="w-full md:w-1/2 h-[400px] md:h-auto relative flex items-center justify-center bg-charcoal-mid p-8 sm:p-14 slide-r md:order-2">
           <div className="relative w-full max-w-[400px]">
             <div className="absolute inset-0 border border-amber-spice/40 translate-x-5 translate-y-5 pointer-events-none" />
             <img

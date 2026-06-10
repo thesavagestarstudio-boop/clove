@@ -187,22 +187,23 @@ export default function App() {
 
   const cartCount = cart.reduce((acc, i) => acc + i.qty, 0)
 
-  const addToCart = async (item: MenuItem) => {
-    let finalQty = 1
+  const addToCart = async (item: MenuItem, qtyToAdd = 1, notes?: string) => {
+    let finalQty = qtyToAdd
     setCart(prev => {
       const existing = prev.find(i => i.id === item.id)
       if (existing) {
-        finalQty = existing.qty + 1
-        return prev.map(i => i.id === item.id ? { ...i, qty: i.qty + 1 } : i)
+        finalQty = existing.qty + qtyToAdd
+        const combinedNotes = [existing.notes, notes].filter(Boolean).join('; ')
+        return prev.map(i => i.id === item.id ? { ...i, qty: finalQty, notes: combinedNotes || undefined } : i)
       }
-      return [...prev, { ...item, qty: 1 }]
+      return [...prev, { ...item, qty: qtyToAdd, notes: notes || undefined }]
     })
     setIsCartOpen(true)
 
     if (session?.user?.id) {
       // Look up existing qty in local cart to make sure we send correct total qty
       const existing = cart.find(i => i.id === item.id)
-      const qtyToSend = existing ? existing.qty + 1 : 1
+      const qtyToSend = existing ? existing.qty + qtyToAdd : qtyToAdd
       try {
         await supabase
           .from('cart_items')

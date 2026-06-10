@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { ShoppingBag, X, Minus, Plus } from 'lucide-react'
+import { ShoppingBag, X, Minus, Plus, ArrowLeft } from 'lucide-react'
 import { CartItem } from '../types'
 import LoadingSpinner from './LoadingSpinner'
 import { supabase } from '../lib/supabase'
@@ -31,7 +31,24 @@ export default function CartDrawer({
   openLoginModal
 }: CartDrawerProps) {
   const [isCheckingOut, setIsCheckingOut] = useState(false)
+  const [showGuestForm, setShowGuestForm] = useState(false)
+  const [guestName, setGuestName] = useState('')
+  const [guestEmail, setGuestEmail] = useState('')
+  const [guestPhone, setGuestPhone] = useState('')
+  const [errors, setErrors] = useState<{ name?: string; email?: string; phone?: string }>({})
+
   const subtotal = cart.reduce((acc, i) => acc + parseFloat(i.price) * i.qty, 0)
+
+  // Reset guest form when drawer opens/closes
+  useEffect(() => {
+    if (!isOpen) {
+      setShowGuestForm(false)
+      setGuestName('')
+      setGuestEmail('')
+      setGuestPhone('')
+      setErrors({})
+    }
+  }, [isOpen])
 
   // Lock body scroll when drawer is open
   useEffect(() => {
@@ -45,14 +62,40 @@ export default function CartDrawer({
     }
   }, [isOpen])
 
+  const formatPhoneNumber = (value: string) => {
+    const cleanValue = value.replace(/\D/g, '')
+    if (cleanValue.length === 0) return ''
+    if (cleanValue.length <= 3) return `(${cleanValue}`
+    if (cleanValue.length <= 6) return `(${cleanValue.slice(0, 3)}) ${cleanValue.slice(3)}`
+    return `(${cleanValue.slice(0, 3)}) ${cleanValue.slice(3, 6)}-${cleanValue.slice(6, 10)}`
+  }
+
+  const validateForm = () => {
+    const newErrors: { name?: string; email?: string; phone?: string } = {}
+    if (!guestName.trim()) newErrors.name = 'Name is required'
+    if (!guestEmail.trim()) {
+      newErrors.email = 'Email is required'
+    } else if (!/\S+@\S+\.\S+/.test(guestEmail)) {
+      newErrors.email = 'Invalid email address'
+    }
+    const cleanPhone = guestPhone.replace(/\D/g, '')
+    if (!guestPhone.trim()) {
+      newErrors.phone = 'Phone number is required'
+    } else if (cleanPhone.length !== 10) {
+      newErrors.phone = 'Phone number must be exactly 10 digits'
+    }
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
   const handleCheckout = async () => {
-    if (!isLoggedIn) {
-      if (showNotification) {
-        showNotification('Please log in to checkout')
-      }
-      onClose()
-      openLoginModal()
+    if (!isLoggedIn && !showGuestForm) {
+      setShowGuestForm(true)
       return
+    }
+
+    if (!isLoggedIn && showGuestForm) {
+      if (!validateForm()) return
     }
 
     if (cart.length === 0 || isCheckingOut) return
@@ -60,17 +103,27 @@ export default function CartDrawer({
     setIsCheckingOut(true)
     try {
       const checkoutUrl = '/api/checkout'
+      const customerEmail = isLoggedIn 
+        ? (await supabase.auth.getUser()).data.user?.email || "customer@clovekitchen.com"
+        : guestEmail
 
       const payload = {
         customer: {
-          email: "customer@clovekitchen.com"
+          email: customerEmail
         },
         shoppingCart: {
-          lineItems: cart.map(item => ({
-            name: item.name,
-            unitQty: item.qty,
-            price: Math.round(parseFloat(item.price) * 100)
-          }))
+          lineItems: [
+            ...cart.map(item => ({
+              name: item.notes ? `${item.name} (${item.notes})` : item.name,
+              unitQty: item.qty,
+              price: Math.round(parseFloat(item.price) * 100)
+            })),
+            {
+              name: `[Pickup Time: ${selectedTime}]`,
+              unitQty: 1,
+              price: 0
+            }
+          ]
         },
         redirectUrl: `${window.location.origin}/`
       }
@@ -96,37 +149,72 @@ export default function CartDrawer({
 
       const data = await res.json()
       if (data.href) {
-        // Save the order to Supabase orders table
-        const { data: userData } = await supabase.auth.getUser()
-        if (userData.user) {
-          const { error: orderError } = await supabase
-            .from('orders')
-            .insert({
-              user_id: userData.user.id,
-              items: cart.map(item => ({
-                id: item.id,
-                name: item.name,
-                price: item.price,
-                qty: item.qty,
-                img: item.img
-              })),
-              subtotal: parseFloat(subtotal.toFixed(2)),
-              tax: parseFloat((subtotal * 0.08).toFixed(2)),
-              total: parseFloat((subtotal * 1.08).toFixed(2)),
-              pickup_time: selectedTime,
-              status: 'completed'
-            })
-          if (orderError) {
-            console.error('Error saving order history:', orderError)
+        if (isLoggedIn) {
+          // Save the order to Supabase orders table
+          const { data: userData } = await supabase.auth.getUser()
+          if (userData.user) {
+            const { error: orderError } = await supabase
+              .from('orders')
+              .insert({
+                user_id: userData.user.id,
+                items: cart.map(item => ({
+                  id: item.id,
+                  name: item.name,
+                  price: item.price,
+                  qty: item.qty,
+                  img: item.img
+                })),
+                subtotal: parseFloat(subtotal.toFixed(2)),
+                tax: parseFloat((subtotal * 0.08).toFixed(2)),
+                total: parseFloat((subtotal * 1.08).toFixed(2)),
+                pickup_time: selectedTime,
+                status: 'completed'
+              })
+            if (orderError) {
+              console.error('Error saving order history:', orderError)
+            }
+
+            // Clear database cart
+            const { error: cartError } = await supabase
+              .from('cart_items')
+              .delete()
+              .eq('user_id', userData.user.id)
+            if (cartError) {
+              console.error('Error clearing cart from database:', cartError)
+            }
+          }
+        } else {
+          // Guest Checkout: Save order to localStorage
+          const guestOrder = {
+            id: 'GUEST_' + Math.random().toString(36).substr(2, 9).toUpperCase(),
+            items: cart.map(item => ({
+              id: item.id,
+              name: item.name,
+              price: item.price,
+              qty: item.qty,
+              img: item.img
+            })),
+            subtotal: parseFloat(subtotal.toFixed(2)),
+            tax: parseFloat((subtotal * 0.08).toFixed(2)),
+            total: parseFloat((subtotal * 1.08).toFixed(2)),
+            pickup_time: selectedTime,
+            status: 'completed',
+            created_at: new Date().toISOString(),
+            guest_info: {
+              name: guestName,
+              email: guestEmail,
+              phone: guestPhone
+            }
           }
 
-          // Clear database cart
-          const { error: cartError } = await supabase
-            .from('cart_items')
-            .delete()
-            .eq('user_id', userData.user.id)
-          if (cartError) {
-            console.error('Error clearing cart from database:', cartError)
+          const existingOrdersRaw = localStorage.getItem('guest_orders')
+          const existingOrders = existingOrdersRaw ? JSON.parse(existingOrdersRaw) : []
+          existingOrders.unshift(guestOrder)
+          localStorage.setItem('guest_orders', JSON.stringify(existingOrders))
+          
+          // Clear local cart
+          if (showNotification) {
+            showNotification('Guest order initiated successfully!')
           }
         }
 
@@ -165,12 +253,24 @@ export default function CartDrawer({
         isOpen ? 'translate-x-0' : 'translate-x-full'
       }`}>
         <div className="px-6 py-5 border-b border-linen-dark/40 bg-linen flex-shrink-0 flex items-center justify-between">
-          <div>
-            <p className="text-[10px] tracking-[3px] uppercase text-amber-deep font-semibold">Your Order</p>
-            <p className="text-stone text-[12px] mt-1 font-light flex items-center gap-1.5">
-              <span className="w-1 h-1 rounded-full bg-amber-spice"></span>
-              Pickup · 3083 Breckinridge Blvd
-            </p>
+          <div className="flex items-center gap-3">
+            {showGuestForm && (
+              <button 
+                onClick={() => setShowGuestForm(false)}
+                className="p-1 text-stone hover:text-charcoal transition-colors hover:bg-linen-dark/10 rounded-full"
+              >
+                <ArrowLeft size={18} />
+              </button>
+            )}
+            <div>
+              <p className="text-[10px] tracking-[3px] uppercase text-amber-deep font-semibold">
+                {showGuestForm ? 'Checkout Details' : 'Your Order'}
+              </p>
+              <p className="text-stone text-[12px] mt-1 font-light flex items-center gap-1.5">
+                <span className="w-1 h-1 rounded-full bg-amber-spice"></span>
+                Pickup · 3083 Breckinridge Blvd
+              </p>
+            </div>
           </div>
           <button 
             onClick={onClose}
@@ -203,9 +303,82 @@ export default function CartDrawer({
           </div>
         </div>
 
-        {/* Scrollable Items Area */}
+        {/* Scrollable Items / Guest Form Area */}
         <div className="flex-1 overflow-y-auto px-6 py-4 min-h-0">
-          {cart.length === 0 ? (
+          {showGuestForm ? (
+            <div className="space-y-5 py-2">
+              <div className="text-center pb-2">
+                <button
+                  onClick={() => {
+                    onClose()
+                    openLoginModal()
+                  }}
+                  className="w-full py-2.5 border border-charcoal/20 text-charcoal hover:bg-charcoal hover:text-cream text-[10px] tracking-[2px] uppercase font-bold transition-all duration-300 rounded"
+                >
+                  Sign In with Google
+                </button>
+                <div className="relative flex py-4 items-center">
+                  <div className="flex-grow border-t border-linen-dark/30"></div>
+                  <span className="flex-shrink mx-3 text-stone text-[10px] tracking-widest uppercase font-medium">or continue as guest</span>
+                  <div className="flex-grow border-t border-linen-dark/30"></div>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-[10px] tracking-[2.5px] uppercase text-stone font-semibold mb-1.5">Full Name</label>
+                  <input
+                    type="text"
+                    value={guestName}
+                    onChange={(e) => {
+                      setGuestName(e.target.value)
+                      if (errors.name) setErrors(prev => ({ ...prev, name: undefined }))
+                    }}
+                    placeholder="John Doe"
+                    className={`w-full bg-white/70 border px-4 py-3 text-[13px] text-charcoal rounded focus:outline-none focus:bg-white transition-all ${
+                      errors.name ? 'border-red-500' : 'border-linen-dark/40 focus:border-charcoal'
+                    }`}
+                  />
+                  {errors.name && <p className="text-red-500 text-[10px] mt-1">{errors.name}</p>}
+                </div>
+
+                <div>
+                  <label className="block text-[10px] tracking-[2.5px] uppercase text-stone font-semibold mb-1.5">Email Address</label>
+                  <input
+                    type="email"
+                    value={guestEmail}
+                    onChange={(e) => {
+                      setGuestEmail(e.target.value)
+                      if (errors.email) setErrors(prev => ({ ...prev, email: undefined }))
+                    }}
+                    placeholder="johndoe@example.com"
+                    className={`w-full bg-white/70 border px-4 py-3 text-[13px] text-charcoal rounded focus:outline-none focus:bg-white transition-all ${
+                      errors.email ? 'border-red-500' : 'border-linen-dark/40 focus:border-charcoal'
+                    }`}
+                  />
+                  {errors.email && <p className="text-red-500 text-[10px] mt-1">{errors.email}</p>}
+                </div>
+
+                <div>
+                  <label className="block text-[10px] tracking-[2.5px] uppercase text-stone font-semibold mb-1.5">Phone Number</label>
+                  <input
+                    type="tel"
+                    value={guestPhone}
+                    onChange={(e) => {
+                      const formatted = formatPhoneNumber(e.target.value)
+                      setGuestPhone(formatted)
+                      if (errors.phone) setErrors(prev => ({ ...prev, phone: undefined }))
+                    }}
+                    placeholder="(555) 000-0000"
+                    className={`w-full bg-white/70 border px-4 py-3 text-[13px] text-charcoal rounded focus:outline-none focus:bg-white transition-all ${
+                      errors.phone ? 'border-red-500' : 'border-linen-dark/40 focus:border-charcoal'
+                    }`}
+                  />
+                  {errors.phone && <p className="text-red-500 text-[10px] mt-1">{errors.phone}</p>}
+                </div>
+              </div>
+            </div>
+          ) : cart.length === 0 ? (
             <div className="text-center py-20">
               <div className="w-16 h-16 bg-white/50 rounded-full flex items-center justify-center mx-auto mb-5 border border-linen-dark/20">
                 <ShoppingBag className="text-linen-dark opacity-30" size={28} />
@@ -225,6 +398,11 @@ export default function CartDrawer({
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-semibold text-[14px] text-charcoal leading-tight truncate group-hover:text-amber-deep transition-colors">{item.name}</p>
+                    {item.notes && (
+                      <p className="text-[11px] text-stone font-light italic mt-1 leading-snug">
+                        Note: {item.notes}
+                      </p>
+                    )}
                     <div className="flex items-center gap-2 mt-2.5">
                        <div className="flex items-center border border-linen-dark/30 rounded bg-white/50">
                           <button onClick={() => changeQty(item.id, -1)} className="w-6 h-6 text-stone hover:text-charcoal hover:bg-linen-dark/10 transition-colors flex items-center justify-center text-xs">−</button>
@@ -269,7 +447,7 @@ export default function CartDrawer({
             }`}
           >
             <span className="group-hover:tracking-[5px] transition-all duration-500">
-              {isCheckingOut ? 'Processing...' : 'Checkout Now'}
+              {isCheckingOut ? 'Processing...' : (showGuestForm ? 'Proceed to Payment' : 'Checkout Now')}
             </span>
           </button>
         </div>
@@ -277,3 +455,4 @@ export default function CartDrawer({
     </>
   )
 }
+

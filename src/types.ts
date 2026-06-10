@@ -8,4 +8,6 @@ export interface MenuItem {
 
 export interface CartItem extends MenuItem {
   qty: number
+  notes?: string
 }
+

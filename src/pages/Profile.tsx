@@ -16,7 +16,7 @@ interface OrderItem {
 
 interface Order {
   id: string
-  user_id: string
+  user_id?: string
   items: OrderItem[]
   subtotal: number
   tax: number
@@ -24,6 +24,11 @@ interface Order {
   pickup_time: string
   status: string
   created_at: string
+  guest_info?: {
+    name: string
+    email: string
+    phone: string
+  }
 }
 
 export default function Profile() {
@@ -77,6 +82,15 @@ export default function Profile() {
           setIsLoading(false)
         }
       } else {
+        // Read local guest orders
+        const localOrdersRaw = localStorage.getItem('guest_orders')
+        if (localOrdersRaw) {
+          try {
+            setOrders(JSON.parse(localOrdersRaw))
+          } catch (e) {
+            console.error('Error parsing guest orders:', e)
+          }
+        }
         setIsLoading(false)
       }
     }
@@ -97,7 +111,16 @@ export default function Profile() {
             setIsLoading(false)
           })
       } else {
-        setOrders([])
+        const localOrdersRaw = localStorage.getItem('guest_orders')
+        if (localOrdersRaw) {
+          try {
+            setOrders(JSON.parse(localOrdersRaw))
+          } catch (e) {
+            setOrders([])
+          }
+        } else {
+          setOrders([])
+        }
         setIsLoading(false)
       }
     })
@@ -118,9 +141,13 @@ export default function Profile() {
               </span>
             ))}
           </h1>
-          {session?.user && (
+          {session?.user ? (
             <p className="reveal-subtitle font-inter text-[12px] tracking-[3px] uppercase text-amber-deep font-semibold">
               Account: {session.user.email}
+            </p>
+          ) : (
+            <p className="reveal-subtitle font-inter text-[12px] tracking-[3px] uppercase text-amber-deep font-semibold">
+              Guest Session
             </p>
           )}
         </div>
@@ -131,22 +158,6 @@ export default function Profile() {
             <div className="w-10 h-10 border-4 border-amber-spice border-t-transparent rounded-full animate-spin mb-4" />
             <p className="font-inter text-[12px] tracking-[2px] uppercase text-stone font-medium">Loading history...</p>
           </div>
-        ) : !session ? (
-          <div className="bg-white/50 backdrop-blur-md border border-linen-dark/30 rounded-2xl p-10 text-center shadow-lg">
-            <div className="w-16 h-16 bg-linen-dark/20 rounded-full flex items-center justify-center mx-auto mb-6 text-stone">
-              <User size={28} />
-            </div>
-            <h2 className="font-playfair text-[24px] font-bold text-charcoal mb-3">Login Required</h2>
-            <p className="font-inter text-[14px] text-stone font-light leading-[1.8] max-w-sm mx-auto mb-8">
-              Please sign in to view your profile and access your complete order history.
-            </p>
-            <button
-              onClick={() => supabase.auth.signInWithOAuth({ provider: 'google' })}
-              className="bg-charcoal text-cream px-8 py-3.5 text-[11px] tracking-[3px] uppercase font-bold hover:bg-amber-spice hover:text-charcoal transition-all duration-300 rounded-lg"
-            >
-              Sign In Now
-            </button>
-          </div>
         ) : orders.length === 0 ? (
           <div className="bg-white/50 backdrop-blur-md border border-linen-dark/30 rounded-2xl p-12 text-center shadow-lg">
             <div className="w-16 h-16 bg-linen-dark/20 rounded-full flex items-center justify-center mx-auto mb-6 text-stone">
@@ -154,17 +165,47 @@ export default function Profile() {
             </div>
             <h2 className="font-playfair text-[24px] font-bold text-charcoal mb-3">No Orders Found</h2>
             <p className="font-inter text-[14px] text-stone font-light leading-[1.8] max-w-sm mx-auto mb-8">
-              You haven't placed any pickup orders yet. Explore our menu to place your first order.
+              {session 
+                ? "You haven't placed any pickup orders yet. Explore our menu to place your first order."
+                : "No orders found on this device. Sign in with Google or place an order to get started."}
             </p>
-            <Link
-              to="/menu"
-              className="bg-charcoal text-cream px-8 py-3.5 text-[11px] tracking-[3px] uppercase font-bold hover:bg-amber-spice hover:text-charcoal transition-all duration-300 rounded-lg inline-block"
-            >
-              View Menu
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link
+                to="/menu"
+                className="bg-charcoal text-cream px-8 py-3.5 text-[11px] tracking-[3px] uppercase font-bold hover:bg-amber-spice hover:text-charcoal transition-all duration-300 rounded-lg inline-block text-center"
+              >
+                View Menu
+              </Link>
+              {!session && (
+                <button
+                  onClick={() => supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin } })}
+                  className="bg-transparent border border-charcoal/30 text-charcoal px-8 py-3.5 text-[11px] tracking-[3px] uppercase font-bold hover:bg-charcoal hover:text-cream transition-all duration-300 rounded-lg"
+                >
+                  Sign In Now
+                </button>
+              )}
+            </div>
           </div>
         ) : (
           <div className="space-y-8">
+            {/* Guest Banner */}
+            {!session && (
+              <div className="bg-amber-spice/10 border border-amber-spice/20 rounded-2xl p-6 mb-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div>
+                  <h3 className="font-playfair text-[18px] font-bold text-charcoal">Viewing Guest Orders</h3>
+                  <p className="font-inter text-[12px] text-stone font-light mt-1">
+                    These orders are saved locally on this browser. Sign in with Google to sync future orders to your account.
+                  </p>
+                </div>
+                <button
+                  onClick={() => supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin } })}
+                  className="bg-charcoal text-cream px-6 py-2.5 text-[10px] tracking-[2px] uppercase font-bold hover:bg-amber-spice hover:text-charcoal transition-all duration-300 rounded whitespace-nowrap"
+                >
+                  Sign In
+                </button>
+              </div>
+            )}
+
             {orders.map((order) => (
               <div
                 key={order.id}
@@ -188,7 +229,12 @@ export default function Profile() {
                       })}
                     </span>
                   </div>
-                  <div>
+                  <div className="flex items-center gap-2">
+                    {order.guest_info && (
+                      <span className="bg-charcoal/10 text-charcoal text-[9px] font-bold uppercase tracking-[1.5px] px-2.5 py-0.5 rounded-full">
+                        Guest
+                      </span>
+                    )}
                     <span className="bg-amber-spice/20 text-stone font-bold text-[11px] uppercase tracking-[2px] px-3 py-1 rounded-full">
                       {order.status}
                     </span>
@@ -219,12 +265,19 @@ export default function Profile() {
 
                 {/* Pickup & Cost Summary */}
                 <div className="pt-6 flex flex-col sm:flex-row justify-between gap-6">
-                  <div className="flex items-center gap-3 bg-linen/30 px-4 py-3.5 rounded-xl border border-linen-dark/15 w-fit">
-                    <Clock size={18} className="text-amber-deep" />
-                    <div>
-                      <p className="text-[10px] tracking-[1.5px] uppercase text-stone font-medium leading-none mb-1">Pickup Time</p>
-                      <p className="font-inter text-[13px] font-bold text-charcoal leading-none">{order.pickup_time}</p>
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center gap-3 bg-linen/30 px-4 py-3.5 rounded-xl border border-linen-dark/15 w-fit">
+                      <Clock size={18} className="text-amber-deep" />
+                      <div>
+                        <p className="text-[10px] tracking-[1.5px] uppercase text-stone font-medium leading-none mb-1">Pickup Time</p>
+                        <p className="font-inter text-[13px] font-bold text-charcoal leading-none">{order.pickup_time}</p>
+                      </div>
                     </div>
+                    {order.guest_info && (
+                      <p className="text-[11px] text-stone font-light px-1">
+                        Contact: {order.guest_info.name} · {order.guest_info.phone}
+                      </p>
+                    )}
                   </div>
 
                   <div className="space-y-1.5 min-w-[200px] self-end sm:self-auto">

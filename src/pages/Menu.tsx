@@ -3,6 +3,7 @@ import { Plus, Minus, ShoppingBag, X, Search, Info, Bike, Utensils, MapPin, Cloc
 import { MenuItem } from '../types'
 import { useLenis } from '../components/SmoothScroll'
 import LoadingSpinner from '../components/LoadingSpinner'
+import DishDetailModal from '../components/DishDetailModal'
 
 // Types
 interface MenuCategory {
@@ -11,7 +12,7 @@ interface MenuCategory {
 }
 
 interface MenuProps {
-  addToCart: (item: MenuItem) => void
+  addToCart: (item: MenuItem, qty?: number, notes?: string) => void
 }
 
 const categoryImageMap: Record<string, string> = {
@@ -27,8 +28,65 @@ const categoryImageMap: Record<string, string> = {
   'Signature Curries - NonVeg': 'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=500&q=85'
 }
 
+const exactItemImageMap: Record<string, string> = {
+  'angara kadahi paneer': '/Angara Kadahi Paneer.PNG',
+  'banana leaf enveloped fish': '/Banana Leaf Enveloped Fish.png',
+  'braised crimson lamb': '/Braised Crimson Lamb.PNG',
+  'butter paneer velvet': '/Butter Paneer Velvet.PNG',
+  'carrot confit & glacé cream with medley of nuts & caramel': '/Carrot Confit & Glacé Cream with Medley of Nuts & Caramel.PNG',
+  'carrot confit': '/Carrot Confit & Glacé Cream with Medley of Nuts & Caramel.PNG',
+  'cauliflower carnival': '/Cauliflower Carnival.PNG',
+  'chicken tikka mashup': '/Chicken Tikka Mashup.PNG',
+  'chicken tikka trilogy': '/ChickenTikkaTrilogy.PNG',
+  'chili paneer crisp': '/Chili Paneer Crisp.PNG',
+  'clove bruschettas': '/Clove Bruschettas.PNG',
+  'clove butter chicken': '/Clove Butter Chicken.PNG',
+  'clove tacos': '/Clove Tacos.PNG',
+  'clovedalmakhani': '/CloveDalMakhani.PNG',
+  'clove dal makhani': '/CloveDalMakhani.PNG',
+  'creamy paneer melt': '/Creamy Paneer Melt.PNG',
+  'crispy golden samosa': '/Crispy Golden Samosa.PNG',
+  'emarald palak royale': '/Emarald Palak Royale.PNG',
+  'emerald palak royale': '/Emarald Palak Royale.PNG',
+  'firecracker chicken': '/Firecracker Chicken.PNG',
+  'golden dal tadka': '/Golden Dal Tadka.PNG',
+  'guac n’ crunch bhel': '/Guac n’ Crunch Bhel .PNG',
+  'guac n crunch bhel': '/Guac n’ Crunch Bhel .PNG',
+  'heritage g.o.a.t': '/Heritage G.O.A.T.PNG',
+  'imperial kofta sphere': '/Imperial Kofta Sphere.PNG',
+  'monchow soup': '/Monchow Soup.PNG',
+  'paneer pocket rocket': '/Paneer Pocket Rocket.PNG',
+  'paneer triple play': '/Paneer Triple Play .PNG',
+  'parda biryani': '/Parda Biryani .PNG',
+  'punjabi pop-fish': '/Punjabi Pop-Fish.PNG',
+  'punjabi pop fish': '/Punjabi Pop-Fish.PNG',
+  'rasmalai & coffee tiramisu martini': '/Rasmalai & Coffee Tiramisu Martini.PNG',
+  'rasmalai': '/Rasmalai & Coffee Tiramisu Martini.PNG',
+  'roadside dhaba chicken': '/Roadside Dhaba Chicken.PNG',
+  'route 99 bites': '/Route 99 Bites.PNG',
+  'saffron lamb-gheeni bites': '/Saffron Lamb-GheeNi Bites.PNG',
+  'saffron lamb': '/Saffron Lamb-GheeNi Bites.PNG',
+  'the cauliflower carnival': '/The Cauliflower Carnival.PNG',
+  'the clove stack burger': '/The Clove Stack Burger.PNG',
+  'the kebab affair': '/The Kebab Affair.PNG',
+  'the okra onion orbit': '/The Okra Onion Orbit .PNG',
+  'tomato velvet soup': '/Tomato Velvet Soup.PNG',
+  'wok n_ roll noodles': '/Wok n_ Roll Noodles.PNG',
+  'wok n roll noodles': '/Wok n_ Roll Noodles.PNG',
+  'zesty eggplant delight': '/Zesty Eggplant Delight.PNG'
+}
+
 function getItemImage(itemName: string, categoryName: string): string {
-  const name = itemName.toLowerCase()
+  const name = itemName.toLowerCase().trim()
+  
+  // Check our exact mapping list
+  for (const [key, value] of Object.entries(exactItemImageMap)) {
+    if (name.includes(key) || key.includes(name)) {
+      return value
+    }
+  }
+
+  // Fallback to keyword-based Unsplash placeholders
   if (name.includes('taco')) return 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500&q=85'
   if (name.includes('samosa')) return 'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=500&q=85'
   if (name.includes('tikka masala') || name.includes('butter chicken') || name.includes('murgh') || name.includes('curry')) return 'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=500&q=85'
@@ -47,6 +105,8 @@ export default function Menu({ addToCart }: MenuProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [selectedItemForModal, setSelectedItemForModal] = useState<MenuItem | null>(null)
+  const [isDetailOpen, setIsDetailOpen] = useState(false)
   
   const mainRef = useRef<HTMLDivElement>(null)
   const tabsRef = useRef<HTMLDivElement>(null)
@@ -352,7 +412,14 @@ export default function Menu({ addToCart }: MenuProps) {
               <div className="w-10 h-0.5 bg-amber-spice mb-6" />
               <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
                 {category.items.map(item => (
-                  <div key={item.id} className="bg-[#D8CBB8] rounded-2xl border border-linen-dark/15 sm:border-linen-dark/35 hover:border-amber-spice/60 transition-all duration-300 group flex flex-row items-center sm:items-stretch h-auto sm:h-[180px] py-4 sm:py-0 sm:overflow-hidden px-4 sm:px-0">
+                  <div 
+                    key={item.id} 
+                    onClick={() => {
+                      setSelectedItemForModal(item)
+                      setIsDetailOpen(true)
+                    }}
+                    className="bg-[#D8CBB8] rounded-2xl border border-linen-dark/15 sm:border-linen-dark/35 hover:border-amber-spice/60 transition-all duration-300 group flex flex-row items-center sm:items-stretch h-auto sm:h-[180px] py-4 sm:py-0 sm:overflow-hidden px-4 sm:px-0 cursor-pointer"
+                  >
                     {/* Mobile/Desktop Text Content */}
                     <div className="flex-1 pr-4 sm:p-4 flex flex-col justify-center sm:justify-start order-1 sm:order-2">
                       <div className="flex-1">
@@ -363,7 +430,11 @@ export default function Menu({ addToCart }: MenuProps) {
                         <span className="font-sans sm:font-playfair text-[15px] sm:text-[20px] text-charcoal sm:font-bold">${item.price}</span>
                         {/* Add button */}
                         <button 
-                          onClick={() => addToCart(item)}
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setSelectedItemForModal(item)
+                            setIsDetailOpen(true)
+                          }}
                           className="hidden sm:block bg-amber-spice text-charcoal px-4 py-2 text-[11px] tracking-[2px] uppercase font-medium hover:bg-amber-deep transition-colors duration-200 rounded-lg"
                         >
                           + Add
@@ -376,7 +447,11 @@ export default function Menu({ addToCart }: MenuProps) {
                       <img src={item.img} alt={item.name} className="w-full h-full object-cover sm:group-hover:scale-[1.07] transition-transform duration-700 rounded-2xl sm:rounded-none" />
                       {/* Mobile add button */}
                       <button
-                        onClick={() => addToCart(item)}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setSelectedItemForModal(item)
+                          setIsDetailOpen(true)
+                        }}
                         className="sm:hidden absolute -bottom-1 -right-1 bg-white w-9 h-9 rounded-full flex items-center justify-center shadow-[0_2px_10px_rgba(0,0,0,0.15)] text-charcoal hover:bg-linen-light transition-colors z-10"
                       >
                         <Plus size={20} strokeWidth={2.5} />
@@ -397,6 +472,13 @@ export default function Menu({ addToCart }: MenuProps) {
         {/* Padding for mobile FAB */}
         <div className="h-20 lg:hidden" />
       </main>
+
+      <DishDetailModal
+        isOpen={isDetailOpen}
+        onClose={() => setIsDetailOpen(false)}
+        item={selectedItemForModal}
+        onAddToCart={addToCart}
+      />
     </div>
   )
 }
