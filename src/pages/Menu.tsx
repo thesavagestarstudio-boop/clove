@@ -270,16 +270,16 @@ export default function Menu({ addToCart }: MenuProps) {
     <div className="flex min-h-screen pt-[76px] bg-white font-inter">
       {isLoading && <LoadingSpinner />}
       {/* SIDEBAR */}
-      <aside className="w-[220px] hidden lg:flex flex-shrink-0 bg-charcoal flex-col sticky top-[76px] h-[calc(100vh-76px)] overflow-y-auto border-r border-linen-dark/10">
-        <div className="px-6 py-5 border-b border-linen-dark/15">
-          <p className="text-[10px] tracking-[3px] uppercase text-amber-spice font-medium">Order Pickup</p>
-          <p className="text-cream/45 text-[13px] mt-1 font-light truncate">3083 Breckinridge Blvd</p>
+      <aside className="w-[220px] hidden lg:flex flex-shrink-0 bg-[#00503D] flex-col sticky top-[76px] h-[calc(100vh-76px)] overflow-y-auto border-r border-white/10">
+        <div className="px-6 py-5 border-b border-white/10">
+          <p className="text-[10px] tracking-[3px] uppercase text-amber-light font-medium">Order Pickup</p>
+          <p className="text-cream/70 text-[13px] mt-1 font-light truncate">3083 Breckinridge Blvd</p>
         </div>
         <nav className="flex-1 py-3">
           {isLoading ? (
             <div className="space-y-4 px-6 py-4">
               {[1, 2, 3, 4, 5].map((i) => (
-                <div key={i} className="h-4 w-24 bg-cream/10 rounded animate-pulse" />
+                <div key={i} className="h-4 w-24 bg-white/10 rounded animate-pulse" />
               ))}
             </div>
           ) : (
@@ -289,8 +289,8 @@ export default function Menu({ addToCart }: MenuProps) {
                  onClick={() => scrollTo(cat.name)}
                 className={`w-full text-left px-6 py-3 text-[13px] transition-all duration-200 border-l-2 ${
                   activeCategory === cat.name
-                    ? 'border-amber-spice text-amber-spice bg-amber-spice/5'
-                    : 'border-transparent text-cream/55 hover:text-cream hover:bg-white/5'
+                    ? 'border-amber-spice text-amber-spice bg-white/5 font-semibold'
+                    : 'border-transparent text-cream/75 hover:text-cream hover:bg-white/10'
                 }`}
               >
                 {cat.name}
@@ -303,12 +303,12 @@ export default function Menu({ addToCart }: MenuProps) {
       {/* MOBILE TABS */}
       <div 
         ref={tabsRef}
-        className="lg:hidden fixed top-[76px] left-0 right-0 z-40 bg-linen/95 backdrop-blur-md border-b border-linen-dark/30 overflow-x-auto whitespace-nowrap px-4 py-3 hide-scrollbar"
+        className="lg:hidden fixed top-[76px] left-0 right-0 z-40 bg-[#00503D] border-b border-[#004031] overflow-x-auto whitespace-nowrap px-4 py-3 hide-scrollbar"
       >
         {isLoading ? (
           <div className="flex gap-2">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="inline-block w-20 h-7 rounded-full bg-linen-dark/20 animate-pulse" />
+              <div key={i} className="inline-block w-20 h-7 rounded-full bg-white/15 animate-pulse" />
             ))}
           </div>
         ) : (
@@ -319,8 +319,8 @@ export default function Menu({ addToCart }: MenuProps) {
               data-active={activeCategory === cat.name}
               className={`inline-block px-4 py-1.5 rounded-full text-[12px] mr-2 border transition-all ${
                 activeCategory === cat.name
-                  ? 'bg-amber-spice text-charcoal border-amber-spice font-medium shadow-sm'
-                  : 'border-linen-dark/50 text-stone bg-white/30'
+                  ? 'bg-[#00392C] text-white border-[#00392C] font-medium shadow-sm'
+                  : 'border-white/20 text-white/70 bg-white/10'
               }`}
             >
               {cat.name}
@@ -348,7 +348,7 @@ export default function Menu({ addToCart }: MenuProps) {
           {/* Location & Time Selection */}
           <div className="space-y-4 mb-10 border-b border-linen-dark/20 pb-10">
             <div className="flex items-center gap-4 group cursor-pointer">
-              <div className="w-10 h-10 rounded-full bg-linen-dark/10 flex items-center justify-center text-stone group-hover:bg-amber-spice group-hover:text-charcoal transition-colors">
+              <div className="w-10 h-10 rounded-full bg-linen-dark/10 flex items-center justify-center text-stone group-hover:bg-[#00503D] group-hover:text-white transition-colors">
                 <MapPin size={20} />
               </div>
               <div className="flex-1">
@@ -359,18 +359,18 @@ export default function Menu({ addToCart }: MenuProps) {
 
           {/* Search Bar */}
           <div className="relative max-w-2xl">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-stone/40" size={20} />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50" size={20} />
             <input 
               type="text" 
               placeholder="Search for a dish..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-linen-light border border-linen-dark/30 rounded-xl py-3.5 pl-12 pr-10 text-[15px] text-charcoal focus:outline-none focus:border-amber-spice focus:ring-1 focus:ring-amber-spice/20 transition-all placeholder:text-stone/40"
+              className="w-full bg-[#00503D] border border-white/10 rounded-xl py-3.5 pl-12 pr-10 text-[15px] text-white focus:outline-none focus:border-white/30 focus:ring-1 focus:ring-white/10 transition-all placeholder:text-white/50"
             />
             {searchQuery && (
               <button 
                 onClick={() => setSearchQuery('')}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-stone/40 hover:text-charcoal transition-colors"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors"
                 aria-label="Clear search"
               >
                 <X size={18} />
@@ -419,16 +419,16 @@ export default function Menu({ addToCart }: MenuProps) {
                       setSelectedItemForModal(item)
                       setIsDetailOpen(true)
                     }}
-                    className="bg-[#D8CBB8] rounded-2xl border border-linen-dark/15 sm:border-linen-dark/35 hover:border-amber-spice/60 transition-all duration-300 group flex flex-row items-center sm:items-stretch h-auto sm:h-[180px] py-4 sm:py-0 sm:overflow-hidden px-4 sm:px-0 cursor-pointer"
+                    className="bg-[#00503D] rounded-2xl border border-white/10 sm:border-white/20 hover:border-amber-spice/60 transition-all duration-300 group flex flex-row items-center sm:items-stretch h-auto sm:h-[180px] py-4 sm:py-0 sm:overflow-hidden px-4 sm:px-0 cursor-pointer"
                   >
                     {/* Mobile/Desktop Text Content */}
                     <div className="flex-1 pr-4 sm:p-4 flex flex-col justify-center sm:justify-start order-1 sm:order-2">
                       <div className="flex-1">
-                        <h3 className="font-playfair font-bold uppercase text-[18px] sm:normal-case sm:font-sans sm:font-semibold sm:text-[16px] text-charcoal tracking-wide sm:tracking-normal">{item.name}</h3>
-                        <p className="text-[15px] sm:text-[13px] text-charcoal/80 sm:text-stone font-light mt-1 sm:mt-1.5 leading-[1.3] sm:leading-[1.6] line-clamp-2">{item.desc}</p>
+                        <h3 className="font-playfair font-bold uppercase text-[18px] sm:normal-case sm:font-sans sm:font-semibold sm:text-[16px] text-white tracking-wide sm:tracking-normal">{item.name}</h3>
+                        <p className="text-[15px] sm:text-[13px] text-white/80 sm:text-white/70 font-light mt-1 sm:mt-1.5 leading-[1.3] sm:leading-[1.6] line-clamp-2">{item.desc}</p>
                       </div>
                       <div className="mt-3 sm:mt-4 flex items-center justify-between">
-                        <span className="font-sans sm:font-playfair text-[15px] sm:text-[20px] text-charcoal sm:font-bold">${item.price}</span>
+                        <span className="font-sans sm:font-playfair text-[15px] sm:text-[20px] text-white sm:font-bold">${item.price}</span>
                         {/* Add button */}
                         <button 
                           onClick={(e) => {

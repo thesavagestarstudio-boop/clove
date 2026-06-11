@@ -63,7 +63,7 @@ export default function Header({ onLoginClick, onLogoutClick, onCartClick, cartC
   const isHome = location.pathname === '/'
   const isAbout = location.pathname === '/about'
   const isMenu = location.pathname === '/menu'
-  const dynamicColor = (isHome || isAbout) ? '#B7A68B' : (isMenu ? '#000000' : '#49453b')
+  const dynamicColor = (isHome || isMenu) ? '#FFFFFF' : (isAbout ? '#B7A68B' : '#49453b')
 
   return (
     <>
@@ -74,8 +74,8 @@ export default function Header({ onLoginClick, onLogoutClick, onCartClick, cartC
         }}
         animate={hidden ? 'hidden' : 'visible'}
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        className="fixed top-0 left-0 right-0 z-50"
-        style={{ backgroundColor: isMenu ? '#D8CBB8' : 'transparent' }}
+        className={`fixed top-0 left-0 right-0 z-50 ${isAbout ? 'hidden md:block' : ''}`}
+        style={{ backgroundColor: isMenu ? '#00503D' : 'transparent' }}
       >
         <div className="max-w-[1400px] mx-auto px-10 h-[76px] flex items-center justify-between">
 
@@ -86,9 +86,9 @@ export default function Header({ onLoginClick, onLogoutClick, onCartClick, cartC
               alt="CLOVE Logo"
               className="h-[38px] w-auto object-contain transition-all duration-300"
               style={{
-                filter: (location.pathname === '/menu')
-                  ? 'brightness(0)'
-                  : 'none'
+                filter: (isHome || isMenu)
+                  ? 'brightness(0) invert(1)' 
+                  : 'brightness(0) saturate(100%) invert(67%) sepia(35%) saturate(836%) hue-rotate(352deg) brightness(91%) contrast(87%)'
               }}
             />
           </Link>
@@ -97,9 +97,7 @@ export default function Header({ onLoginClick, onLogoutClick, onCartClick, cartC
           <nav className="hidden md:flex gap-10">
             {navLinks.map((link) => (
               <Link key={link.href} to={link.href}
-                className={`font-inter text-[12px] tracking-[2.5px] uppercase transition-colors duration-300 relative group ${
-                  location.pathname === link.href ? 'text-amber-spice' : 'hover:text-amber-spice'
-                }`} style={{ color: location.pathname === link.href ? undefined : dynamicColor }}>
+                className={`font-inter text-[12px] tracking-[2.5px] uppercase transition-colors duration-300 relative group`} style={{ color: (isHome || isMenu) ? '#FFFFFF' : '#D49653' }}>
                 {link.label}
                 <span className={`absolute -bottom-0.5 left-0 h-px bg-amber-spice transition-all duration-300 ${
                   location.pathname === link.href ? 'w-full' : 'w-0 group-hover:w-full'
@@ -190,9 +188,7 @@ export default function Header({ onLoginClick, onLogoutClick, onCartClick, cartC
         <nav className="flex flex-col items-center gap-8">
           {navLinks.map((link) => (
             <Link key={link.href} to={link.href} onClick={() => setMobileOpen(false)}
-              className={`font-playfair italic text-[44px] transition-colors duration-300 ${
-                location.pathname === link.href ? 'text-amber-spice' : 'text-cream hover:text-amber-spice'
-              }`}>
+              className="font-playfair italic text-[44px] transition-colors duration-300 text-amber-spice">
               {link.label}
             </Link>
           ))}

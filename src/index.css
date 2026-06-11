@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=Pacifico&display=swap');
 
 @import "tailwindcss";
 
@@ -17,6 +17,7 @@
 
   --font-inter: "Inter", sans-serif;
   --font-playfair: "Playfair Display", serif;
+  --font-pacifico: "Pacifico", cursive;
 }
 
 @layer base {
@@ -102,3 +103,5 @@ html.lenis {
 .animate-fadeIn {
   animation: fadeIn 0.35s ease-out forwards;
 }
+
+

@@ -190,7 +190,7 @@ export default function DishDetailModal({
             <div className="absolute bottom-0 left-0 right-0 px-6 py-4 border-t border-linen-dark/25 bg-white/95 backdrop-blur-md z-10">
               <button
                 onClick={handleAddClick}
-                className="w-full py-4 bg-charcoal text-cream hover:bg-amber-spice hover:text-charcoal transition-all duration-300 rounded-full flex justify-between items-center px-8 text-[11px] tracking-[3px] uppercase font-bold shadow-lg hover:shadow-amber-spice/20"
+                className="w-full py-4 bg-charcoal text-cream hover:bg-[#00503D] hover:text-white transition-all duration-300 rounded-full flex justify-between items-center px-8 text-[11px] tracking-[3px] uppercase font-bold shadow-lg hover:shadow-[#00503D]/20"
               >
                 <span>Add to Cart</span>
                 <span className="font-playfair text-[14px] font-bold">

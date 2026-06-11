@@ -1,6 +1,5 @@
-'use client'
-import { useRef } from 'react'
-import { Link } from 'react-router-dom'
+import { useState, useEffect, useRef } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { Utensils, Flame, Heart, Leaf } from 'lucide-react'
 import { gsap } from 'gsap'
 import { useGSAP } from '@gsap/react'
@@ -9,11 +8,47 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 gsap.registerPlugin(ScrollTrigger)
 
 export default function Home() {
+  const navigate = useNavigate()
+  const [showWelcome, setShowWelcome] = useState(false)
+
   const containerRef = useRef<HTMLDivElement>(null)
   const heroRef = useRef<HTMLDivElement>(null)
   const sigRef = useRef<HTMLDivElement>(null)
   const philRef = useRef<HTMLDivElement>(null)
   const colRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!showWelcome) return
+    
+    let isMounted = true
+    const navTimeout = setTimeout(() => {
+      if (isMounted) {
+        navigate('/menu')
+      }
+    }, 2000)
+    
+    return () => {
+      isMounted = false
+      clearTimeout(navTimeout)
+    }
+  }, [showWelcome, navigate])
+
+  useGSAP(() => {
+    if (!showWelcome) return
+    gsap.fromTo('#mask-path',
+      { strokeDashoffset: 600 },
+      {
+        strokeDashoffset: 0,
+        duration: 2.0,
+        ease: 'power2.out',
+      }
+    )
+  }, { dependencies: [showWelcome], scope: containerRef })
+
+  const handleExploreMenuClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+    setShowWelcome(true)
+  }
 
   useGSAP(() => {
     // Hero Animations — 3D letter reveal
@@ -135,7 +170,7 @@ export default function Home() {
         
         <div className="relative z-10 text-center px-6 max-w-4xl mx-auto [perspective:1200px]">
           <h1 className="font-playfair font-normal uppercase leading-[1.05] mb-8 select-none [transform-style:preserve-3d]"
-              style={{ fontSize: 'clamp(38px, 7.5vw, 80px)', color: '#b6a68b' }}>
+              style={{ fontSize: 'clamp(38px, 7.5vw, 80px)', color: '#FFFFFF' }}>
             {['Indian', 'Fusion', 'Restaurant.'].map((word, wi) => (
               <span key={wi} className="block">
                 {word.split('').map((char, ci) => (
@@ -147,35 +182,36 @@ export default function Home() {
             ))}
           </h1>
           <div className="hero-reveal flex gap-4 justify-center flex-wrap">
-            <Link to="/menu"
-              className="bg-amber-spice text-charcoal px-7 py-3.5 text-[11px] tracking-[3px] uppercase font-medium hover:bg-amber-deep transition-colors duration-300">
-              Order Pickup
+            <Link to="/about"
+              className="bg-[#00503D] text-white px-7 py-3.5 text-[11px] tracking-[3px] uppercase font-medium hover:bg-[#00674F] transition-colors duration-300">
+              ABOUT US
             </Link>
-            <Link to="/menu"
-              className="border border-cream/50 text-cream px-7 py-3.5 text-[11px] tracking-[3px] uppercase font-medium hover:border-amber-spice hover:text-amber-spice transition-all duration-300">
+            <button
+              onClick={handleExploreMenuClick}
+              className="border border-cream/50 text-cream px-7 py-3.5 text-[11px] tracking-[3px] uppercase font-medium hover:border-[#00BC90] hover:text-[#00BC90] transition-all duration-300 cursor-pointer">
               Explore Menu
-            </Link>
+            </button>
           </div>
         </div>
         
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3">
           <span className="text-cream/30 text-[10px] tracking-[3px] uppercase font-inter">Scroll</span>
-          <div className="w-px h-14 bg-gradient-to-b from-amber-spice/60 to-transparent animate-pulse" />
+          <div className="w-px h-14 bg-gradient-to-b from-[#00503D]/60 to-transparent animate-pulse" />
         </div>
       </section>
 
       {/* SECTION 2 — SIGNATURE CURRIES */}
       <section ref={sigRef} className="flex min-h-[680px] flex-col md:flex-row">
-        <div className="w-full md:w-1/2 bg-amber-spice px-8 sm:px-14 py-20 flex flex-col justify-center slide-l">
+        <div className="w-full md:w-1/2 bg-[#00503D] px-8 sm:px-14 py-20 flex flex-col justify-center slide-l">
           <div className="flex flex-col mb-10">
             <div className="flex items-start justify-between">
-              <h2 className="font-playfair font-black uppercase text-charcoal leading-[0.9]"
+              <h2 className="font-playfair font-black uppercase text-white leading-[0.9]"
                   style={{ fontSize: 'clamp(36px, 4vw, 60px)' }}>
                 Signature<br/>Curries
               </h2>
-              <Utensils size={28} className="text-charcoal/30 mt-2 flex-shrink-0" />
+              <Utensils size={28} className="text-white/30 mt-2 flex-shrink-0" />
             </div>
-            <p className="font-inter text-[14px] tracking-[4px] uppercase text-charcoal/70 mt-6 font-bold">
+            <p className="font-inter text-[14px] tracking-[4px] uppercase text-white/70 mt-6 font-bold">
               Vegetarian (11)
             </p>
           </div>
@@ -194,20 +230,20 @@ export default function Home() {
               { name: 'Kashmiri Baingan Khatte', price: '16.00' },
               { name: 'Sev Subzi', price: '15.00' },
             ].map(dish => (
-              <div key={dish.name} className="py-7 border-b border-charcoal/12">
+              <div key={dish.name} className="py-7 border-b border-white/12">
                 <div className="flex justify-between items-baseline gap-4">
-                  <span className="font-inter font-semibold text-[17px] text-charcoal">{dish.name}</span>
-                  <span className="font-playfair font-bold text-[17px] text-charcoal flex-shrink-0">${dish.price}</span>
+                  <span className="font-inter font-semibold text-[17px] text-white">{dish.name}</span>
+                  <span className="font-playfair font-bold text-[17px] text-white flex-shrink-0">${dish.price}</span>
                 </div>
                 {dish.desc && (
-                  <p className="font-inter text-[13px] text-charcoal/80 font-medium mt-1.5 leading-[1.4]">{dish.desc}</p>
+                  <p className="font-inter text-[13px] text-white/80 font-medium mt-1.5 leading-[1.4]">{dish.desc}</p>
                 )}
               </div>
             ))}
           </div>
           
           <Link to="/menu"
-            className="mt-8 self-start border border-charcoal text-charcoal px-6 py-3 text-[11px] tracking-[3px] uppercase font-medium hover:bg-charcoal hover:text-cream transition-all duration-300">
+            className="mt-8 self-start border border-white text-white px-6 py-3 text-[11px] tracking-[3px] uppercase font-medium hover:bg-white hover:text-[#00503D] transition-all duration-300">
             View Full Menu
           </Link>
         </div>
@@ -268,20 +304,20 @@ export default function Home() {
       </section>
 
       {/* SECTION 4 — SIGNATURE COLLECTION */}
-      <section ref={colRef} className="bg-linen px-8 sm:px-16 py-20">
+      <section ref={colRef} className="bg-[#00503D] px-8 sm:px-16 py-20">
         <div className="max-w-[1400px] mx-auto">
           <div className="flex items-end justify-between mb-14 gap-8 flex-wrap">
             <div>
               <div className="flex items-center gap-4">
-                <h2 className="reveal font-playfair text-[32px] sm:text-[44px] font-bold text-charcoal leading-[1.05] uppercase">
+                <h2 className="reveal font-playfair text-[32px] sm:text-[44px] font-bold text-white leading-[1.05] uppercase">
                   SIGNATURE CURRIES
                 </h2>
-                <Utensils size={28} className="text-charcoal/30 flex-shrink-0 mt-1 reveal" />
+                <Utensils size={28} className="text-white/30 flex-shrink-0 mt-1 reveal" />
               </div>
-              <p className="reveal font-inter text-[14px] tracking-[4px] uppercase text-amber-deep mt-4 mb-2 font-bold">NON VEGETARIAN (9)</p>
+              <p className="reveal font-inter text-[14px] tracking-[4px] uppercase text-white/70 mt-4 mb-2 font-bold">NON VEGETARIAN (9)</p>
             </div>
             <Link to="/menu"
-              className="reveal border border-charcoal text-charcoal px-5 py-2.5 text-[11px] tracking-[2px] uppercase font-medium font-inter hover:bg-charcoal hover:text-cream transition-all duration-300 whitespace-nowrap flex-shrink-0">
+              className="border border-white text-white px-5 py-2.5 text-[11px] tracking-[2px] uppercase font-medium font-inter hover:bg-white hover:text-[#00503D] transition-all duration-300 whitespace-nowrap flex-shrink-0">
               View Full Menu
             </Link>
           </div>
@@ -298,34 +334,34 @@ export default function Home() {
               { name: 'Kadai Fire Chicken', price: '18.00', desc: 'Chicken with peppers and bold spices' },
               { name: 'Asian Shrimp Curry', price: '20.00' },
             ].map((dish, i) => (
-              <div key={i} className="py-7 border-b border-charcoal/12">
+              <div key={i} className="py-7 border-b border-white/12">
                 <div className="flex justify-between items-baseline gap-4">
-                  <span className="font-inter font-semibold text-[17px] text-charcoal">{dish.name}</span>
-                  <span className="font-playfair font-bold text-[17px] text-charcoal flex-shrink-0">${dish.price}</span>
+                  <span className="font-inter font-semibold text-[17px] text-white">{dish.name}</span>
+                  <span className="font-playfair font-bold text-[17px] text-white flex-shrink-0">${dish.price}</span>
                 </div>
                 {dish.desc && (
-                  <p className="font-inter text-[13px] text-charcoal/80 font-medium mt-1.5 leading-[1.4]">{dish.desc}</p>
+                  <p className="font-inter text-[13px] text-white/80 font-medium mt-1.5 leading-[1.4]">{dish.desc}</p>
                 )}
               </div>
             ))}
           </div>
 
           {/* SUBSECTION — SIGNATURE BREAD */}
-          <div className="mt-20 border-t border-charcoal/10 pt-16">
+          <div className="mt-20 border-t border-white/10 pt-16">
             <div className="flex items-end justify-between mb-10 gap-8 flex-wrap">
               <div>
                 <div className="flex items-center gap-4">
-                  <h2 className="reveal font-playfair text-[32px] sm:text-[44px] font-bold text-charcoal leading-[1.05] uppercase">
+                  <h2 className="reveal font-playfair text-[32px] sm:text-[44px] font-bold text-white leading-[1.05] uppercase">
                     SIGNATURE BREAD
                   </h2>
-                  <Utensils size={28} className="text-charcoal/30 flex-shrink-0 mt-1 reveal" />
+                  <Utensils size={28} className="text-white/30 flex-shrink-0 mt-1 reveal" />
                 </div>
-                <p className="reveal font-inter text-[14px] tracking-[4px] uppercase text-amber-deep mt-4 font-bold">
+                <p className="reveal font-inter text-[14px] tracking-[4px] uppercase text-white/70 mt-4 font-bold">
                   SIGNATURE BREAD (8)
                 </p>
               </div>
               <Link to="/menu"
-                className="reveal border border-charcoal text-charcoal px-5 py-2.5 text-[11px] tracking-[2px] uppercase font-medium font-inter hover:bg-charcoal hover:text-cream transition-all duration-300 whitespace-nowrap flex-shrink-0">
+                className="border border-white text-white px-5 py-2.5 text-[11px] tracking-[2px] uppercase font-medium font-inter hover:bg-white hover:text-[#00503D] transition-all duration-300 whitespace-nowrap flex-shrink-0">
                 View Full Menu
               </Link>
             </div>
@@ -341,10 +377,10 @@ export default function Home() {
                 { name: 'Potatoes Stuffed Parantha (Amrtisari)', price: '7.00' },
                 { name: 'Goat Cheese, Herbs & Jalapeño', price: '8.00' },
               ].map((dish, i) => (
-                <div key={i} className="py-7 border-b border-charcoal/12">
+                <div key={i} className="py-7 border-b border-white/12">
                   <div className="flex justify-between items-baseline gap-4">
-                    <span className="font-inter font-semibold text-[17px] text-charcoal">{dish.name}</span>
-                    <span className="font-playfair font-bold text-[17px] text-charcoal flex-shrink-0">${dish.price}</span>
+                    <span className="font-inter font-semibold text-[17px] text-white">{dish.name}</span>
+                    <span className="font-playfair font-bold text-[17px] text-white flex-shrink-0">${dish.price}</span>
                   </div>
                 </div>
               ))}
@@ -352,21 +388,21 @@ export default function Home() {
           </div>
 
           {/* SUBSECTION — RICE & ACCOMPANIMENTS */}
-          <div className="mt-20 border-t border-charcoal/10 pt-16">
+          <div className="mt-20 border-t border-white/10 pt-16">
             <div className="flex items-end justify-between mb-10 gap-8 flex-wrap">
               <div>
                 <div className="flex items-center gap-4">
-                  <h2 className="reveal font-playfair text-[32px] sm:text-[44px] font-bold text-charcoal leading-[1.05] uppercase">
+                  <h2 className="reveal font-playfair text-[32px] sm:text-[44px] font-bold text-white leading-[1.05] uppercase">
                     RICE & ACCOMPANIMENTS
                   </h2>
-                  <Utensils size={28} className="text-charcoal/30 flex-shrink-0 mt-1 reveal" />
+                  <Utensils size={28} className="text-white/30 flex-shrink-0 mt-1 reveal" />
                 </div>
-                <p className="reveal font-inter text-[14px] tracking-[4px] uppercase text-amber-deep mt-4 font-bold">
+                <p className="reveal font-inter text-[14px] tracking-[4px] uppercase text-white/70 mt-4 font-bold">
                   RICE & ACCOMPANIMENTS (5)
                 </p>
               </div>
               <Link to="/menu"
-                className="reveal border border-charcoal text-charcoal px-5 py-2.5 text-[11px] tracking-[2px] uppercase font-medium font-inter hover:bg-charcoal hover:text-cream transition-all duration-300 whitespace-nowrap flex-shrink-0">
+                className="border border-white text-white px-5 py-2.5 text-[11px] tracking-[2px] uppercase font-medium font-inter hover:bg-white hover:text-[#00503D] transition-all duration-300 whitespace-nowrap flex-shrink-0">
                 View Full Menu
               </Link>
             </div>
@@ -379,10 +415,10 @@ export default function Home() {
                 { name: 'Mint & Cucumber Raita', price: '4.00' },
                 { name: 'Seasoned Potato', price: '4.00' },
               ].map((dish, i) => (
-                <div key={i} className="py-7 border-b border-charcoal/12">
+                <div key={i} className="py-7 border-b border-white/12">
                   <div className="flex justify-between items-baseline gap-4">
-                    <span className="font-inter font-semibold text-[17px] text-charcoal">{dish.name}</span>
-                    <span className="font-playfair font-bold text-[17px] text-charcoal flex-shrink-0">${dish.price}</span>
+                    <span className="font-inter font-semibold text-[17px] text-white">{dish.name}</span>
+                    <span className="font-playfair font-bold text-[17px] text-white flex-shrink-0">${dish.price}</span>
                   </div>
                 </div>
               ))}
@@ -417,6 +453,36 @@ export default function Home() {
       </section>
 
 
+      {showWelcome && (
+        <div className="fixed inset-0 bg-[#00503D] z-[9999] flex items-center justify-center animate-fadeIn">
+          <svg viewBox="0 0 600 150" className="w-[320px] sm:w-[500px] h-auto select-none">
+            <defs>
+              <mask id="brush-mask" maskUnits="userSpaceOnUse">
+                <path
+                  id="mask-path"
+                  d="M 10,75 Q 300,65 590,75"
+                  fill="none"
+                  stroke="white"
+                  strokeWidth="110"
+                  strokeLinecap="round"
+                  strokeDasharray="600"
+                  strokeDashoffset="600"
+                />
+              </mask>
+            </defs>
+            <text
+              x="50%"
+              y="58%"
+              dominantBaseline="middle"
+              textAnchor="middle"
+              mask="url(#brush-mask)"
+              className="font-pacifico fill-white text-[80px]"
+            >
+              Welcome
+            </text>
+          </svg>
+        </div>
+      )}
     </div>
   )
 }

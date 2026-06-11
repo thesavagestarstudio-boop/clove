@@ -56,20 +56,20 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="bg-linen border border-linen-dark max-w-[420px] w-full p-10 relative z-10 text-center"
+            className="bg-[#00503D] border border-white/10 max-w-[420px] w-full p-10 relative z-10 text-center rounded-2xl shadow-2xl"
           >
             <button 
               onClick={onClose}
-              className="absolute top-4 right-4 text-stone hover:text-charcoal transition-colors"
+              className="absolute top-4 right-4 text-cream/70 hover:text-cream transition-colors p-1 rounded-full hover:bg-white/10"
             >
               <X size={20} />
             </button>
 
-            <h2 className="text-2xl font-serif text-charcoal mb-8">Welcome Back</h2>
+            <h2 className="text-2xl font-serif text-white mb-8">Welcome Back</h2>
 
             <button 
               onClick={handleGoogleLogin}
-              className="w-full flex items-center justify-center gap-3 bg-charcoal text-cream py-4 text-[12px] tracking-[3px] uppercase font-medium hover:bg-amber-spice hover:text-charcoal transition-all duration-300"
+              className="w-full flex items-center justify-center gap-3 bg-cream text-[#00503D] py-4 text-[12px] tracking-[3px] uppercase font-bold hover:bg-[#00392C] hover:text-white transition-all duration-300 rounded-lg shadow-md border border-transparent"
             >
               {/* Simple Google SVG Icon */}
               <svg className="w-5 h-5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
