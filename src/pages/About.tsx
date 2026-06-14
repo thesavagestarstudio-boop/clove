@@ -4,266 +4,288 @@ import { gsap } from 'gsap'
 import { useGSAP } from '@gsap/react'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { motion } from 'motion/react'
+import { Phone, Mail, MapPin, Facebook, Instagram } from 'lucide-react'
 
 gsap.registerPlugin(ScrollTrigger)
 
 export default function About() {
   const containerRef = useRef<HTMLDivElement>(null)
-  const heroRef = useRef<HTMLDivElement>(null)
+  const titleRef = useRef<HTMLHeadingElement>(null)
 
   useGSAP(() => {
-    // 3D Letter Reveal
-    gsap.from('.letter-reveal', {
-      y: 80,
-      rotateX: -85,
-      opacity: 0,
-      duration: 1.2,
-      stagger: 0.04,
-      ease: 'power4.out',
-      transformOrigin: 'center bottom -30px'
-    })
-
-    // Arrow Reveal
-    gsap.from('.arrow-reveal', {
-      y: 30,
-      opacity: 0,
-      duration: 1,
-      delay: 0.6,
-      ease: 'power2.out'
-    })
-
-    // Parallax hero image
-    gsap.to('.hero-img', {
-      yPercent: 20,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: heroRef.current,
-        start: 'top top',
-        end: 'bottom top',
-        scrub: true
+    // Reveal animation matching the homepage "Indian Fusion Restaurant" title exactly
+    gsap.fromTo(titleRef.current,
+      {
+        y: 40,
+        opacity: 0,
+      },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 1.0,
+        delay: 0,
+        ease: 'power3.out'
       }
-    })
+    )
 
-    // Staggered Text Reveal in Story Section
-    gsap.from('.story-text-reveal > *', {
-      y: 30,
-      opacity: 0,
-      duration: 0.8,
-      stagger: 0.15,
-      ease: 'power2.out',
-      scrollTrigger: {
-        trigger: '.story-section',
-        start: 'top 80%'
+    // Vision Section animations
+    gsap.fromTo('.vision-title',
+      {
+        y: 40,
+        opacity: 0,
+      },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 1.0,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: '.vision-section',
+          start: 'top 95%',
+        }
       }
-    })
+    )
 
-    // Image Reveal in Story Section (Fade + Scale)
-    gsap.from('.story-image-reveal', {
-      scale: 1.08,
-      opacity: 0,
-      duration: 1.2,
-      ease: 'power2.out',
-      scrollTrigger: {
-        trigger: '.story-section',
-        start: 'top 80%'
+    gsap.fromTo('.vision-line',
+      {
+        scaleX: 0,
+        opacity: 0,
+      },
+      {
+        scaleX: 1,
+        opacity: 1,
+        duration: 1.2,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: '.vision-section',
+          start: 'top 95%',
+        }
       }
-    })
+    )
 
-    // Staggered Text Reveal in Chef Section
-    gsap.from('.chef-text-reveal > *', {
-      y: 30,
-      opacity: 0,
-      duration: 0.8,
-      stagger: 0.15,
-      ease: 'power2.out',
-      scrollTrigger: {
-        trigger: '.chef-section',
-        start: 'top 80%'
+    gsap.fromTo('.vision-card',
+      {
+        y: 40,
+        opacity: 0,
+      },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 1.0,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: '.vision-section',
+          start: 'top 85%',
+        }
       }
-    })
-
-    // Image Reveal in Chef Section (Fade + Scale)
-    gsap.from('.chef-image-reveal', {
-      scale: 1.08,
-      opacity: 0,
-      duration: 1.2,
-      ease: 'power2.out',
-      scrollTrigger: {
-        trigger: '.chef-section',
-        start: 'top 80%'
-      }
-    })
-
-    // Staggered Text Reveal in Vision Section
-    gsap.from('.vision-text-reveal > *', {
-      y: 30,
-      opacity: 0,
-      duration: 0.8,
-      stagger: 0.15,
-      ease: 'power2.out',
-      scrollTrigger: {
-        trigger: '.vision-section',
-        start: 'top 80%'
-      }
-    })
-
-    // Staggered Images Reveal in Vision Section
-    gsap.from('.vision-image-reveal', {
-      y: 30,
-      scale: 1.05,
-      opacity: 0,
-      duration: 1,
-      stagger: 0.15,
-      ease: 'power2.out',
-      scrollTrigger: {
-        trigger: '.vision-section',
-        start: 'top 80%'
-      }
-    })
+    )
   }, { scope: containerRef })
 
   return (
     <motion.div
       ref={containerRef}
-      className="overflow-x-hidden"
-      initial={{ opacity: 0, y: 15 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+      className="bg-black min-h-screen text-cream overflow-x-hidden pt-0"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.8 }}
     >
-      {/* SECTION 1 — HERO */}
-      <section ref={heroRef} className="relative h-[100dvh] flex items-center justify-center overflow-hidden [perspective:1200px]">
+      {/* Same Pattern Section used in homepage for transitions (Placed ABOVE, default orientation) */}
+      <div className="w-full h-7 bg-black overflow-hidden relative border-t border-b border-linen-dark/15 z-10">
+        <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="about-arch-pattern-top" width="54" height="28" patternUnits="userSpaceOnUse">
+              {/* Background */}
+              <rect width="54" height="28" fill="#000000" />
+              
+              {/* Dense vertical thin golden lines */}
+              {Array.from({ length: 27 }).map((_, i) => (
+                <line
+                  key={i}
+                  x1={i * 2}
+                  y1="0"
+                  x2={i * 2}
+                  y2="28"
+                  stroke="#D49653"
+                  strokeWidth="0.5"
+                  opacity="0.3"
+                />
+              ))}
+              
+              {/* Concentric Arches (centered at x=27, bottom y=28) */}
+              <circle cx="27" cy="28" r="27" stroke="#D49653" strokeWidth="1.2" fill="none" />
+              <circle cx="27" cy="28" r="22" stroke="#D49653" strokeWidth="1.2" fill="none" />
+              <circle cx="27" cy="28" r="17" stroke="#D49653" strokeWidth="1.2" fill="none" />
+              <circle cx="27" cy="28" r="12" stroke="#D49653" strokeWidth="1.2" fill="none" />
+              <circle cx="27" cy="28" r="7" stroke="#D49653" strokeWidth="1.2" fill="none" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#about-arch-pattern-top)" />
+        </svg>
+      </div>
+
+      {/* Hero Section with cropped background image height and golden script title */}
+      <section className="relative h-[22vh] w-full flex items-center justify-center bg-black overflow-hidden select-none px-6">
+        
+        {/* Background Image Layer */}
         <div className="absolute inset-0 z-0">
           <img
-            src="/Clove Bruschettas.jpg"
-            alt="CLOVE cuisine"
-            className="hero-img w-full h-full object-cover scale-110"
+            src="/Saffron Lamb-GheeNi Bites.jpg"
+            alt="Saffron Lamb-GheeNi Bites"
+            className="w-full h-full object-cover opacity-90"
           />
-          <div className="absolute inset-0 bg-charcoal/65" />
+          {/* Dark Overlay (set to 75% as requested) */}
+          <div className="absolute inset-0 bg-black/75" />
         </div>
 
-        <div className="relative z-10 text-center px-6 max-w-4xl mx-auto flex flex-col items-center justify-center">
-          <h1 className="font-playfair font-normal uppercase leading-[1.05] mb-8 select-none [transform-style:preserve-3d]"
-              style={{ fontSize: 'clamp(58px, 7.5vw, 80px)', color: '#b6a68b' }}>
-            {"ABOUT US".split("").map((char, idx) => (
-              <span
-                key={idx}
-                className="inline-block letter-reveal origin-bottom"
-              >
-                {char === " " ? "\u00A0" : char}
-              </span>
-            ))}
-          </h1>
-          <div className="arrow-reveal text-cream/30 text-3xl mt-16 animate-bounce">↓</div>
-        </div>
+        {/* Golden cursive script title overlaid on the image */}
+        <h1 
+          ref={titleRef}
+          className="relative font-script text-amber-spice text-center z-10 leading-[1.1] select-none"
+          style={{ fontSize: 'clamp(70px, 12vw, 110px)', textTransform: 'none' }}
+        >
+          About Us
+        </h1>
+
       </section>
 
-      {/* SECTION 3 — STORY */}
-      <section className="story-section bg-linen py-20 px-8 sm:px-16 overflow-hidden">
-        <div className="max-w-[1400px] mx-auto flex flex-col md:flex-row gap-16 items-center">
-          <div className="w-full md:w-1/2 story-text-reveal">
-            <h2 className="font-playfair text-[32px] sm:text-[44px] font-bold text-charcoal leading-[1.1]">
-              WELCOME TO CLOVE
-            </h2>
-            <div className="w-14 h-0.5 bg-amber-spice my-6 animate-width" />
-            <div className="space-y-6">
-              <p className="font-inter text-[16px] text-stone font-normal leading-[1.9]">
-                Clove is a Indian fusion restaurant where tradition meets innovation, bringing together the rich flavors of India with contemporary culinary creativity. Our culinary team combines traditional Indian techniques with contemporary presentation to craft dishes that feel both familiar and exciting. Every ingredient, flavor, and detail is thoughtfully chosen to create a modern interpretation of Indian dining. Located in Duluth, Georgia, Clove is redefining Indian fusion cuisine by offering a sophisticated yet approachable experience designed for today’s generation of food lovers.
-              </p>
-              <p className="font-inter text-[18px] text-amber-deep font-medium italic mt-8">
-                Clove — where flavor, culture, and creativity come together.
-              </p>
-            </div>
-          </div>
-          
-          <div className="w-full md:w-1/2 story-image-reveal">
-            <div className="relative">
-              <div className="absolute inset-0 bg-amber-spice translate-x-6 translate-y-6 -z-10" />
-              <img src="/Rasmalai & Coffee Tiramisu Martini.jpg"
-                alt="Rasmalai & Coffee Tiramisu Martini" loading="lazy" decoding="async" className="w-full h-[500px] sm:h-[600px] object-cover relative z-10 will-change-transform" />
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Same Pattern Section used in homepage for transitions (Placed BELOW, rotated 180deg to point downwards) */}
+      <div className="w-full h-7 bg-black overflow-hidden relative border-t border-b border-linen-dark/15 z-10 rotate-180">
+        <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="about-arch-pattern-bottom" width="54" height="28" patternUnits="userSpaceOnUse">
+              {/* Background */}
+              <rect width="54" height="28" fill="#000000" />
+              
+              {/* Dense vertical thin golden lines */}
+              {Array.from({ length: 27 }).map((_, i) => (
+                <line
+                  key={i}
+                  x1={i * 2}
+                  y1="0"
+                  x2={i * 2}
+                  y2="28"
+                  stroke="#D49653"
+                  strokeWidth="0.5"
+                  opacity="0.3"
+                />
+              ))}
+              
+              {/* Concentric Arches (centered at x=27, bottom y=28) */}
+              <circle cx="27" cy="28" r="27" stroke="#D49653" strokeWidth="1.2" fill="none" />
+              <circle cx="27" cy="28" r="22" stroke="#D49653" strokeWidth="1.2" fill="none" />
+              <circle cx="27" cy="28" r="17" stroke="#D49653" strokeWidth="1.2" fill="none" />
+              <circle cx="27" cy="28" r="12" stroke="#D49653" strokeWidth="1.2" fill="none" />
+              <circle cx="27" cy="28" r="7" stroke="#D49653" strokeWidth="1.2" fill="none" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#about-arch-pattern-bottom)" />
+        </svg>
+      </div>
 
-      {/* SECTION 4 — CHEF */}
-      <section className="chef-section flex flex-col md:flex-row min-h-[600px] overflow-hidden">
-        <div className="w-full md:w-1/2 bg-[#2A2623] px-8 sm:px-16 md:px-24 py-20 flex flex-col justify-center chef-text-reveal">
-          <h2 className="font-playfair text-[32px] sm:text-[44px] font-bold leading-[1.1] uppercase" style={{ color: '#D49653' }}>
-            Meet Executive Chef<br/>Parveen K. Sharma
-          </h2>
-          <p className="font-inter text-[14px] tracking-[4px] uppercase text-amber-spice mt-4 mb-2 font-bold">
-            CULINARY VISIONARY
-          </p>
-          <div className="w-14 h-0.5 bg-amber-spice my-6" />
-          <div className="space-y-6 max-w-[500px]">
-            <p className="font-inter text-[15px] text-cream/80 font-normal leading-[1.8]">
-              At the heart of Clove’s culinary experience is Executive Chef Parveen K. Sharma — an internationally experienced chef and culinary visionary known for blending authentic Indian flavors with refined modern presentation.
-            </p>
-            <p className="font-inter text-[15px] text-cream/80 font-normal leading-[1.8]">
-              With over two decades of experience across luxury hotels, acclaimed restaurant concepts, and global hospitality ventures, Chef Parveen has built a reputation for creating bold and memorable dining experiences rooted in tradition while embracing innovation.
-            </p>
-          </div>
-          <a href="/menu" className="mt-10 inline-flex items-center gap-2 text-cream text-[12px] tracking-[2px] uppercase font-medium border-b border-cream/30 pb-1 hover:border-cream transition-all duration-300 w-fit">
-            Taste the Signature <span className="text-[10px]">↗</span>
-          </a>
-        </div>
-        
-        <div className="w-full md:w-1/2 h-[450px] md:h-[600px] lg:h-auto relative overflow-hidden chef-image-reveal border-[12px] border-[#D49653] md:border-0">
+      {/* Chef Image Section */}
+      <div className="w-full bg-black pt-12 pb-4 px-6 flex justify-center z-10 relative">
+        <div className="w-full max-w-[650px] aspect-[4/3] overflow-hidden border border-linen-dark/15 shadow-2xl">
           <img
             src="/CHEF.jpeg"
-            alt="Executive Chef Parveen K. Sharma"
-            loading="lazy"
-            decoding="async"
-            className="w-full h-full object-cover object-top"
+            alt="Chef"
+            className="w-full h-full object-cover object-top hover:scale-105 transition-transform duration-700"
           />
         </div>
-      </section>
+      </div>
 
-      {/* SECTION 5 — CULINARY VISION */}
-      <section className="vision-section bg-[#BFB4A3] py-24 px-8 sm:px-16 overflow-hidden">
-        <div className="max-w-[1400px] mx-auto">
-          
-          {/* Centered Heading with labels */}
-          <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-16 mb-8 vision-text-reveal">
-            <span className="font-inter text-[11px] tracking-[4px] uppercase text-charcoal/60 font-semibold">
-              EXCEPTIONAL FOOD
-            </span>
-            <h2 className="font-playfair text-[32px] sm:text-[52px] font-bold text-charcoal leading-[1.05] uppercase text-center max-w-[800px]">
-              Sophisticated Vision
-            </h2>
-            <span className="font-inter text-[11px] tracking-[4px] uppercase text-charcoal/60 font-semibold">
-              CRAFTED EXPERIENCE
-            </span>
-          </div>
+      {/* Copied Our Vision Section */}
+      <section className="vision-section w-full bg-black pt-14 pb-24 px-6 flex flex-col items-center justify-center relative overflow-hidden">
+        
+        {/* Wavy lines pattern in the lower half (absolute, z-10) */}
+        <svg 
+          className="absolute bottom-0 right-0 z-10 pointer-events-none" 
+          width="100%" 
+          height="40%" 
+          viewBox="0 0 1440 400" 
+          fill="none" 
+          xmlns="http://www.w3.org/2000/svg"
+          preserveAspectRatio="none"
+        >
+          {/* Multiple parallel golden curved waves */}
+          {Array.from({ length: 15 }).map((_, i) => {
+            const offset = i * 15;
+            return (
+              <path
+                key={i}
+                d={`M -100 ${360 - offset} C 400 ${150 - offset}, 800 ${450 - offset}, 1600 ${200 - offset}`}
+                stroke="#D49653"
+                strokeWidth="1.8"
+                fill="none"
+                opacity="0.55"
+              />
+            );
+          })}
+        </svg>
 
-          {/* Centered bio vision text */}
-          <div className="max-w-[800px] mx-auto text-center mb-16 vision-text-reveal">
-            <p className="font-inter text-[15px] sm:text-[17px] text-charcoal/80 font-normal leading-[1.9]">
+        {/* Chef Title Playfair Text (relative, z-20) */}
+        <h2 className="vision-title relative font-playfair text-[26px] sm:text-[38px] font-bold text-amber-spice uppercase select-none text-center z-20 tracking-[2px] leading-[1.2]">
+          Meet Executive Chef Parveen K. Sharma
+        </h2>
+
+        {/* Solid straight gold line (relative, z-20) */}
+        <div className="vision-line origin-center relative w-[85%] max-w-[1000px] h-px bg-amber-spice/50 my-8 z-20" />
+
+        {/* Text container box (relative, z-20) */}
+        <div className="vision-card relative w-full max-w-[650px] bg-[#0c0c0c] border border-linen-dark/15 px-6 sm:px-10 py-10 z-20 shadow-2xl">
+          <div className="font-inter text-cream/90 text-[14px] leading-[1.8] text-left font-normal tracking-[0.5px] space-y-6">
+            <p>
+              At the heart of Clove’s culinary experience is Executive Chef Parveen K. Sharma — an internationally experienced chef and culinary visionary known for blending authentic Indian flavors with refined modern presentation.
+            </p>
+            <p>
+              With over two decades of experience across luxury hotels, acclaimed restaurant concepts, and global hospitality ventures, Chef Parveen has built a reputation for creating bold and memorable dining experiences rooted in tradition while embracing innovation.
+            </p>
+            <p>
+              Originally from India, his culinary journey has taken him through renowned kitchens and leadership roles across the hospitality industry, where he has led culinary operations and developed elevated dining experiences inspired by the rich diversity of Indian cuisine. His expertise spans regional Indian specialties, contemporary fusion cuisine, and modern techniques tailored to today’s evolving palate.
+            </p>
+            <p>
+              Chef Parveen’s philosophy centers on balancing flavor, creativity, and hospitality — transforming every dish into an experience that brings together culture, emotion, and community. He is also the author of The Food – A Journey of Taste, reflecting his passion for authentic recipes and culinary craftsmanship.
+            </p>
+            <p>
               At Clove, Chef Parveen K. Sharma brings a fresh and sophisticated vision to modern Indian dining — where authenticity meets innovation, and every plate is crafted to leave a lasting impression.
             </p>
           </div>
-
-          {/* 3 columns of vertical culinary images */}
-          <div className="grid grid-cols-3 gap-3 md:gap-6">
-            {[
-              { img: '/Paneer Pocket Rocket.jpg', alt: 'Paneer Pocket Rocket' },
-              { img: '/Saffron Lamb-GheeNi Bites.jpg', alt: 'Saffron Lamb-GheeNi Bites' },
-              { img: '/The Clove Stack Burger.jpg', alt: 'The Clove Stack Burger' }
-            ].map((item, idx) => (
-              <div key={idx} className="overflow-hidden shadow-2xl aspect-[4/5] bg-charcoal/10 border border-charcoal/5 vision-image-reveal">
-                <img
-                  src={item.img}
-                  alt={item.alt}
-                  loading="lazy"
-                  decoding="async"
-                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
-                />
-              </div>
-            ))}
-          </div>
-
         </div>
       </section>
+
+      {/* Pattern Section below Our Vision */}
+      <div className="w-full h-7 bg-black overflow-hidden relative border-t border-b border-linen-dark/15">
+        <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="about-arch-pattern-bottom-2" width="54" height="28" patternUnits="userSpaceOnUse">
+              {/* Background */}
+              <rect width="54" height="28" fill="#000000" />
+              
+              {/* Dense vertical thin golden lines */}
+              {Array.from({ length: 27 }).map((_, i) => (
+                <line
+                  key={i}
+                  x1={i * 2}
+                  y1="0"
+                  x2={i * 2}
+                  y2="28"
+                  stroke="#D49653"
+                  strokeWidth="0.5"
+                  opacity="0.3"
+                />
+              ))}
+              
+              {/* Concentric Arches (centered at x=27, top y=0) - rotated/flipped downwards */}
+              <circle cx="27" cy="0" r="27" stroke="#D49653" strokeWidth="1.2" fill="none" />
+              <circle cx="27" cy="0" r="22" stroke="#D49653" strokeWidth="1.2" fill="none" />
+              <circle cx="27" cy="0" r="17" stroke="#D49653" strokeWidth="1.2" fill="none" />
+              <circle cx="27" cy="0" r="12" stroke="#D49653" strokeWidth="1.2" fill="none" />
+              <circle cx="27" cy="0" r="7" stroke="#D49653" strokeWidth="1.2" fill="none" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#about-arch-pattern-bottom-2)" />
+        </svg>
+      </div>
+
     </motion.div>
   )
 }

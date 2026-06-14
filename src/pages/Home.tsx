@@ -1,7 +1,7 @@
 'use client'
 import { useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { Utensils, Flame, Heart, Leaf } from 'lucide-react'
+import { Phone, Mail, MapPin, Facebook, Instagram } from 'lucide-react'
 import { gsap } from 'gsap'
 import { useGSAP } from '@gsap/react'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -11,31 +11,26 @@ gsap.registerPlugin(ScrollTrigger)
 export default function Home() {
   const containerRef = useRef<HTMLDivElement>(null)
   const heroRef = useRef<HTMLDivElement>(null)
-  const sigRef = useRef<HTMLDivElement>(null)
-  const philRef = useRef<HTMLDivElement>(null)
-  const colRef = useRef<HTMLDivElement>(null)
 
   useGSAP(() => {
-    // Hero Animations — 3D letter reveal
-    gsap.fromTo('.hero-letter', 
+
+    // Title reveal
+    gsap.fromTo('.hero-title',
       {
-        y: 80,
-        rotateX: -85,
+        y: 40,
         opacity: 0,
       },
       {
         y: 0,
-        rotateX: 0,
         opacity: 1,
-        duration: 1.2,
-        stagger: 0.04,
-        ease: 'power4.out',
-        transformOrigin: 'center bottom -30px'
+        duration: 1.0,
+        delay: 0,
+        ease: 'power3.out'
       }
     )
 
     // Buttons reveal
-    gsap.fromTo('.hero-reveal',
+    gsap.fromTo('.hero-buttons',
       {
         y: 30,
         opacity: 0,
@@ -43,8 +38,8 @@ export default function Home() {
       {
         y: 0,
         opacity: 1,
-        duration: 1,
-        delay: 0.7,
+        duration: 0.8,
+        delay: 0.4,
         ease: 'power2.out'
       }
     )
@@ -61,99 +56,180 @@ export default function Home() {
       }
     })
 
-    // General reveals
-    const reveals = gsap.utils.toArray('.reveal') as HTMLElement[]
-    reveals.forEach((el) => {
-      gsap.from(el, {
+    // Welcome Section animations
+    gsap.fromTo('.welcome-title',
+      {
         y: 40,
         opacity: 0,
-        duration: 0.8,
+      },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 1.0,
         ease: 'power2.out',
         scrollTrigger: {
-          trigger: el,
+          trigger: '.welcome-section',
           start: 'top 95%',
-          toggleActions: 'play none none none'
         }
-      })
-    })
+      }
+    )
 
-    // Banner letter reveal
-    const bannerLetterContainers = gsap.utils.toArray('.banner-letters') as HTMLElement[]
-    bannerLetterContainers.forEach((container) => {
-      gsap.from(container.querySelectorAll('.banner-letter'), {
-        y: 50,
-        rotateX: -45,
+    gsap.fromTo('.welcome-line',
+      {
+        scaleX: 0,
         opacity: 0,
-        duration: 0.9,
-        stagger: 0.02,
-        ease: 'power3.out',
-        transformOrigin: 'center bottom -20px',
+      },
+      {
+        scaleX: 1,
+        opacity: 1,
+        duration: 1.2,
+        ease: 'power2.out',
         scrollTrigger: {
-          trigger: container,
+          trigger: '.welcome-section',
           start: 'top 95%',
         }
-      })
-    })
-
-    // Slide animations
-    gsap.from('.slide-l', {
-      x: -80,
-      opacity: 0,
-      duration: 1.2,
-      ease: 'power2.out',
-      scrollTrigger: {
-        trigger: sigRef.current,
-        start: 'top 75%'
       }
-    })
+    )
 
-    gsap.from('.slide-r', {
-      x: 80,
-      opacity: 0,
-      duration: 1.2,
-      ease: 'power2.out',
-      scrollTrigger: {
-        trigger: sigRef.current,
-        start: 'top 75%'
+    gsap.fromTo('.welcome-card',
+      {
+        y: 40,
+        opacity: 0,
+      },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 1.0,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: '.welcome-section',
+          start: 'top 85%',
+        }
       }
-    })
+    )
+
+    // Vision Section animations
+    gsap.fromTo('.vision-title',
+      {
+        y: 40,
+        opacity: 0,
+      },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 1.0,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: '.vision-section',
+          start: 'top 75%',
+        }
+      }
+    )
+
+    gsap.fromTo('.vision-line',
+      {
+        scaleX: 0,
+        opacity: 0,
+      },
+      {
+        scaleX: 1,
+        opacity: 1,
+        duration: 1.2,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: '.vision-section',
+          start: 'top 75%',
+        }
+      }
+    )
+
+    gsap.fromTo('.vision-card',
+      {
+        y: 40,
+        opacity: 0,
+      },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 1.0,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: '.vision-section',
+          start: 'top 65%',
+        }
+      }
+    )
 
   }, { scope: containerRef })
 
   return (
     <div ref={containerRef} className="overflow-x-hidden">
+      {/* Pattern Section above Hero */}
+      <div className="w-full h-7 bg-black overflow-hidden relative border-b border-linen-dark/15">
+        <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="arch-pattern-top-hero" width="54" height="28" patternUnits="userSpaceOnUse">
+              {/* Background */}
+              <rect width="54" height="28" fill="#000000" />
+              
+              {/* Dense vertical thin golden lines */}
+              {Array.from({ length: 27 }).map((_, i) => (
+                <line
+                  key={i}
+                  x1={i * 2}
+                  y1="0"
+                  x2={i * 2}
+                  y2="28"
+                  stroke="#D49653"
+                  strokeWidth="0.5"
+                  opacity="0.3"
+                />
+              ))}
+              
+              {/* Concentric Arches pointing upwards */}
+              <circle cx="27" cy="28" r="27" stroke="#D49653" strokeWidth="1.2" fill="none" />
+              <circle cx="27" cy="28" r="22" stroke="#D49653" strokeWidth="1.2" fill="none" />
+              <circle cx="27" cy="28" r="17" stroke="#D49653" strokeWidth="1.2" fill="none" />
+              <circle cx="27" cy="28" r="12" stroke="#D49653" strokeWidth="1.2" fill="none" />
+              <circle cx="27" cy="28" r="7" stroke="#D49653" strokeWidth="1.2" fill="none" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#arch-pattern-top-hero)" />
+        </svg>
+      </div>
+
       {/* SECTION 1 — HERO */}
-      <section ref={heroRef} className="relative h-[100dvh] flex items-center justify-center overflow-hidden">
+      <section ref={heroRef} className="relative h-[55vh] md:h-[100dvh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img
             src="/ChickenTikkaTrilogy.jpg"
             alt="CLOVE cuisine"
             className="hero-img w-full h-full object-cover scale-110"
           />
-          <div className="absolute inset-0 bg-charcoal/65" />
+          <div className="absolute inset-0 bg-black/80 md:bg-charcoal/65" />
         </div>
         
-        <div className="relative z-10 text-center px-6 max-w-4xl mx-auto [perspective:1200px]">
-          <h1 className="font-playfair font-normal uppercase leading-[1.05] mb-8 select-none [transform-style:preserve-3d]"
-              style={{ fontSize: 'clamp(38px, 7.5vw, 80px)', color: '#b6a68b' }}>
-            {['Indian', 'Fusion', 'Restaurant.'].map((word, wi) => (
-              <span key={wi} className="block">
-                {word.split('').map((char, ci) => (
-                  <span key={ci} className="inline-block hero-letter origin-bottom">
-                    {char}
-                  </span>
-                ))}
-              </span>
-            ))}
+        <div className="relative z-10 text-center px-6 max-w-4xl mx-auto [perspective:1200px] -translate-y-6 md:translate-y-0">
+          <h1 className="font-script leading-[1.1] mb-8 select-none hero-title"
+              style={{ fontSize: 'clamp(54px, 8.5vw, 110px)', color: '#ffffff', textTransform: 'none' }}>
+            Indian Fusion Restaurant
           </h1>
-          <div className="hero-reveal flex gap-4 justify-center flex-wrap">
+          <div className="hero-buttons flex gap-4 justify-center flex-wrap">
+            {/* Mobile: ABOUT US (Golden) */}
+            <Link to="/about"
+              className="md:hidden bg-amber-spice text-charcoal px-7 py-3.5 text-[11px] tracking-[3px] uppercase font-medium hover:bg-amber-deep transition-colors duration-300">
+              ABOUT US
+            </Link>
+            {/* Desktop: Order Pickup */}
             <Link to="/menu"
-              className="bg-amber-spice text-charcoal px-7 py-3.5 text-[11px] tracking-[3px] uppercase font-medium hover:bg-amber-deep transition-colors duration-300">
+              className="hidden md:inline-block bg-amber-spice text-charcoal px-7 py-3.5 text-[11px] tracking-[3px] uppercase font-medium hover:bg-amber-deep transition-colors duration-300">
               Order Pickup
             </Link>
+            {/* Explore Menu / EXPLORE MENU */}
             <Link to="/menu"
               className="border border-cream/50 text-cream px-7 py-3.5 text-[11px] tracking-[3px] uppercase font-medium hover:border-amber-spice hover:text-amber-spice transition-all duration-300">
-              Explore Menu
+              <span className="md:hidden">EXPLORE MENU</span>
+              <span className="hidden md:inline">Explore Menu</span>
             </Link>
           </div>
         </div>
@@ -164,258 +240,217 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SECTION 2 — SIGNATURE CURRIES */}
-      <section ref={sigRef} className="flex min-h-[680px] flex-col md:flex-row">
-        <div className="w-full md:w-1/2 bg-amber-spice px-8 sm:px-14 py-20 flex flex-col justify-center slide-l">
-          <div className="flex flex-col mb-10">
-            <div className="flex items-start justify-between">
-              <h2 className="font-playfair font-black uppercase text-charcoal leading-[0.9]"
-                  style={{ fontSize: 'clamp(36px, 4vw, 60px)' }}>
-                Signature<br/>Curries
-              </h2>
-              <Utensils size={28} className="text-charcoal/30 mt-2 flex-shrink-0" />
-            </div>
-            <p className="font-inter text-[14px] tracking-[4px] uppercase text-charcoal/70 mt-6 font-bold">
-              Vegetarian (11)
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-2">
-            {[
-              { name: 'Clove Dal Makhani', price: '16.00', desc: 'Slow-cooked creamy black lentils' },
-              { name: 'Golden Dal Tadka', price: '15.00', desc: 'Yellow lentils with garlic temper' },
-              { name: 'Signature Veg Nargisi Kofta Curry', price: '18.00' },
-              { name: 'Emerald Palak Paneer', price: '17.00', desc: 'Paneer in creamy spinach curry' },
-              { name: 'Punjabi Chana Masala', price: '15.00', desc: 'Chickpeas in bold spiced gravy' },
-              { name: 'Rajasthani Bhindi', price: '16.00' },
-              { name: 'Paneer Butter Velvet', price: '18.00' },
-              { name: 'Paneer Methi Malai', price: '18.00' },
-              { name: 'Karahi Paneer', price: '17.00' },
-              { name: 'Kashmiri Baingan Khatte', price: '16.00' },
-              { name: 'Sev Subzi', price: '15.00' },
-            ].map(dish => (
-              <div key={dish.name} className="py-7 border-b border-charcoal/12">
-                <div className="flex justify-between items-baseline gap-4">
-                  <span className="font-inter font-semibold text-[17px] text-charcoal">{dish.name}</span>
-                  <span className="font-playfair font-bold text-[17px] text-charcoal flex-shrink-0">${dish.price}</span>
-                </div>
-                {dish.desc && (
-                  <p className="font-inter text-[13px] text-charcoal/80 font-medium mt-1.5 leading-[1.4]">{dish.desc}</p>
-                )}
-              </div>
-            ))}
-          </div>
-          
-          <Link to="/menu"
-            className="mt-8 self-start border border-charcoal text-charcoal px-6 py-3 text-[11px] tracking-[3px] uppercase font-medium hover:bg-charcoal hover:text-cream transition-all duration-300">
-            View Full Menu
-          </Link>
-        </div>
+      {/* Pattern Section below Hero */}
+      <div className="w-full h-7 bg-black overflow-hidden relative border-t border-b border-linen-dark/15">
+        <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="arch-pattern" width="54" height="28" patternUnits="userSpaceOnUse">
+              {/* Background */}
+              <rect width="54" height="28" fill="#000000" />
+              
+              {/* Dense vertical thin golden lines */}
+              {Array.from({ length: 27 }).map((_, i) => (
+                <line
+                  key={i}
+                  x1={i * 2}
+                  y1="0"
+                  x2={i * 2}
+                  y2="28"
+                  stroke="#D49653"
+                  strokeWidth="0.5"
+                  opacity="0.3"
+                />
+              ))}
+              
+              {/* Concentric Arches pointing downwards */}
+              <circle cx="27" cy="0" r="27" stroke="#D49653" strokeWidth="1.2" fill="none" />
+              <circle cx="27" cy="0" r="22" stroke="#D49653" strokeWidth="1.2" fill="none" />
+              <circle cx="27" cy="0" r="17" stroke="#D49653" strokeWidth="1.2" fill="none" />
+              <circle cx="27" cy="0" r="12" stroke="#D49653" strokeWidth="1.2" fill="none" />
+              <circle cx="27" cy="0" r="7" stroke="#D49653" strokeWidth="1.2" fill="none" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#arch-pattern)" />
+        </svg>
+      </div>
+
+      {/* Welcome Section */}
+      <section className="welcome-section w-full bg-black pt-14 pb-24 px-6 flex flex-col items-center justify-center relative overflow-hidden">
         
-        <div className="w-full md:w-1/2 flex flex-col slide-r">
-          {/* Text block */}
-          <div className="bg-linen px-8 sm:px-14 py-10 flex flex-col justify-center flex-1">
-            <p className="font-inter text-[11px] tracking-[4px] uppercase text-amber-deep mb-5">Our Story</p>
-            <h2 className="font-playfair font-black uppercase text-charcoal leading-[0.92] mb-8"
-                style={{ fontSize: 'clamp(28px, 3.2vw, 50px)' }}>
-              Signature<br/>Dishes.<br/>Classic Roots.
-            </h2>
-            <p className="font-inter text-[15px] text-stone font-normal leading-[1.9] max-w-[480px]">
+        {/* 2. Wavy lines pattern in the lower half (absolute, z-10) */}
+        <svg 
+          className="absolute bottom-0 right-0 z-10 pointer-events-none" 
+          width="100%" 
+          height="40%" 
+          viewBox="0 0 1440 400" 
+          fill="none" 
+          xmlns="http://www.w3.org/2000/svg"
+          preserveAspectRatio="none"
+        >
+          {/* Multiple parallel golden curved waves */}
+          {Array.from({ length: 15 }).map((_, i) => {
+            const offset = i * 15;
+            return (
+              <path
+                key={i}
+                d={`M -100 ${360 - offset} C 400 ${150 - offset}, 800 ${450 - offset}, 1600 ${200 - offset}`}
+                stroke="#D49653"
+                strokeWidth="1.8"
+                fill="none"
+                opacity="0.55"
+              />
+            );
+          })}
+        </svg>
+
+        {/* 3. Welcome Cursive Text (relative, z-20) */}
+        <h2 className="welcome-title relative font-script text-amber-spice select-none text-center z-20"
+            style={{ fontSize: 'clamp(64px, 12vw, 110px)', textTransform: 'none', lineHeight: 1.1 }}>
+          Welcome
+        </h2>
+
+        {/* 4. Solid straight gold line (relative, z-20) */}
+        <div className="welcome-line origin-center relative w-[85%] max-w-[1000px] h-px bg-amber-spice/50 my-8 z-20" />
+
+        {/* 5. Text container box with solid black background and white text (relative, z-20) */}
+        <div className="welcome-card relative w-full max-w-[650px] bg-[#0c0c0c] border border-linen-dark/15 px-6 sm:px-10 py-10 z-20 shadow-2xl">
+          <div className="font-inter text-cream/90 text-[14px] leading-[1.8] text-left font-normal tracking-[0.5px]">
+            <p className="mb-6">
+              Clove is an Indian fusion restaurant where tradition meets innovation, bringing together the rich flavors of India with contemporary culinary creativity.
+            </p>
+            <p>
               Inspired by the diversity of Indian cuisine and elevated with global influences, Clove offers a dining experience that is bold, vibrant, and unforgettable. From handcrafted cocktails and thoughtfully curated small plates to elevated signature entrées, every dish is designed to celebrate authentic flavors in a fresh, modern way.
             </p>
           </div>
-          {/* Image block */}
-          <div className="h-[400px] md:h-[480px] relative overflow-hidden flex-shrink-0">
-            <img
-              src="/CloveDalMakhani.jpg"
-              alt="Signature dish"
-              loading="lazy"
-              decoding="async"
-              className="w-full h-full object-cover hover:scale-105 transition-transform duration-700 will-change-transform"
-            />
-          </div>
         </div>
       </section>
 
-      {/* SECTION 3 — PHILOSOPHY */}
-      <section ref={philRef} className="bg-charcoal flex min-h-[580px] flex-col md:flex-row">
-        <div className="w-full md:w-1/2 px-8 sm:px-16 py-20 flex flex-col justify-center slide-l md:order-1">
-          <h2 className="reveal font-playfair text-[28px] sm:text-[36px] font-bold text-cream leading-[1.3] mb-6 max-w-[500px] uppercase">
-            At Clove, we believe dining is more than just food — it is an experience.
-          </h2>
-          <p className="reveal font-inter text-[16px] text-cream-dim font-normal leading-[1.9] mb-8 max-w-[480px]">
-            Our vision is to create a space where culture, community, music, hospitality, and exceptional cuisine come together seamlessly. Whether you are joining us for an intimate dinner, a lively night out, or a special celebration, Clove delivers an atmosphere that is stylish, energetic, and welcoming.
-          </p>
-          <Link to="/about"
-            className="reveal flex items-center gap-3 text-amber-spice text-[12px] tracking-[3px] uppercase font-medium font-inter group w-fit">
-            Our Story
-            <span className="group-hover:translate-x-2 transition-transform duration-300">→</span>
-          </Link>
+      {/* Pattern Section below Welcome */}
+      <div className="w-full h-7 bg-black overflow-hidden relative border-t border-b border-linen-dark/15">
+        <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="arch-pattern-bottom" width="54" height="28" patternUnits="userSpaceOnUse">
+              {/* Background */}
+              <rect width="54" height="28" fill="#000000" />
+              
+              {/* Dense vertical thin golden lines */}
+              {Array.from({ length: 27 }).map((_, i) => (
+                <line
+                  key={i}
+                  x1={i * 2}
+                  y1="0"
+                  x2={i * 2}
+                  y2="28"
+                  stroke="#D49653"
+                  strokeWidth="0.5"
+                  opacity="0.3"
+                />
+              ))}
+              
+              {/* Concentric Arches (centered at x=27, top y=0) - rotated/flipped downwards */}
+              <circle cx="27" cy="0" r="27" stroke="#D49653" strokeWidth="1.2" fill="none" />
+              <circle cx="27" cy="0" r="22" stroke="#D49653" strokeWidth="1.2" fill="none" />
+              <circle cx="27" cy="0" r="17" stroke="#D49653" strokeWidth="1.2" fill="none" />
+              <circle cx="27" cy="0" r="12" stroke="#D49653" strokeWidth="1.2" fill="none" />
+              <circle cx="27" cy="0" r="7" stroke="#D49653" strokeWidth="1.2" fill="none" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#arch-pattern-bottom)" />
+        </svg>
+      </div>
+
+      {/* Dish Image Section */}
+      <div className="w-full bg-black pt-12 pb-4 px-6 flex justify-center z-10 relative">
+        <div className="w-full max-w-[650px] aspect-[4/3] overflow-hidden border border-linen-dark/15 shadow-2xl">
+          <img
+            src="/Paneer Triple Play .jpg"
+            alt="Paneer Triple Play"
+            className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+          />
         </div>
+      </div>
+
+      {/* Our Vision Section */}
+      <section className="vision-section w-full bg-black pt-14 pb-24 px-6 flex flex-col items-center justify-center relative overflow-hidden">
         
-        <div className="w-full md:w-1/2 h-[400px] md:h-auto relative flex items-center justify-center bg-charcoal-mid p-8 sm:p-14 slide-r md:order-2">
-          <div className="relative w-full max-w-[400px]">
-            <div className="absolute inset-0 border border-amber-spice/40 translate-x-5 translate-y-5 pointer-events-none" />
-            <img
-              src="https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800&q=85"
-              alt="CLOVE restaurant"
-              loading="lazy"
-              decoding="async"
-              className="w-full h-full object-cover relative z-10 will-change-transform"
-            />
+        {/* Wavy lines pattern in the lower half (absolute, z-10) */}
+        <svg 
+          className="absolute bottom-0 right-0 z-10 pointer-events-none" 
+          width="100%" 
+          height="40%" 
+          viewBox="0 0 1440 400" 
+          fill="none" 
+          xmlns="http://www.w3.org/2000/svg"
+          preserveAspectRatio="none"
+        >
+          {/* Multiple parallel golden curved waves */}
+          {Array.from({ length: 15 }).map((_, i) => {
+            const offset = i * 15;
+            return (
+              <path
+                key={i}
+                d={`M -100 ${360 - offset} C 400 ${150 - offset}, 800 ${450 - offset}, 1600 ${200 - offset}`}
+                stroke="#D49653"
+                strokeWidth="1.8"
+                fill="none"
+                opacity="0.55"
+              />
+            );
+          })}
+        </svg>
+
+        {/* Our Vision Cursive Text (relative, z-20) */}
+        <h2 className="vision-title relative font-script text-amber-spice select-none text-center z-20"
+            style={{ fontSize: 'clamp(64px, 12vw, 110px)', textTransform: 'none', lineHeight: 1.1 }}>
+          Our Vision
+        </h2>
+
+        {/* Solid straight gold line (relative, z-20) */}
+        <div className="vision-line origin-center relative w-[85%] max-w-[1000px] h-px bg-amber-spice/50 my-8 z-20" />
+
+        {/* Text container box (relative, z-20) */}
+        <div className="vision-card relative w-full max-w-[650px] bg-[#0c0c0c] border border-linen-dark/15 px-6 sm:px-10 py-10 z-20 shadow-2xl">
+          <div className="font-inter text-cream/90 text-[14px] leading-[1.8] text-left font-normal tracking-[0.5px]">
+            <p>
+              At Clove, we believe dining is more than just food — it is an experience. Our vision is to create a space where culture, community, music, hospitality, and exceptional cuisine come together seamlessly. Whether you are joining us for an intimate dinner, a lively night out, or a special celebration, Clove delivers an atmosphere that is stylish, energetic, and welcoming.
+            </p>
           </div>
         </div>
       </section>
 
-      {/* SECTION 4 — SIGNATURE COLLECTION */}
-      <section ref={colRef} className="bg-linen px-8 sm:px-16 py-20">
-        <div className="max-w-[1400px] mx-auto">
-          <div className="flex items-end justify-between mb-14 gap-8 flex-wrap">
-            <div>
-              <div className="flex items-center gap-4">
-                <h2 className="reveal font-playfair text-[32px] sm:text-[44px] font-bold text-charcoal leading-[1.05] uppercase">
-                  SIGNATURE CURRIES
-                </h2>
-                <Utensils size={28} className="text-charcoal/30 flex-shrink-0 mt-1 reveal" />
-              </div>
-              <p className="reveal font-inter text-[14px] tracking-[4px] uppercase text-amber-deep mt-4 mb-2 font-bold">NON VEGETARIAN (9)</p>
-            </div>
-            <Link to="/menu"
-              className="reveal border border-charcoal text-charcoal px-5 py-2.5 text-[11px] tracking-[2px] uppercase font-medium font-inter hover:bg-charcoal hover:text-cream transition-all duration-300 whitespace-nowrap flex-shrink-0">
-              View Full Menu
-            </Link>
-          </div>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-2">
-            {[
-              { name: 'Clove Butter Chicken', price: '18.00' },
-              { name: 'Murgh Shahjahani', price: '19.00' },
-              { name: 'Kebab Chicken Tikka Masala', price: '18.00' },
-              { name: 'Patrani Machi with Malabar Curry', price: '20.00' },
-              { name: 'Rajasthani Laal Maas', price: '20.00' },
-              { name: 'Goat Curry', price: '22.00' },
-              { name: 'Dhaba Chicken Curry - Boneless', price: '18.00' },
-              { name: 'Kadai Fire Chicken', price: '18.00', desc: 'Chicken with peppers and bold spices' },
-              { name: 'Asian Shrimp Curry', price: '20.00' },
-            ].map((dish, i) => (
-              <div key={i} className="py-7 border-b border-charcoal/12">
-                <div className="flex justify-between items-baseline gap-4">
-                  <span className="font-inter font-semibold text-[17px] text-charcoal">{dish.name}</span>
-                  <span className="font-playfair font-bold text-[17px] text-charcoal flex-shrink-0">${dish.price}</span>
-                </div>
-                {dish.desc && (
-                  <p className="font-inter text-[13px] text-charcoal/80 font-medium mt-1.5 leading-[1.4]">{dish.desc}</p>
-                )}
-              </div>
-            ))}
-          </div>
-
-          {/* SUBSECTION — SIGNATURE BREAD */}
-          <div className="mt-20 border-t border-charcoal/10 pt-16">
-            <div className="flex items-end justify-between mb-10 gap-8 flex-wrap">
-              <div>
-                <div className="flex items-center gap-4">
-                  <h2 className="reveal font-playfair text-[32px] sm:text-[44px] font-bold text-charcoal leading-[1.05] uppercase">
-                    SIGNATURE BREAD
-                  </h2>
-                  <Utensils size={28} className="text-charcoal/30 flex-shrink-0 mt-1 reveal" />
-                </div>
-                <p className="reveal font-inter text-[14px] tracking-[4px] uppercase text-amber-deep mt-4 font-bold">
-                  SIGNATURE BREAD (8)
-                </p>
-              </div>
-              <Link to="/menu"
-                className="reveal border border-charcoal text-charcoal px-5 py-2.5 text-[11px] tracking-[2px] uppercase font-medium font-inter hover:bg-charcoal hover:text-cream transition-all duration-300 whitespace-nowrap flex-shrink-0">
-                View Full Menu
-              </Link>
-            </div>
-            
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-2">
-              {[
-                { name: 'Classic Naan', price: '3.00' },
-                { name: 'Butter Naan', price: '4.00' },
-                { name: 'Garlic Naan', price: '4.00' },
-                { name: 'Bullet Naan', price: '5.00' },
-                { name: 'Tandoori Roti', price: '3.00' },
-                { name: 'Masala Dhaniya Mirchi Roti', price: '5.00' },
-                { name: 'Potatoes Stuffed Parantha (Amrtisari)', price: '7.00' },
-                { name: 'Goat Cheese, Herbs & Jalapeño', price: '8.00' },
-              ].map((dish, i) => (
-                <div key={i} className="py-7 border-b border-charcoal/12">
-                  <div className="flex justify-between items-baseline gap-4">
-                    <span className="font-inter font-semibold text-[17px] text-charcoal">{dish.name}</span>
-                    <span className="font-playfair font-bold text-[17px] text-charcoal flex-shrink-0">${dish.price}</span>
-                  </div>
-                </div>
+      {/* Pattern Section below Our Vision */}
+      <div className="w-full h-7 bg-black overflow-hidden relative border-t border-b border-linen-dark/15">
+        <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="arch-pattern-bottom-2" width="54" height="28" patternUnits="userSpaceOnUse">
+              {/* Background */}
+              <rect width="54" height="28" fill="#000000" />
+              
+              {/* Dense vertical thin golden lines */}
+              {Array.from({ length: 27 }).map((_, i) => (
+                <line
+                  key={i}
+                  x1={i * 2}
+                  y1="0"
+                  x2={i * 2}
+                  y2="28"
+                  stroke="#D49653"
+                  strokeWidth="0.5"
+                  opacity="0.3"
+                />
               ))}
-            </div>
-          </div>
-
-          {/* SUBSECTION — RICE & ACCOMPANIMENTS */}
-          <div className="mt-20 border-t border-charcoal/10 pt-16">
-            <div className="flex items-end justify-between mb-10 gap-8 flex-wrap">
-              <div>
-                <div className="flex items-center gap-4">
-                  <h2 className="reveal font-playfair text-[32px] sm:text-[44px] font-bold text-charcoal leading-[1.05] uppercase">
-                    RICE & ACCOMPANIMENTS
-                  </h2>
-                  <Utensils size={28} className="text-charcoal/30 flex-shrink-0 mt-1 reveal" />
-                </div>
-                <p className="reveal font-inter text-[14px] tracking-[4px] uppercase text-amber-deep mt-4 font-bold">
-                  RICE & ACCOMPANIMENTS (5)
-                </p>
-              </div>
-              <Link to="/menu"
-                className="reveal border border-charcoal text-charcoal px-5 py-2.5 text-[11px] tracking-[2px] uppercase font-medium font-inter hover:bg-charcoal hover:text-cream transition-all duration-300 whitespace-nowrap flex-shrink-0">
-                View Full Menu
-              </Link>
-            </div>
-            
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-2">
-              {[
-                { name: 'Jeera Rice', price: '5.00' },
-                { name: 'Vegetable Pulao', price: '6.00' },
-                { name: 'Toasted Garlic Herb Bread', price: '5.00' },
-                { name: 'Mint & Cucumber Raita', price: '4.00' },
-                { name: 'Seasoned Potato', price: '4.00' },
-              ].map((dish, i) => (
-                <div key={i} className="py-7 border-b border-charcoal/12">
-                  <div className="flex justify-between items-baseline gap-4">
-                    <span className="font-inter font-semibold text-[17px] text-charcoal">{dish.name}</span>
-                    <span className="font-playfair font-bold text-[17px] text-charcoal flex-shrink-0">${dish.price}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* SECTION 5 — TWO BROTHERS EDITORIAL BANNER */}
-      <section className="bg-amber-spice py-20 px-8 text-center overflow-hidden relative">
-        <div className="max-w-[1200px] mx-auto">
-          <h2 className="font-playfair font-bold text-charcoal leading-[1.1] mb-6 banner-letters uppercase"
-              style={{ fontSize: 'clamp(28px, 4vw, 48px)' }}>
-            {'LOCATED IN DULUTH, GEORGIA, CLOVE.'.split(' ').map((word, wordIndex, arr) => (
-              <span key={wordIndex} className="inline-block whitespace-nowrap mr-[0.25em] last:mr-0">
-                {word.split('').map((char, charIndex) => (
-                  <span key={charIndex} className="banner-letter inline-block">
-                    {char}
-                  </span>
-                ))}
-              </span>
-            ))}
-          </h2>
-          <p className="font-inter text-[16px] text-stone font-normal max-w-2xl mx-auto leading-[1.9] mb-10 reveal">
-            Our culinary team combines traditional Indian techniques with contemporary presentation to craft dishes that feel both familiar and exciting. Every ingredient, flavor, and detail is thoughtfully chosen to create a modern interpretation of Indian dining.
-          </p>
-          <Link to="/about"
-            className="inline-block bg-charcoal text-cream px-10 py-4 text-[12px] tracking-[3px] uppercase font-medium hover:bg-charcoal-mid transition-colors duration-300 reveal">
-            Our Story
-          </Link>
-        </div>
-      </section>
-
+              
+              {/* Concentric Arches (centered at x=27, top y=0) - rotated/flipped downwards */}
+              <circle cx="27" cy="0" r="27" stroke="#D49653" strokeWidth="1.2" fill="none" />
+              <circle cx="27" cy="0" r="22" stroke="#D49653" strokeWidth="1.2" fill="none" />
+              <circle cx="27" cy="0" r="17" stroke="#D49653" strokeWidth="1.2" fill="none" />
+              <circle cx="27" cy="0" r="12" stroke="#D49653" strokeWidth="1.2" fill="none" />
+              <circle cx="27" cy="0" r="7" stroke="#D49653" strokeWidth="1.2" fill="none" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#arch-pattern-bottom-2)" />
+        </svg>
+      </div>
 
     </div>
   )

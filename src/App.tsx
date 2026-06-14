@@ -15,6 +15,8 @@ import About from './pages/About'
 import Menu from './pages/Menu'
 import Contact from './pages/Contact'
 import Profile from './pages/Profile'
+import Gallery from './pages/Gallery'
+import Catering from './pages/Catering'
 import { CartItem, MenuItem } from './types'
 
 function getSlotsForDate(date: Date, isToday: boolean): string[] {
@@ -262,7 +264,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <SmoothScroll>
-        <div className="min-h-screen flex flex-col">
+        <div className="min-h-screen flex flex-col w-full">
           <Header
             onLoginClick={() => setIsLoginOpen(true)}
             onLogoutClick={handleLogout}
@@ -282,6 +284,8 @@ export default function App() {
               } />
               <Route path="/contact" element={<Contact />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/gallery" element={<Gallery />} />
+              <Route path="/catering" element={<Catering />} />
             </Routes>
           </main>
 
