@@ -4,6 +4,7 @@ import { User, ShoppingBag, Menu, X, LogOut } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 import { motion, useScroll, useMotionValueEvent, AnimatePresence } from 'motion/react'
 import { Session } from '@supabase/supabase-js'
+import { useLenis } from './SmoothScroll'
 
 interface HeaderProps {
   onLoginClick: () => void
@@ -19,17 +20,27 @@ export default function Header({ onLoginClick, onLogoutClick, onCartClick, cartC
   const [hidden, setHidden] = useState(false)
   const location = useLocation()
   const { scrollY } = useScroll()
+  const lenis = useLenis()
 
   useEffect(() => {
-    if (mobileOpen) {
-      document.body.style.overflow = 'hidden'
+    if (lenis) {
+      if (mobileOpen) {
+        lenis.stop()
+      } else {
+        lenis.start()
+      }
     } else {
-      document.body.style.overflow = 'unset'
+      if (mobileOpen) {
+        document.body.style.overflow = 'hidden'
+      } else {
+        document.body.style.overflow = ''
+      }
     }
     return () => {
-      document.body.style.overflow = 'unset'
+      document.body.style.overflow = ''
+      if (lenis) lenis.start()
     }
-  }, [mobileOpen])
+  }, [mobileOpen, lenis])
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     if (location.pathname === '/menu') {
