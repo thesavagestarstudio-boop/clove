@@ -79,6 +79,11 @@ export default function About() {
         }
       }
     )
+    const timer = setTimeout(() => {
+      ScrollTrigger.refresh()
+    }, 1000)
+
+    return () => clearTimeout(timer)
   }, { scope: containerRef })
 
   return (
