@@ -18,26 +18,24 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
 
   useEffect(() => {
     const lenisInstance = new Lenis({
-      duration: 1.4,
+      duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
-      syncTouch: false,
     })
     
     setLenis(lenisInstance)
     
     lenisInstance.on('scroll', ScrollTrigger.update)
 
+    let rafId: number
     const updateLenis = (time: number) => {
-      lenisInstance.raf(time * 1000)
+      lenisInstance.raf(time)
+      rafId = requestAnimationFrame(updateLenis)
     }
-
-    gsap.ticker.add(updateLenis)
-
-    gsap.ticker.lagSmoothing(0)
+    rafId = requestAnimationFrame(updateLenis)
     
     return () => {
-      gsap.ticker.remove(updateLenis)
+      cancelAnimationFrame(rafId)
       lenisInstance.destroy()
     }
   }, [])
