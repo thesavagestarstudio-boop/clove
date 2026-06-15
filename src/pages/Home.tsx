@@ -170,7 +170,7 @@ export default function Home() {
   return (
     <div ref={containerRef} className="overflow-x-hidden">
       {/* Pattern Section above Hero */}
-      <div className="w-full h-7 bg-black overflow-hidden relative border-b border-linen-dark/15">
+      <div className="w-full h-7 md:hidden bg-black overflow-hidden relative border-b border-linen-dark/15">
         <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <pattern id="arch-pattern-top-hero" width="54" height="28" patternUnits="userSpaceOnUse">

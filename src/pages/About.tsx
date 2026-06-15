@@ -95,7 +95,7 @@ export default function About() {
       transition={{ duration: 0.8 }}
     >
       {/* Same Pattern Section used in homepage for transitions (Placed ABOVE, default orientation) */}
-      <div className="w-full h-7 bg-black overflow-hidden relative border-t border-b border-linen-dark/15 z-10">
+      <div className="w-full h-7 md:hidden bg-black overflow-hidden relative border-t border-b border-linen-dark/15 z-10">
         <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <pattern id="about-arch-pattern-top" width="54" height="28" patternUnits="userSpaceOnUse">

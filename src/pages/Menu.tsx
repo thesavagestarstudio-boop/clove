@@ -200,7 +200,8 @@ export default function Menu({ addToCart }: MenuProps) {
             name: cat.name,
             items: categoriesMap[cat.id] || []
           }))
-          .filter(cat => cat.items.length > 0) // Only show categories with items
+          // Only show categories with items and exclude 'Alcoholic Drinks'
+          .filter(cat => cat.items.length > 0 && cat.name.toLowerCase().trim() !== 'alcoholic drinks')
 
         setMenuData(structuredMenu)
         if (structuredMenu.length > 0) {

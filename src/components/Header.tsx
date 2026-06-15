@@ -76,7 +76,7 @@ export default function Header({ onLoginClick, onLogoutClick, onCartClick, cartC
   const isHome = location.pathname === '/'
   const isAbout = location.pathname === '/about'
   const isMenu = location.pathname === '/menu'
-  const dynamicColor = (isHome || isAbout) ? '#B7A68B' : (isMenu ? '#000000' : '#49453b')
+  const dynamicColor = (isHome || isAbout) ? '#B7A68B' : (isMenu ? '#D49653' : '#49453b')
 
   return (
     <>
