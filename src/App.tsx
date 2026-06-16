@@ -18,6 +18,7 @@ import Profile from './pages/Profile'
 import Gallery from './pages/Gallery'
 import Catering from './pages/Catering'
 import { CartItem, MenuItem } from './types'
+import WorkInProgress from './pages/WorkInProgress'
 
 function getSlotsForDate(date: Date, isToday: boolean): string[] {
   const day = date.getDay()
@@ -91,6 +92,13 @@ function generateTimeSlots(): string[] {
 }
 
 export default function App() {
+  // Toggle this to show/hide the Work in Progress page
+  const showWorkInProgress = true
+
+  if (showWorkInProgress) {
+    return <WorkInProgress />
+  }
+
   const [isLoginOpen, setIsLoginOpen] = useState(false)
   const [isCartOpen, setIsCartOpen] = useState(false)
   const [cart, setCart] = useState<CartItem[]>([])
