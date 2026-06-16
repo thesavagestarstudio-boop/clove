@@ -2,55 +2,53 @@ import { Phone, Mail, MapPin, Facebook, Instagram } from 'lucide-react'
 
 export default function Footer() {
   return (
-    <footer className="bg-[#0B0806] pt-16 pb-8 px-8 flex flex-col items-center border-t border-white/5 w-full">
-      <div className="w-full max-w-[1200px] flex flex-col items-center gap-10 mb-12">
-        {/* Contact info list */}
-        <div className="flex flex-col gap-6 md:gap-8 w-full max-w-[320px] md:max-w-none md:flex-row md:justify-center md:items-center">
-          {/* Phone */}
-          <div className="flex items-center gap-4 text-left md:justify-center">
-            <Phone size={20} className="text-[#D49653] flex-shrink-0" />
-            <span className="font-inter text-[13px] tracking-[2px] uppercase text-white/90">
-              +1 (770) 800-0881
-            </span>
-          </div>
+    <footer className="w-full bg-[#0d0d0d] pt-20 pb-12 px-6 md:px-12 border-t border-linen-dark/10 flex flex-col items-center z-10 relative mt-auto">
+      {/* Footer Details Container */}
+      <div className="flex flex-col md:flex-row gap-10 md:gap-16 mb-20 w-full max-w-max md:max-w-[1200px] md:w-full mx-auto text-left justify-between items-start">
+        {/* Phone */}
+        <div className="flex items-center gap-6">
+          <Phone className="w-5 h-5 text-amber-spice flex-shrink-0" strokeWidth={1.5} />
+          <a href="tel:+17708000881" className="text-[13px] tracking-[4px] uppercase font-light text-cream/80 hover:text-amber-spice transition-colors font-inter">
+            +1(770)800-0881
+          </a>
+        </div>
 
-          {/* Divider on desktop */}
-          <div className="hidden md:block w-px h-5 bg-white/10" />
+        {/* Email */}
+        <div className="flex items-center gap-6">
+          <Mail className="w-5 h-5 text-amber-spice flex-shrink-0" strokeWidth={1.5} />
+          <a href="mailto:Info@tastofclove.com" className="text-[13px] tracking-[4px] uppercase font-light text-cream/80 hover:text-amber-spice transition-colors font-inter">
+            INFO@TASTOFCLOVE.COM
+          </a>
+        </div>
 
-          {/* Email */}
-          <div className="flex items-center gap-4 text-left md:justify-center">
-            <Mail size={20} className="text-[#D49653] flex-shrink-0" />
-            <span className="font-inter text-[13px] tracking-[2px] uppercase text-white/90 break-all">
-              Info@tasteofclove.com
-            </span>
-          </div>
-
-          {/* Divider on desktop */}
-          <div className="hidden md:block w-px h-5 bg-white/10" />
-
-          {/* Address */}
-          <div className="flex items-start gap-4 text-left md:justify-center md:items-center">
-            <MapPin size={20} className="text-[#D49653] mt-0.5 md:mt-0 flex-shrink-0" />
-            <span className="font-inter text-[13px] tracking-[2px] uppercase text-white/90 leading-relaxed md:leading-none">
-              3083 Breckinridge Blvd, Suite 210, Duluth GA 30096
-            </span>
-          </div>
+        {/* Address */}
+        <div className="flex items-start gap-6">
+          <MapPin className="w-5 h-5 text-amber-spice mt-0.5 flex-shrink-0" strokeWidth={1.5} />
+          <a 
+            href="https://maps.google.com/?q=3083+Breckinridge+Blvd,+Suite+210,+Duluth+GA+30096"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[13px] tracking-[4px] uppercase font-light text-cream/80 hover:text-amber-spice transition-colors leading-[1.6] font-inter"
+          >
+            3083 BRECKINRIDGE BLVD, SUITE 210, DULUTH GA 30096
+          </a>
         </div>
       </div>
 
-      {/* Social Icons & Copyright */}
-      <div className="w-full max-w-[1200px] pt-8 border-t border-white/10 flex flex-col items-center gap-6">
-        <div className="flex gap-6 items-center justify-center">
-          <a href="https://facebook.com" target="_blank" rel="noreferrer" className="text-[#D49653] hover:opacity-80 transition-opacity" aria-label="Facebook">
-            <Facebook size={24} />
+      {/* Social Icons & Design Credit */}
+      <div className="w-full max-w-[1200px] border-t border-linen-dark/10 pt-10 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="flex gap-6">
+          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-amber-spice hover:opacity-80 transition-opacity">
+            <Facebook className="w-5 h-5" strokeWidth={1.5} />
           </a>
-          <a href="https://instagram.com" target="_blank" rel="noreferrer" className="text-[#D49653] hover:opacity-80 transition-opacity" aria-label="Instagram">
-            <Instagram size={24} />
+          <a href="https://www.instagram.com/tasteofclove/" target="_blank" rel="noopener noreferrer" className="text-amber-spice hover:opacity-80 transition-opacity">
+            <Instagram className="w-5 h-5" strokeWidth={1.5} />
           </a>
         </div>
-        <p className="font-inter text-[10px] tracking-[2px] uppercase text-white/30">
-          © 2026 CLOVE. ALL RIGHTS RESERVED.
-        </p>
+        
+        <div className="text-center md:text-right text-[10px] tracking-[3px] text-cream/30 uppercase font-light leading-relaxed font-inter">
+          @2026 Clove. ALL RIGHTS RESERVED
+        </div>
       </div>
     </footer>
   )

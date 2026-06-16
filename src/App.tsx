@@ -15,7 +15,10 @@ import About from './pages/About'
 import Menu from './pages/Menu'
 import Contact from './pages/Contact'
 import Profile from './pages/Profile'
+import Gallery from './pages/Gallery'
+import Catering from './pages/Catering'
 import { CartItem, MenuItem } from './types'
+import WorkInProgress from './pages/WorkInProgress'
 
 function getSlotsForDate(date: Date, isToday: boolean): string[] {
   const day = date.getDay()
@@ -89,6 +92,13 @@ function generateTimeSlots(): string[] {
 }
 
 export default function App() {
+  // Toggle this to show/hide the Work in Progress page
+  const showWorkInProgress = true
+
+  if (showWorkInProgress) {
+    return <WorkInProgress />
+  }
+
   const [isLoginOpen, setIsLoginOpen] = useState(false)
   const [isCartOpen, setIsCartOpen] = useState(false)
   const [cart, setCart] = useState<CartItem[]>([])
@@ -262,7 +272,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <SmoothScroll>
-        <div className="min-h-screen flex flex-col">
+        <div className="min-h-screen flex flex-col w-full">
           <Header
             onLoginClick={() => setIsLoginOpen(true)}
             onLogoutClick={handleLogout}
@@ -282,6 +292,8 @@ export default function App() {
               } />
               <Route path="/contact" element={<Contact />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/gallery" element={<Gallery />} />
+              <Route path="/catering" element={<Catering />} />
             </Routes>
           </main>
 

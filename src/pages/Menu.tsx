@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect, useMemo } from 'react'
-import { Plus, Minus, ShoppingBag, X, Search, Info, Bike, Utensils, MapPin, Clock, ChevronRight } from 'lucide-react'
+import { Plus, Minus, ShoppingBag, X, Search, Info, Bike, Utensils, MapPin, Clock, ChevronRight, Phone, Mail, Facebook, Instagram } from 'lucide-react'
 import { MenuItem } from '../types'
 import { useLenis } from '../components/SmoothScroll'
 import LoadingSpinner from '../components/LoadingSpinner'
 import DishDetailModal from '../components/DishDetailModal'
+import { motion, AnimatePresence } from 'motion/react'
 
 // Types
 interface MenuCategory {
@@ -108,11 +109,32 @@ export default function Menu({ addToCart }: MenuProps) {
   const [error, setError] = useState<string | null>(null)
   const [selectedItemForModal, setSelectedItemForModal] = useState<MenuItem | null>(null)
   const [isDetailOpen, setIsDetailOpen] = useState(false)
+  const [showWelcome, setShowWelcome] = useState(true)
   
   const mainRef = useRef<HTMLDivElement>(null)
   const tabsRef = useRef<HTMLDivElement>(null)
   const isScrollingRef = useRef(false)
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+  // Welcome screen timer
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowWelcome(false)
+    }, 2800)
+    return () => clearTimeout(timer)
+  }, [])
+
+  // Lock scroll during welcome overlay
+  useEffect(() => {
+    if (showWelcome) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [showWelcome])
 
   // Fetch Clover menu data
   useEffect(() => {
@@ -178,7 +200,8 @@ export default function Menu({ addToCart }: MenuProps) {
             name: cat.name,
             items: categoriesMap[cat.id] || []
           }))
-          .filter(cat => cat.items.length > 0) // Only show categories with items
+          // Only show categories with items and exclude 'Alcoholic Drinks'
+          .filter(cat => cat.items.length > 0 && cat.name.toLowerCase().trim() !== 'alcoholic drinks')
 
         setMenuData(structuredMenu)
         if (structuredMenu.length > 0) {
@@ -212,30 +235,63 @@ export default function Menu({ addToCart }: MenuProps) {
   useEffect(() => {
     if (filteredMenuData.length === 0) return
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (isScrollingRef.current) return
+    const handleScroll = () => {
+      if (isScrollingRef.current) return
 
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const id = entry.target.id.replace('cat-', '')
-            const found = menuData.find(c => c.name.replace(/[^a-zA-Z0-9]/g, '') === id)
-            if (found) setActiveCategory(found.name)
+      const sections = document.querySelectorAll('section[id^="cat-"]')
+      let currentActive = activeCategory
+
+      // The vertical point where categories switch (below the sticky header/tabs, ~140px)
+      const scrollThreshold = 145
+
+      sections.forEach((section) => {
+        const rect = section.getBoundingClientRect()
+        // If the top of the section has scrolled past the threshold, it is active
+        if (rect.top <= scrollThreshold) {
+          const id = section.id.replace('cat-', '')
+          const found = menuData.find(c => c.name.replace(/[^a-zA-Z0-9]/g, '') === id)
+          if (found) {
+            currentActive = found.name
           }
-        })
-      },
-      {
-        root: null,
-        rootMargin: '-20% 0px -70% 0px',
-        threshold: 0
+        }
+      })
+
+      if (currentActive !== activeCategory) {
+        setActiveCategory(currentActive)
       }
-    )
+    }
 
-    const sections = document.querySelectorAll('section[id^="cat-"]')
-    sections.forEach((section) => observer.observe(section))
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    // Run once initially
+    handleScroll()
 
-    return () => observer.disconnect()
-  }, [filteredMenuData, menuData])
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [filteredMenuData, menuData, activeCategory])
+
+  // Reset window scroll to top when welcome screen hides
+  useEffect(() => {
+    if (!showWelcome) {
+      window.scrollTo(0, 0)
+    }
+  }, [showWelcome])
+
+  // Automatically scroll active category button into view horizontally without page scroll jumps
+  useEffect(() => {
+    if (activeCategory && tabsRef.current) {
+      const activeBtn = tabsRef.current.querySelector('[data-active="true"]') as HTMLElement
+      if (activeBtn) {
+        const container = tabsRef.current
+        const containerWidth = container.clientWidth
+        const btnLeft = activeBtn.offsetLeft
+        const btnWidth = activeBtn.clientWidth
+        
+        container.scrollTo({
+          left: btnLeft - (containerWidth / 2) + (btnWidth / 2),
+          behavior: 'smooth'
+        })
+      }
+    }
+  }, [activeCategory])
 
   const lenis = useLenis()
 
@@ -267,8 +323,46 @@ export default function Menu({ addToCart }: MenuProps) {
 
 
   return (
-    <div className="flex min-h-screen pt-[76px] bg-white font-inter">
-      {isLoading && <LoadingSpinner />}
+    <>
+      <AnimatePresence>
+        {showWelcome && (
+          <motion.div
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.6, ease: 'easeInOut' }}
+            className="fixed inset-0 z-[999] bg-[#0c0c0c] flex flex-col items-center justify-center px-6"
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1.0, ease: 'easeOut' }}
+              className="text-center"
+            >
+              <motion.h2
+                initial={{ 
+                  opacity: 0, 
+                  clipPath: 'polygon(0 0, 0 0, 0 100%, 0 100%)' 
+                }}
+                animate={{ 
+                  opacity: 1, 
+                  clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)' 
+                }}
+                transition={{ 
+                  delay: 0.3, 
+                  duration: 2.0, 
+                  ease: [0.25, 1, 0.5, 1] 
+                }}
+                className="font-script text-[76px] sm:text-[100px] text-amber-spice leading-none select-none px-10"
+              >
+                Welcome
+              </motion.h2>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <div className="flex flex-col lg:flex-row min-h-screen pt-[76px] bg-black font-inter text-cream">
+      {!showWelcome && isLoading && <LoadingSpinner />}
       {/* SIDEBAR */}
       <aside className="w-[220px] hidden lg:flex flex-shrink-0 bg-[#00503D] flex-col sticky top-[76px] h-[calc(100vh-76px)] overflow-y-auto border-r border-white/10">
         <div className="px-6 py-5 border-b border-white/10">
@@ -300,83 +394,83 @@ export default function Menu({ addToCart }: MenuProps) {
         </nav>
       </aside>
 
-      {/* MOBILE TABS */}
-      <div 
-        ref={tabsRef}
-        className="lg:hidden fixed top-[76px] left-0 right-0 z-40 bg-[#00503D] border-b border-[#004031] overflow-x-auto whitespace-nowrap px-4 py-3 hide-scrollbar"
-      >
-        {isLoading ? (
-          <div className="flex gap-2">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="inline-block w-20 h-7 rounded-full bg-white/15 animate-pulse" />
-            ))}
-          </div>
-        ) : (
-          filteredMenuData.map(cat => (
-            <button
-              key={cat.name}
-              onClick={() => scrollTo(cat.name)}
-              data-active={activeCategory === cat.name}
-              className={`inline-block px-4 py-1.5 rounded-full text-[12px] mr-2 border transition-all ${
-                activeCategory === cat.name
-                  ? 'bg-[#00392C] text-white border-[#00392C] font-medium shadow-sm'
-                  : 'border-white/20 text-white/70 bg-white/10'
-              }`}
-            >
-              {cat.name}
-            </button>
-          ))
-        )}
-      </div>
-
       {/* MAIN CONTENT */}
       <main 
-        className="flex-1 bg-white px-6 sm:px-10 py-10 lg:py-10 pt-24 lg:pt-10" 
+        className="flex-1 bg-black px-6 sm:px-10 py-10" 
         ref={mainRef}
       >
         {/* Info Banner */}
-        <div className="bg-linen-light/50 border-b border-linen-dark/10 -mx-6 sm:-mx-10 -mt-10 mb-8 px-6 sm:px-10 py-3 flex items-center justify-center gap-2">
-          <Info size={18} className="text-stone/60" />
-          <p className="text-[13px] text-stone/80 font-light">Only accepting pickup orders</p>
+        <div className="bg-charcoal/40 border-b border-linen-dark/10 -mx-6 sm:-mx-10 -mt-10 mb-8 px-6 sm:px-10 py-3 flex items-center justify-center gap-2">
+          <Info size={18} className="text-cream/40" />
+          <p className="text-[13px] text-cream/75 font-light">Only accepting pickup orders</p>
         </div>
 
         {/* Store Header Info */}
-        <div className="mb-10 max-w-4xl">
-          <h1 className="font-playfair text-[36px] sm:text-[48px] font-bold text-charcoal leading-tight mb-1">Clove Kitchen</h1>
-          <p className="text-stone font-light text-[15px] mb-8">3083 Breckinridge Blvd, Suite 210, Duluth GA 30096</p>
+        <div className="mb-6 max-w-4xl">
+          <h1 className="font-playfair text-[36px] sm:text-[48px] font-bold text-cream leading-tight mb-1">Clove Kitchen</h1>
+          <p className="text-cream/55 font-light text-[15px] mb-8">3083 Breckinridge Blvd, Suite 210, Duluth GA 30096</p>
 
           {/* Location & Time Selection */}
-          <div className="space-y-4 mb-10 border-b border-linen-dark/20 pb-10">
+          <div className="space-y-4 mb-6 border-b border-linen-dark/20 pb-6">
             <div className="flex items-center gap-4 group cursor-pointer">
-              <div className="w-10 h-10 rounded-full bg-linen-dark/10 flex items-center justify-center text-stone group-hover:bg-[#00503D] group-hover:text-white transition-colors">
+              <div className="w-10 h-10 rounded-full bg-charcoal/50 flex items-center justify-center text-cream/70 group-hover:bg-amber-spice group-hover:text-charcoal transition-colors">
                 <MapPin size={20} />
               </div>
               <div className="flex-1">
-                <p className="text-[14px] text-stone font-light">Pickup from <span className="font-semibold text-charcoal">3083 Breckinridge Blvd, Suite 210, Duluth GA 30096</span></p>
+                <p className="text-[14px] text-cream/70 font-light">Pickup from <span className="font-semibold text-cream">3083 Breckinridge Blvd, Suite 210, Duluth GA 30096</span></p>
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Search Bar */}
-          <div className="relative max-w-2xl">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50" size={20} />
-            <input 
-              type="text" 
-              placeholder="Search for a dish..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-[#00503D] border border-white/10 rounded-xl py-3.5 pl-12 pr-10 text-[15px] text-white focus:outline-none focus:border-white/30 focus:ring-1 focus:ring-white/10 transition-all placeholder:text-white/50"
-            />
-            {searchQuery && (
-              <button 
-                onClick={() => setSearchQuery('')}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors"
-                aria-label="Clear search"
+        {/* MOBILE TABS */}
+        <div 
+          ref={tabsRef}
+          className="lg:hidden sticky top-0 lg:top-[76px] left-0 right-0 z-40 bg-black/95 backdrop-blur-md border-b border-linen-dark/10 overflow-x-auto whitespace-nowrap py-3 hide-scrollbar -mx-6 sm:-mx-10 px-6 sm:px-10 mb-6"
+        >
+          {isLoading ? (
+            <div className="flex gap-2">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="inline-block w-20 h-7 rounded-full bg-linen-dark/20 animate-pulse" />
+              ))}
+            </div>
+          ) : (
+            filteredMenuData.map(cat => (
+              <button
+                key={cat.name}
+                onClick={() => scrollTo(cat.name)}
+                data-active={activeCategory === cat.name}
+                className={`inline-block px-4 py-1.5 rounded-full text-[12px] mr-2 border transition-all ${
+                  activeCategory === cat.name
+                    ? 'bg-amber-spice text-charcoal border-amber-spice font-medium shadow-sm'
+                    : 'border-linen-dark/20 text-cream/70 bg-charcoal/50'
+                }`}
               >
-                <X size={18} />
+                {cat.name}
               </button>
-            )}
-          </div>
+            ))
+          )}
+        </div>
+
+        {/* Search Bar */}
+        <div className="relative max-w-2xl mb-10">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-cream/35" size={20} />
+          <input 
+            type="text" 
+            placeholder="Search for a dish..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full bg-[#0c0c0c] border border-linen-dark/15 rounded-xl py-3.5 pl-12 pr-10 text-[15px] text-cream focus:outline-none focus:border-amber-spice focus:ring-1 focus:ring-amber-spice/20 transition-all placeholder:text-cream/35"
+          />
+          {searchQuery && (
+            <button 
+              onClick={() => setSearchQuery('')}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-cream/35 hover:text-cream transition-colors"
+              aria-label="Clear search"
+            >
+              <X size={18} />
+            </button>
+          )}
         </div>
 
         {/* Menu Sections */}
@@ -387,7 +481,7 @@ export default function Menu({ addToCart }: MenuProps) {
                 <div className="h-8 w-48 bg-linen-dark/20 rounded animate-pulse" />
                 <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
                   {[1, 2, 3, 4].map((item) => (
-                    <div key={item} className="bg-linen-light/30 rounded-2xl border border-linen-dark/15 h-[180px] flex items-center p-4 gap-4 animate-pulse">
+                    <div key={item} className="bg-[#0c0c0c] rounded-2xl border border-linen-dark/15 h-[180px] flex items-center p-4 gap-4 animate-pulse">
                       <div className="flex-1 space-y-3">
                         <div className="h-5 w-1/2 bg-linen-dark/20 rounded" />
                         <div className="h-3 w-full bg-linen-dark/20 rounded" />
@@ -404,12 +498,12 @@ export default function Menu({ addToCart }: MenuProps) {
         ) : error ? (
           <div className="text-center py-20">
             <p className="text-red-500 text-[16px] font-medium">Failed to load the menu</p>
-            <p className="text-stone text-[14px] mt-1 font-light">{error}</p>
+            <p className="text-cream/55 text-[14px] mt-1 font-light">{error}</p>
           </div>
         ) : filteredMenuData.length > 0 ? (
           filteredMenuData.map(category => (
             <section key={category.name} id={`cat-${category.name.replace(/[^a-zA-Z0-9]/g, '')}`} className="mb-14 scroll-mt-[140px] lg:scroll-mt-[100px]">
-              <h2 className="font-playfair text-[28px] sm:text-[34px] font-bold text-charcoal mb-1">{category.name}</h2>
+              <h2 className="font-playfair text-[28px] sm:text-[34px] font-bold text-cream mb-1">{category.name}</h2>
               <div className="w-10 h-0.5 bg-amber-spice mb-6" />
               <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
                 {category.items.map(item => (
@@ -419,16 +513,16 @@ export default function Menu({ addToCart }: MenuProps) {
                       setSelectedItemForModal(item)
                       setIsDetailOpen(true)
                     }}
-                    className="bg-[#00503D] rounded-2xl border border-white/10 sm:border-white/20 hover:border-amber-spice/60 transition-all duration-300 group flex flex-row items-center sm:items-stretch h-auto sm:h-[180px] py-4 sm:py-0 sm:overflow-hidden px-4 sm:px-0 cursor-pointer"
+                    className="bg-[#0c0c0c] rounded-2xl border border-linen-dark/15 hover:border-amber-spice/40 transition-all duration-300 group flex flex-row items-center sm:items-stretch h-auto sm:h-[180px] py-4 sm:py-0 sm:overflow-hidden px-4 sm:px-0 cursor-pointer"
                   >
                     {/* Mobile/Desktop Text Content */}
                     <div className="flex-1 pr-4 sm:p-4 flex flex-col justify-center sm:justify-start order-1 sm:order-2">
                       <div className="flex-1">
-                        <h3 className="font-playfair font-bold uppercase text-[18px] sm:normal-case sm:font-sans sm:font-semibold sm:text-[16px] text-white tracking-wide sm:tracking-normal">{item.name}</h3>
-                        <p className="text-[15px] sm:text-[13px] text-white/80 sm:text-white/70 font-light mt-1 sm:mt-1.5 leading-[1.3] sm:leading-[1.6] line-clamp-2">{item.desc}</p>
+                        <h3 className="font-playfair font-bold uppercase text-[18px] sm:normal-case sm:font-sans sm:font-semibold sm:text-[16px] text-cream tracking-wide sm:tracking-normal">{item.name}</h3>
+                        <p className="text-[15px] sm:text-[13px] text-cream/70 font-light mt-1 sm:mt-1.5 leading-[1.3] sm:leading-[1.6] line-clamp-2">{item.desc}</p>
                       </div>
                       <div className="mt-3 sm:mt-4 flex items-center justify-between">
-                        <span className="font-sans sm:font-playfair text-[15px] sm:text-[20px] text-white sm:font-bold">${item.price}</span>
+                        <span className="font-sans sm:font-playfair text-[15px] sm:text-[20px] text-amber-spice sm:font-bold">${item.price}</span>
                         {/* Add button */}
                         <button 
                           onClick={(e) => {
@@ -453,7 +547,7 @@ export default function Menu({ addToCart }: MenuProps) {
                           setSelectedItemForModal(item)
                           setIsDetailOpen(true)
                         }}
-                        className="sm:hidden absolute -bottom-1 -right-1 bg-white w-9 h-9 rounded-full flex items-center justify-center shadow-[0_2px_10px_rgba(0,0,0,0.15)] text-charcoal hover:bg-linen-light transition-colors z-10"
+                        className="sm:hidden absolute -bottom-1 -right-1 bg-amber-spice w-9 h-9 rounded-full flex items-center justify-center shadow-[0_2px_10px_rgba(0,0,0,0.15)] text-charcoal hover:bg-amber-deep transition-colors z-10"
                       >
                         <Plus size={20} strokeWidth={2.5} />
                       </button>
@@ -465,13 +559,63 @@ export default function Menu({ addToCart }: MenuProps) {
           ))
         ) : (
           <div className="text-center py-20">
-            <p className="text-stone text-[16px] font-light">No dishes found matching "{searchQuery}"</p>
-            <button onClick={() => setSearchQuery('')} className="text-amber-deep font-medium mt-2 hover:underline">Clear search</button>
+            <p className="text-cream/55 text-[16px] font-light">No dishes found matching "{searchQuery}"</p>
+            <button onClick={() => setSearchQuery('')} className="text-amber-spice font-medium mt-2 hover:underline">Clear search</button>
           </div>
         )}
         
         {/* Padding for mobile FAB */}
         <div className="h-20 lg:hidden" />
+
+        {/* Footer Section */}
+        <footer className="bg-[#0d0d0d] pt-20 pb-12 px-6 sm:px-10 -mx-6 sm:-mx-10 border-t border-linen-dark/10 flex flex-col items-center z-10 relative mt-auto">
+          <div className="flex flex-col gap-10 mb-20 w-full max-w-max mx-auto text-left">
+            {/* Phone */}
+            <div className="flex items-center gap-6">
+              <Phone className="w-5 h-5 text-amber-spice flex-shrink-0" strokeWidth={1.5} />
+              <a href="tel:+17708000881" className="text-[13px] tracking-[4px] uppercase font-light text-cream/80 hover:text-amber-spice transition-colors font-inter">
+                +1(770)800-0881
+              </a>
+            </div>
+
+            {/* Email */}
+            <div className="flex items-center gap-6">
+              <Mail className="w-5 h-5 text-amber-spice flex-shrink-0" strokeWidth={1.5} />
+              <a href="mailto:Info@tastofclove.com" className="text-[13px] tracking-[4px] uppercase font-light text-cream/80 hover:text-amber-spice transition-colors font-inter">
+                INFO@TASTOFCLOVE.COM
+              </a>
+            </div>
+
+            {/* Address */}
+            <div className="flex items-start gap-6">
+              <MapPin className="w-5 h-5 text-amber-spice mt-0.5 flex-shrink-0" strokeWidth={1.5} />
+              <a 
+                href="https://maps.google.com/?q=3083+Breckinridge+Blvd,+Suite+210,+Duluth+GA+30096"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[13px] tracking-[4px] uppercase font-light text-cream/80 hover:text-amber-spice transition-colors leading-[1.6] font-inter"
+              >
+                3083 BRECKINRIDGE BLVD, SUITE 210, DULUTH GA 30096
+              </a>
+            </div>
+          </div>
+
+          {/* Social Icons & Design Credit */}
+          <div className="w-full border-t border-linen-dark/10 pt-10 flex flex-col items-center gap-6">
+            <div className="flex gap-6">
+              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-amber-spice hover:opacity-80 transition-opacity">
+                <Facebook className="w-5 h-5" strokeWidth={1.5} />
+              </a>
+              <a href="https://www.instagram.com/tasteofclove/" target="_blank" rel="noopener noreferrer" className="text-amber-spice hover:opacity-80 transition-opacity">
+                <Instagram className="w-5 h-5" strokeWidth={1.5} />
+              </a>
+            </div>
+            
+            <div className="text-center text-[10px] tracking-[3px] text-cream/30 uppercase font-light leading-relaxed max-w-[450px] font-inter">
+              @2026 Clove. ALL RIGHTS RESERVED
+            </div>
+          </div>
+        </footer>
       </main>
 
       <DishDetailModal
@@ -480,6 +624,7 @@ export default function Menu({ addToCart }: MenuProps) {
         item={selectedItemForModal}
         onAddToCart={addToCart}
       />
-    </div>
+      </div>
+    </>
   )
 }
