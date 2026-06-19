@@ -188,63 +188,97 @@ export default function App() {
       setSelectedTime(slots[0])
     }
 
-    // Check if returning from a successful Clover checkout
-    const params = new URLSearchParams(window.location.search)
-    if (params.get('checkout_success') === 'true') {
+    // Verify and process pending Clover orders
+    const checkPendingOrder = async () => {
       const pendingOrderRaw = localStorage.getItem('clove_pending_order')
-      if (pendingOrderRaw) {
-        const pendingOrder = JSON.parse(pendingOrderRaw)
-        const processOrder = async () => {
-          try {
-            if (pendingOrder.isLoggedIn && pendingOrder.userId) {
-              const { error: orderError } = await supabase
-                .from('orders')
-                .insert({
-                  user_id: pendingOrder.userId,
-                  items: pendingOrder.items,
-                  subtotal: pendingOrder.subtotal,
-                  tax: pendingOrder.tax,
-                  total: pendingOrder.total,
-                  pickup_time: pendingOrder.pickup_time,
-                  status: 'completed'
-                })
-              if (orderError) throw orderError
+      if (!pendingOrderRaw) {
+        // If returning with checkout_success but no localStorage data (e.g. cleared cache), still clean URL
+        const params = new URLSearchParams(window.location.search)
+        if (params.get('checkout_success') === 'true') {
+          const url = new URL(window.location.href)
+          url.searchParams.delete('checkout_success')
+          window.history.replaceState({}, document.title, url.pathname + url.search)
+        }
+        return
+      }
 
-              await supabase
-                .from('cart_items')
-                .delete()
-                .eq('user_id', pendingOrder.userId)
-            } else {
-              const guestOrder = {
-                id: pendingOrder.id,
-                items: pendingOrder.items,
-                subtotal: pendingOrder.subtotal,
-                tax: pendingOrder.tax,
-                total: pendingOrder.total,
-                pickup_time: pendingOrder.pickup_time,
-                status: 'completed',
-                created_at: new Date().toISOString(),
-                guest_info: pendingOrder.guest_info
-              }
-              const existingOrdersRaw = localStorage.getItem('guest_orders')
-              const existingOrders = existingOrdersRaw ? JSON.parse(existingOrdersRaw) : []
+      try {
+        const pendingOrder = JSON.parse(pendingOrderRaw)
+        if (!pendingOrder.checkoutId) {
+          localStorage.removeItem('clove_pending_order')
+          return
+        }
+
+        // Check the payment status on Vercel backend
+        const res = await fetch(`/api/check-payment?checkoutId=${pendingOrder.checkoutId}`)
+        if (!res.ok) {
+          throw new Error('Failed to verify payment status')
+        }
+
+        const checkoutData = await res.json()
+        const isPaid = checkoutData.status === 'PAID' || checkoutData.status === 'SUCCESS' || checkoutData.paymentState === 'PAID'
+
+        if (isPaid) {
+          if (pendingOrder.isLoggedIn && pendingOrder.supabaseOrderId) {
+            // Update the existing pending order to completed
+            const { error: updateError } = await supabase
+              .from('orders')
+              .update({ status: 'completed' })
+              .eq('id', pendingOrder.supabaseOrderId)
+
+            if (updateError) throw updateError
+
+            // Clear database cart
+            await supabase
+              .from('cart_items')
+              .delete()
+              .eq('user_id', pendingOrder.userId)
+          } else if (!pendingOrder.isLoggedIn) {
+            // Guest checkout: Save order to localStorage
+            const guestOrder = {
+              id: pendingOrder.id || 'GUEST_' + Math.random().toString(36).substr(2, 9).toUpperCase(),
+              items: pendingOrder.items,
+              subtotal: pendingOrder.subtotal,
+              tax: pendingOrder.tax,
+              total: pendingOrder.total,
+              pickup_time: pendingOrder.pickup_time,
+              status: 'completed',
+              created_at: new Date().toISOString(),
+              guest_info: pendingOrder.guest_info
+            }
+            const existingOrdersRaw = localStorage.getItem('guest_orders')
+            const existingOrders = existingOrdersRaw ? JSON.parse(existingOrdersRaw) : []
+            if (!existingOrders.some((o: any) => o.id === guestOrder.id)) {
               existingOrders.unshift(guestOrder)
               localStorage.setItem('guest_orders', JSON.stringify(existingOrders))
             }
-            setCart([])
-            showNotification('Order placed successfully!')
-          } catch (err) {
-            console.error('Error finalizing order:', err)
-          } finally {
-            localStorage.removeItem('clove_pending_order')
-            const url = new URL(window.location.href)
-            url.searchParams.delete('checkout_success')
-            window.history.replaceState({}, document.title, url.pathname + url.search)
           }
+
+          setCart([])
+          localStorage.removeItem('clove_pending_order')
+          showNotification('Order placed successfully!')
+        } else if (checkoutData.status === 'CANCELLED' || checkoutData.status === 'EXPIRED') {
+          // Clean up pending Supabase order if payment failed/cancelled
+          if (pendingOrder.isLoggedIn && pendingOrder.supabaseOrderId) {
+            await supabase
+              .from('orders')
+              .delete()
+              .eq('id', pendingOrder.supabaseOrderId)
+          }
+          localStorage.removeItem('clove_pending_order')
         }
-        processOrder()
+      } catch (err) {
+        console.error('Error verifying pending order:', err)
+      } finally {
+        const url = new URL(window.location.href)
+        if (url.searchParams.get('checkout_success') === 'true') {
+          url.searchParams.delete('checkout_success')
+          window.history.replaceState({}, document.title, url.pathname + url.search)
+        }
       }
     }
+
+    checkPendingOrder()
 
     return () => subscription.unsubscribe()
   }, [])
