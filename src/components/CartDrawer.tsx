@@ -149,14 +149,48 @@ export default function CartDrawer({
 
       const data = await res.json()
       if (data.href) {
+        let supabaseOrderId = null
+        if (isLoggedIn) {
+          const { data: userData } = await supabase.auth.getUser()
+          if (userData.user) {
+            const { data: insertedOrder, error: orderError } = await supabase
+              .from('orders')
+              .insert({
+                user_id: userData.user.id,
+                items: cart.map(item => ({
+                  id: item.id,
+                  name: item.notes ? `${item.name} (${item.notes})` : item.name,
+                  price: item.price,
+                  qty: item.qty,
+                  img: item.img
+                })),
+                subtotal: parseFloat(subtotal.toFixed(2)),
+                tax: parseFloat((subtotal * 0.08).toFixed(2)),
+                total: parseFloat((subtotal * 1.08).toFixed(2)),
+                pickup_time: selectedTime,
+                status: 'pending'
+              })
+              .select()
+              .single()
+            
+            if (orderError) {
+              console.error('Error saving pending order:', orderError)
+            } else if (insertedOrder) {
+              supabaseOrderId = insertedOrder.id
+            }
+          }
+        }
+
         // Save the pending order details locally so they can be processed
         // only when we receive the success callback in App.tsx
         const pendingOrder = {
           isLoggedIn,
           userId: isLoggedIn ? (await supabase.auth.getUser()).data.user?.id : null,
+          supabaseOrderId,
+          checkoutId: data.id,
           items: cart.map(item => ({
             id: item.id,
-            name: item.name,
+            name: item.notes ? `${item.name} (${item.notes})` : item.name,
             price: item.price,
             qty: item.qty,
             img: item.img
