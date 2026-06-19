@@ -93,7 +93,7 @@ function generateTimeSlots(): string[] {
 
 export default function App() {
   // Toggle this to show/hide the Work in Progress page
-  const showWorkInProgress = true
+  const showWorkInProgress = false
 
   if (showWorkInProgress) {
     return <WorkInProgress />
@@ -186,6 +186,64 @@ export default function App() {
     setTimeSlots(slots)
     if (slots.length > 0) {
       setSelectedTime(slots[0])
+    }
+
+    // Check if returning from a successful Clover checkout
+    const params = new URLSearchParams(window.location.search)
+    if (params.get('checkout_success') === 'true') {
+      const pendingOrderRaw = localStorage.getItem('clove_pending_order')
+      if (pendingOrderRaw) {
+        const pendingOrder = JSON.parse(pendingOrderRaw)
+        const processOrder = async () => {
+          try {
+            if (pendingOrder.isLoggedIn && pendingOrder.userId) {
+              const { error: orderError } = await supabase
+                .from('orders')
+                .insert({
+                  user_id: pendingOrder.userId,
+                  items: pendingOrder.items,
+                  subtotal: pendingOrder.subtotal,
+                  tax: pendingOrder.tax,
+                  total: pendingOrder.total,
+                  pickup_time: pendingOrder.pickup_time,
+                  status: 'completed'
+                })
+              if (orderError) throw orderError
+
+              await supabase
+                .from('cart_items')
+                .delete()
+                .eq('user_id', pendingOrder.userId)
+            } else {
+              const guestOrder = {
+                id: pendingOrder.id,
+                items: pendingOrder.items,
+                subtotal: pendingOrder.subtotal,
+                tax: pendingOrder.tax,
+                total: pendingOrder.total,
+                pickup_time: pendingOrder.pickup_time,
+                status: 'completed',
+                created_at: new Date().toISOString(),
+                guest_info: pendingOrder.guest_info
+              }
+              const existingOrdersRaw = localStorage.getItem('guest_orders')
+              const existingOrders = existingOrdersRaw ? JSON.parse(existingOrdersRaw) : []
+              existingOrders.unshift(guestOrder)
+              localStorage.setItem('guest_orders', JSON.stringify(existingOrders))
+            }
+            setCart([])
+            showNotification('Order placed successfully!')
+          } catch (err) {
+            console.error('Error finalizing order:', err)
+          } finally {
+            localStorage.removeItem('clove_pending_order')
+            const url = new URL(window.location.href)
+            url.searchParams.delete('checkout_success')
+            window.history.replaceState({}, document.title, url.pathname + url.search)
+          }
+        }
+        processOrder()
+      }
     }
 
     return () => subscription.unsubscribe()

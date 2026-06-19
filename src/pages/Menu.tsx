@@ -74,7 +74,42 @@ const exactItemImageMap: Record<string, string> = {
   'tomato velvet soup': '/Tomato Velvet Soup.jpg',
   'wok n_ roll noodles': '/Wok n_ Roll Noodles.jpg',
   'wok n roll noodles': '/Wok n_ Roll Noodles.jpg',
-  'zesty eggplant delight': '/Zesty Eggplant Delight.jpg'
+  'zesty eggplant delight': '/Zesty Eggplant Delight.jpg',
+  
+  // New dishes photos folder additions
+  'amritsari kulcha': '/dishes photos/Amritsari Kulcha Medium.jpeg',
+  'biryani rice': '/dishes photos/Biryani Rice.jpeg',
+  'butter naan': '/dishes photos/Butter Naan Medium.jpeg',
+  'chana masala': '/dishes photos/Chana Masala Medium.jpeg',
+  'punjabi chana masala': '/dishes photos/Chana Masala Medium.jpeg',
+  'chur chur roti': '/dishes photos/Chur Chur Roti Medium.jpeg',
+  'crisp puri': '/dishes photos/Crisp Puri.jpeg',
+  'firecracker chili naan': '/dishes photos/Firecracker Chili Naan.jpeg',
+  'fries': '/dishes photos/Fries.jpeg',
+  'garlic naan': '/dishes photos/Garlic Naan.jpeg',
+  'goat cheese truffle naan': '/dishes photos/Goat Cheese Truffle Naan Medium.jpeg',
+  'green salad': '/dishes photos/Green Salad.jpeg',
+  'gulab jamun': '/dishes photos/Gulab Jamun.jpeg',
+  'jeera rice': '/dishes photos/Jeera Rice.jpeg',
+  'kids cheese naan': '/dishes photos/Kids Cheese Naan Medium.jpeg',
+  'kids maggie': '/dishes photos/Kids Maggie .jpeg',
+  'lamb chop': '/dishes photos/Lamb Chop.jpeg',
+  'manchurian munchies': '/dishes photos/Manchurian Munchies Medium.jpeg',
+  'mango lassi': '/dishes photos/Mango Lassi.jpeg',
+  'masala rasso': '/dishes photos/Masala Rasso.jpeg',
+  'masala soda': '/dishes photos/Masala Soda Medium.jpeg',
+  'mint cucumber raita': '/dishes photos/Mint Cucumber Raita.jpeg',
+  'mozarella fried cheese stick': '/dishes photos/Mozarella Fried cheese stick Medium.jpeg',
+  'royal emperor chicken': '/dishes photos/Royal Emperor Chicken.jpeg',
+  'salmon platter': '/dishes photos/Salmon Platter Medium.jpeg',
+  'salted lassi': '/dishes photos/Salted Lassi.jpeg',
+  'samosa exlosion': '/dishes photos/Samosa Exlosion.jpeg',
+  'samosa explosion': '/dishes photos/Samosa Exlosion.jpeg',
+  'spring scrolls': '/dishes photos/Spring Scrolls Medium.jpeg',
+  'tandoori shrimp': '/dishes photos/Tandoori Shrimp Medium.jpeg',
+  'veg scroll': '/dishes photos/Veg Scroll.jpeg',
+  'heritage goat': '/dishes photos/Heritage Goat.jpeg',
+  'tacos': '/dishes photos/Tacos.PNG'
 }
 
 function getItemImage(itemName: string, categoryName: string): string {
@@ -566,56 +601,6 @@ export default function Menu({ addToCart }: MenuProps) {
         
         {/* Padding for mobile FAB */}
         <div className="h-20 lg:hidden" />
-
-        {/* Footer Section */}
-        <footer className="bg-[#0d0d0d] pt-20 pb-12 px-6 sm:px-10 -mx-6 sm:-mx-10 border-t border-linen-dark/10 flex flex-col items-center z-10 relative mt-auto">
-          <div className="flex flex-col gap-10 mb-20 w-full max-w-max mx-auto text-left">
-            {/* Phone */}
-            <div className="flex items-center gap-6">
-              <Phone className="w-5 h-5 text-amber-spice flex-shrink-0" strokeWidth={1.5} />
-              <a href="tel:+17708000881" className="text-[13px] tracking-[4px] uppercase font-light text-cream/80 hover:text-amber-spice transition-colors font-inter">
-                +1(770)800-0881
-              </a>
-            </div>
-
-            {/* Email */}
-            <div className="flex items-center gap-6">
-              <Mail className="w-5 h-5 text-amber-spice flex-shrink-0" strokeWidth={1.5} />
-              <a href="mailto:Info@tastofclove.com" className="text-[13px] tracking-[4px] uppercase font-light text-cream/80 hover:text-amber-spice transition-colors font-inter">
-                INFO@TASTOFCLOVE.COM
-              </a>
-            </div>
-
-            {/* Address */}
-            <div className="flex items-start gap-6">
-              <MapPin className="w-5 h-5 text-amber-spice mt-0.5 flex-shrink-0" strokeWidth={1.5} />
-              <a 
-                href="https://maps.google.com/?q=3083+Breckinridge+Blvd,+Suite+210,+Duluth+GA+30096"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[13px] tracking-[4px] uppercase font-light text-cream/80 hover:text-amber-spice transition-colors leading-[1.6] font-inter"
-              >
-                3083 BRECKINRIDGE BLVD, SUITE 210, DULUTH GA 30096
-              </a>
-            </div>
-          </div>
-
-          {/* Social Icons & Design Credit */}
-          <div className="w-full border-t border-linen-dark/10 pt-10 flex flex-col items-center gap-6">
-            <div className="flex gap-6">
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-amber-spice hover:opacity-80 transition-opacity">
-                <Facebook className="w-5 h-5" strokeWidth={1.5} />
-              </a>
-              <a href="https://www.instagram.com/tasteofclove/" target="_blank" rel="noopener noreferrer" className="text-amber-spice hover:opacity-80 transition-opacity">
-                <Instagram className="w-5 h-5" strokeWidth={1.5} />
-              </a>
-            </div>
-            
-            <div className="text-center text-[10px] tracking-[3px] text-cream/30 uppercase font-light leading-relaxed max-w-[450px] font-inter">
-              @2026 Clove. ALL RIGHTS RESERVED
-            </div>
-          </div>
-        </footer>
       </main>
 
       <DishDetailModal

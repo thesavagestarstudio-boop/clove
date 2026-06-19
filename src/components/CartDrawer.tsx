@@ -125,7 +125,7 @@ export default function CartDrawer({
             }
           ]
         },
-        redirectUrl: `${window.location.origin}/`
+        redirectUrl: `${window.location.origin}/?checkout_success=true`
       }
 
       const res = await fetch(checkoutUrl, {
@@ -149,79 +149,36 @@ export default function CartDrawer({
 
       const data = await res.json()
       if (data.href) {
-        if (isLoggedIn) {
-          // Save the order to Supabase orders table
-          const { data: userData } = await supabase.auth.getUser()
-          if (userData.user) {
-            const { error: orderError } = await supabase
-              .from('orders')
-              .insert({
-                user_id: userData.user.id,
-                items: cart.map(item => ({
-                  id: item.id,
-                  name: item.name,
-                  price: item.price,
-                  qty: item.qty,
-                  img: item.img
-                })),
-                subtotal: parseFloat(subtotal.toFixed(2)),
-                tax: parseFloat((subtotal * 0.08).toFixed(2)),
-                total: parseFloat((subtotal * 1.08).toFixed(2)),
-                pickup_time: selectedTime,
-                status: 'completed'
-              })
-            if (orderError) {
-              console.error('Error saving order history:', orderError)
-            }
-
-            // Clear database cart
-            const { error: cartError } = await supabase
-              .from('cart_items')
-              .delete()
-              .eq('user_id', userData.user.id)
-            if (cartError) {
-              console.error('Error clearing cart from database:', cartError)
-            }
-          }
-        } else {
-          // Guest Checkout: Save order to localStorage
-          const guestOrder = {
-            id: 'GUEST_' + Math.random().toString(36).substr(2, 9).toUpperCase(),
-            items: cart.map(item => ({
-              id: item.id,
-              name: item.name,
-              price: item.price,
-              qty: item.qty,
-              img: item.img
-            })),
-            subtotal: parseFloat(subtotal.toFixed(2)),
-            tax: parseFloat((subtotal * 0.08).toFixed(2)),
-            total: parseFloat((subtotal * 1.08).toFixed(2)),
-            pickup_time: selectedTime,
-            status: 'completed',
-            created_at: new Date().toISOString(),
-            guest_info: {
-              name: guestName,
-              email: guestEmail,
-              phone: guestPhone
-            }
-          }
-
-          const existingOrdersRaw = localStorage.getItem('guest_orders')
-          const existingOrders = existingOrdersRaw ? JSON.parse(existingOrdersRaw) : []
-          existingOrders.unshift(guestOrder)
-          localStorage.setItem('guest_orders', JSON.stringify(existingOrders))
-          
-          // Clear local cart
-          if (showNotification) {
-            showNotification('Guest order initiated successfully!')
-          }
+        // Save the pending order details locally so they can be processed
+        // only when we receive the success callback in App.tsx
+        const pendingOrder = {
+          isLoggedIn,
+          userId: isLoggedIn ? (await supabase.auth.getUser()).data.user?.id : null,
+          items: cart.map(item => ({
+            id: item.id,
+            name: item.name,
+            price: item.price,
+            qty: item.qty,
+            img: item.img
+          })),
+          subtotal: parseFloat(subtotal.toFixed(2)),
+          tax: parseFloat((subtotal * 0.08).toFixed(2)),
+          total: parseFloat((subtotal * 1.08).toFixed(2)),
+          pickup_time: selectedTime,
+          guest_info: isLoggedIn ? null : {
+            name: guestName,
+            email: guestEmail,
+            phone: guestPhone
+          },
+          id: isLoggedIn ? null : 'GUEST_' + Math.random().toString(36).substr(2, 9).toUpperCase()
         }
-
+        
+        localStorage.setItem('clove_pending_order', JSON.stringify(pendingOrder))
         window.location.href = data.href
       } else {
         throw new Error('No checkout URL returned from Clover')
       }
+
     } catch (err: any) {
       console.error('Checkout error:', err)
       const errorMsg = `Checkout failed: ${err.message}`
