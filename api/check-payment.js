@@ -1,0 +1,48 @@
+export default async function handler(req, res) {
+  // Set CORS headers
+  res.setHeader('Access-Control-Allow-Credentials', true)
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,POST')
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization'
+  )
+
+  if (req.method === 'OPTIONS') {
+    res.status(200).end()
+    return
+  }
+
+  const { checkoutId } = req.query
+
+  if (!checkoutId) {
+    res.status(400).json({ error: 'checkoutId query parameter is required' })
+    return
+  }
+
+  const merchantId = process.env.CLOVER_MERCHANT_ID || 'QR0WTC2AX35P1'
+  const paymentToken = process.env.CLOVER_PAYMENT_TOKEN || process.env.CLOVER_ACCESS_TOKEN || '6b4dc5c6-8037-d747-f87c-ef3cd67434c7'
+
+  try {
+    const cloverRes = await fetch(`https://api.clover.com/invoicingcheckoutservice/v1/checkouts/${checkoutId}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${paymentToken}`,
+        'X-Clover-Merchant-Id': merchantId,
+        'Accept': 'application/json'
+      }
+    })
+
+    if (!cloverRes.ok) {
+      const errText = await cloverRes.text()
+      throw new Error(errText || `Clover API responded with ${cloverRes.status}`)
+    }
+
+    const data = await cloverRes.json()
+    // Return checkout state (e.g. status: "PAID", "CREATED", "CANCELLED", etc.)
+    res.status(200).json(data)
+  } catch (err) {
+    console.error('API Check Payment error:', err)
+    res.status(500).json({ error: err.message || 'Failed to check payment status' })
+  }
+}

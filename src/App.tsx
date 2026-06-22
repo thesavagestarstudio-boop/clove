@@ -93,7 +93,7 @@ function generateTimeSlots(): string[] {
 
 export default function App() {
   // Toggle this to show/hide the Work in Progress page
-  const showWorkInProgress = true
+  const showWorkInProgress = false
 
   if (showWorkInProgress) {
     return <WorkInProgress />
