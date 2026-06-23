@@ -89,14 +89,13 @@ export default function CartDrawer({
   }
 
   const handleCheckout = async () => {
-    if (!isLoggedIn && !showGuestForm) {
-      setShowGuestForm(true)
-      return
+    const message = "This function is in progress. Please Call Restaurant (+1(770)800-0881) for pickup orders. Sorry for the inconvenience"
+    if (showNotification) {
+      showNotification(message)
+    } else {
+      alert(message)
     }
-
-    if (!isLoggedIn && showGuestForm) {
-      if (!validateForm()) return
-    }
+    return
 
     if (cart.length === 0 || isCheckingOut) return
 
