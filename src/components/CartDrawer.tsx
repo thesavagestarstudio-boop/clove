@@ -164,8 +164,8 @@ export default function CartDrawer({
                   img: item.img
                 })),
                 subtotal: parseFloat(subtotal.toFixed(2)),
-                tax: parseFloat((subtotal * 0.08).toFixed(2)),
-                total: parseFloat((subtotal * 1.08).toFixed(2)),
+                tax: 0,
+                total: parseFloat(subtotal.toFixed(2)),
                 pickup_time: selectedTime,
                 status: 'pending'
               })
@@ -195,8 +195,8 @@ export default function CartDrawer({
             img: item.img
           })),
           subtotal: parseFloat(subtotal.toFixed(2)),
-          tax: parseFloat((subtotal * 0.08).toFixed(2)),
-          total: parseFloat((subtotal * 1.08).toFixed(2)),
+          tax: 0,
+          total: parseFloat(subtotal.toFixed(2)),
           pickup_time: selectedTime,
           guest_info: isLoggedIn ? null : {
             name: guestName,
@@ -415,15 +415,12 @@ export default function CartDrawer({
         {/* Footer */}
         <div className="px-6 py-5 border-t border-linen-dark/35 bg-linen/50 flex-shrink-0">
           <div className="space-y-2 mb-6">
-            <div className="flex justify-between text-[12px] text-stone">
+            <div className="flex justify-between text-[13px] text-stone">
               <span>Subtotal</span><span>${subtotal.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between text-[11px] text-stone/60">
-              <span>Tax (8%)</span><span>${(subtotal * 0.08).toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-[16px] font-semibold text-charcoal border-t border-linen-dark/20 pt-3 mt-3">
               <span className="font-playfair">Total</span>
-              <span className="font-playfair">${(subtotal * 1.08).toFixed(2)}</span>
+              <span className="font-playfair">${subtotal.toFixed(2)}</span>
             </div>
           </div>
 

@@ -19,7 +19,9 @@ export default async function handler(req, res) {
   }
 
   const merchantId = process.env.CLOVER_MERCHANT_ID || 'QR0WTC2AX35P1'
-  const paymentToken = process.env.CLOVER_PAYMENT_TOKEN || process.env.CLOVER_ACCESS_TOKEN || '6b4dc5c6-8037-d747-f87c-ef3cd67434c7'
+  const paymentToken = process.env.CLOVER_PAYMENT_TOKEN || process.env.CLOVER_ACCESS_TOKEN || 'bb380920-f0d5-46d7-fefb-4e699b0c4e52'
+
+  console.log(`[Clover Checkout API] Merchant ID: ${merchantId}, Token start: ${paymentToken.substring(0, 4)}...`)
 
   try {
     const cloverRes = await fetch(`https://api.clover.com/invoicingcheckoutservice/v1/checkouts`, {
@@ -28,7 +30,8 @@ export default async function handler(req, res) {
         'Authorization': `Bearer ${paymentToken}`,
         'X-Clover-Merchant-Id': merchantId,
         'Content-Type': 'application/json',
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        'User-Agent': 'CloveKitchenStore/1.0.0'
       },
       body: JSON.stringify(req.body)
     })
