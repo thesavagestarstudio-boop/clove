@@ -89,6 +89,14 @@ export default function CartDrawer({
   }
 
   const handleCheckout = async () => {
+    if (!isLoggedIn && !showGuestForm) {
+      setShowGuestForm(true)
+      return
+    }
+
+    if (!isLoggedIn && showGuestForm) {
+      if (!validateForm()) return
+    }
 
     if (cart.length === 0 || isCheckingOut) return
 
