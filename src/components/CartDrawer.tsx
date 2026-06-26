@@ -89,13 +89,6 @@ export default function CartDrawer({
   }
 
   const handleCheckout = async () => {
-    const message = "This function is in progress. Please Call Restaurant (+1(770)800-0881) for pickup orders. Sorry for the inconvenience"
-    if (showNotification) {
-      showNotification(message)
-    } else {
-      alert(message)
-    }
-    return
 
     if (cart.length === 0 || isCheckingOut) return
 
