@@ -174,10 +174,10 @@ export default function Header({ onLoginClick, onLogoutClick, onCartClick, cartC
 
         {/* 2. Reservations Button */}
         <div className="w-full flex justify-center z-10">
-          <Link to="/menu"
+          <a href="https://yelp.to/hc-5pzrkDf" target="_blank" rel="noopener noreferrer"
             className="border border-cream/40 text-cream px-10 py-3 text-[10px] tracking-[3px] uppercase font-medium hover:border-amber-spice hover:text-amber-spice transition-all duration-300">
             RESERVATION
-          </Link>
+          </a>
         </div>
 
         {/* 3. Centered Hamburger Menu / Close Menu Button */}

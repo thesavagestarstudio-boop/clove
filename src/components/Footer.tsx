@@ -38,7 +38,7 @@ export default function Footer() {
       {/* Social Icons & Design Credit */}
       <div className="w-full max-w-[1200px] border-t border-linen-dark/10 pt-10 flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="flex gap-6">
-          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-amber-spice hover:opacity-80 transition-opacity">
+          <a href="https://www.facebook.com/tasteofclove" target="_blank" rel="noopener noreferrer" className="text-amber-spice hover:opacity-80 transition-opacity">
             <Facebook className="w-5 h-5" strokeWidth={1.5} />
           </a>
           <a href="https://www.instagram.com/tasteofclove/" target="_blank" rel="noopener noreferrer" className="text-amber-spice hover:opacity-80 transition-opacity">

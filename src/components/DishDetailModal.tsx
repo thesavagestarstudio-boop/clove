@@ -132,71 +132,109 @@ export default function DishDetailModal({
 
               <div className="border-t border-linen-dark/20 mt-6 mx-6" />
 
-              {/* Special Instructions Section */}
-              <div className="px-6 pt-6">
-                <label className="block text-[11px] tracking-[2px] uppercase text-charcoal font-bold mb-2.5">
-                  Special Instructions
-                </label>
-                <textarea
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  placeholder="Add a note (e.g. no nuts, no onions)."
-                  className="w-full bg-white border border-linen-dark/40 rounded-xl px-4 py-3 text-[13px] text-charcoal focus:outline-none focus:border-charcoal focus:ring-1 focus:ring-charcoal/10 transition-all min-h-[100px] placeholder:text-stone/40 resize-none"
-                />
+              {/* Special Instructions & Quantity OR Dine-in Only message */}
+              {(() => {
+                const nameLower = item.name.toLowerCase();
+                const dineInOnly = nameLower.includes('bruschetta') || nameLower.includes('midnight cacao');
 
-                {/* Request Advisory disclaimer */}
-                <div className="flex items-start gap-3 bg-linen-light/20 border border-linen-dark/15 rounded-xl p-4 mt-3">
-                  <Info size={16} className="text-stone/60 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-[11px] font-bold text-stone uppercase tracking-wider leading-none mb-1">
-                      Request advisory
-                    </p>
-                    <p className="text-[11px] text-stone/70 font-light leading-relaxed">
-                      We'll do our best to accommodate special requests but may not be able to honor all substitutes. Extra charges may apply.
-                    </p>
-                  </div>
-                </div>
-              </div>
+                if (dineInOnly) {
+                  return (
+                    <div className="px-6 py-10 text-center">
+                      <div className="inline-block bg-amber-spice/10 border border-amber-spice/30 text-amber-deep rounded-full px-4 py-1.5 text-[11px] font-bold uppercase tracking-[2px] mb-4">
+                        Dine-in Only
+                      </div>
+                      <p className="text-[14px] text-stone/80 font-light leading-relaxed max-w-[380px] mx-auto">
+                        This item is crafted exclusively for our dine-in guests to preserve its texture, temperature, and presentation. It is not available for takeout.
+                      </p>
+                    </div>
+                  );
+                }
 
-              <div className="border-t border-linen-dark/20 mt-6 mx-6" />
+                return (
+                  <>
+                    {/* Special Instructions Section */}
+                    <div className="px-6 pt-6">
+                      <label className="block text-[11px] tracking-[2px] uppercase text-charcoal font-bold mb-2.5">
+                        Special Instructions
+                      </label>
+                      <textarea
+                        value={notes}
+                        onChange={(e) => setNotes(e.target.value)}
+                        placeholder="Add a note (e.g. no nuts, no onions)."
+                        className="w-full bg-white border border-linen-dark/40 rounded-xl px-4 py-3 text-[13px] text-charcoal focus:outline-none focus:border-charcoal focus:ring-1 focus:ring-charcoal/10 transition-all min-h-[100px] placeholder:text-stone/40 resize-none"
+                      />
 
-              {/* Quantity Section */}
-              <div className="px-6 py-6 flex justify-between items-center">
-                <span className="text-[13px] font-bold tracking-[1.5px] uppercase text-charcoal">
-                  Quantity
-                </span>
-                <div className="flex items-center gap-4 bg-linen-light/35 border border-linen-dark/20 rounded-full px-3 py-1.5">
-                  <button
-                    onClick={() => setQty(prev => Math.max(1, prev - 1))}
-                    disabled={qty <= 1}
-                    className="w-8 h-8 rounded-full border border-linen-dark/30 bg-white flex items-center justify-center text-charcoal hover:bg-linen-light hover:border-charcoal transition-colors disabled:opacity-30 disabled:hover:bg-white"
-                  >
-                    <Minus size={14} />
-                  </button>
-                  <span className="font-bold text-[14px] text-charcoal w-6 text-center">
-                    {qty}
-                  </span>
-                  <button
-                    onClick={() => setQty(prev => prev + 1)}
-                    className="w-8 h-8 rounded-full border border-linen-dark/30 bg-white flex items-center justify-center text-charcoal hover:bg-linen-light hover:border-charcoal transition-colors"
-                  >
-                    <Plus size={14} />
-                  </button>
-                </div>
-              </div>
+                      {/* Request Advisory disclaimer */}
+                      <div className="flex items-start gap-3 bg-linen-light/20 border border-linen-dark/15 rounded-xl p-4 mt-3">
+                        <Info size={16} className="text-stone/60 flex-shrink-0 mt-0.5" />
+                        <div>
+                          <p className="text-[11px] font-bold text-stone uppercase tracking-wider leading-none mb-1">
+                            Request advisory
+                          </p>
+                          <p className="text-[11px] text-stone/70 font-light leading-relaxed">
+                            We'll do our best to accommodate special requests but may not be able to honor all substitutes. Extra charges may apply.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="border-t border-linen-dark/20 mt-6 mx-6" />
+
+                    {/* Quantity Section */}
+                    <div className="px-6 py-6 flex justify-between items-center">
+                      <span className="text-[13px] font-bold tracking-[1.5px] uppercase text-charcoal">
+                        Quantity
+                      </span>
+                      <div className="flex items-center gap-4 bg-linen-light/35 border border-linen-dark/20 rounded-full px-3 py-1.5">
+                        <button
+                          onClick={() => setQty(prev => Math.max(1, prev - 1))}
+                          disabled={qty <= 1}
+                          className="w-8 h-8 rounded-full border border-linen-dark/30 bg-white flex items-center justify-center text-charcoal hover:bg-linen-light hover:border-charcoal transition-colors disabled:opacity-30 disabled:hover:bg-white"
+                        >
+                          <Minus size={14} />
+                        </button>
+                        <span className="font-bold text-[14px] text-charcoal w-6 text-center">
+                          {qty}
+                        </span>
+                        <button
+                          onClick={() => setQty(prev => prev + 1)}
+                          className="w-8 h-8 rounded-full border border-linen-dark/30 bg-white flex items-center justify-center text-charcoal hover:bg-linen-light hover:border-charcoal transition-colors"
+                        >
+                          <Plus size={14} />
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                );
+              })()}
             </div>
 
             {/* Sticky Bottom Add to Cart Bar */}
             <div className="absolute bottom-0 left-0 right-0 px-6 py-4 border-t border-linen-dark/25 bg-white/95 backdrop-blur-md z-10">
-              <button
-                onClick={handleAddClick}
-                className="w-full py-4 bg-charcoal text-cream hover:bg-amber-spice hover:text-charcoal transition-all duration-300 rounded-full flex justify-between items-center px-8 text-[11px] tracking-[3px] uppercase font-bold shadow-lg hover:shadow-amber-spice/20"
-              >
-                <span>Add to Cart</span>
-                <span className="font-playfair text-[14px] font-bold">
-                  ${(parseFloat(item.price) * qty).toFixed(2)}
-                </span>
-              </button>
+              {(() => {
+                const nameLower = item.name.toLowerCase();
+                const dineInOnly = nameLower.includes('bruschetta') || nameLower.includes('midnight cacao');
+
+                if (dineInOnly) {
+                  return (
+                    <div className="w-full py-4 bg-stone/10 text-stone/50 rounded-full text-center text-[11px] tracking-[3px] uppercase font-bold border border-stone/20 select-none">
+                      Not Available for Takeout
+                    </div>
+                  );
+                }
+
+                return (
+                  <button
+                    onClick={handleAddClick}
+                    className="w-full py-4 bg-charcoal text-cream hover:bg-amber-spice hover:text-charcoal transition-all duration-300 rounded-full flex justify-between items-center px-8 text-[11px] tracking-[3px] uppercase font-bold shadow-lg hover:shadow-amber-spice/20"
+                  >
+                    <span>Add to Cart</span>
+                    <span className="font-playfair text-[14px] font-bold">
+                      ${(parseFloat(item.price) * qty).toFixed(2)}
+                    </span>
+                  </button>
+                );
+              })()}
             </div>
           </motion.div>
         </div>
