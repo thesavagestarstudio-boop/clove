@@ -165,8 +165,8 @@ export default function CartDrawer({
                   img: item.img
                 })),
                 subtotal: parseFloat(subtotal.toFixed(2)),
-                tax: parseFloat((subtotal * 0.08).toFixed(2)),
-                total: parseFloat((subtotal * 1.08).toFixed(2)),
+                tax: 0,
+                total: parseFloat(subtotal.toFixed(2)),
                 pickup_time: selectedTime,
                 status: 'pending'
               })
@@ -196,8 +196,8 @@ export default function CartDrawer({
             img: item.img
           })),
           subtotal: parseFloat(subtotal.toFixed(2)),
-          tax: parseFloat((subtotal * 0.08).toFixed(2)),
-          total: parseFloat((subtotal * 1.08).toFixed(2)),
+          tax: 0,
+          total: parseFloat(subtotal.toFixed(2)),
           pickup_time: selectedTime,
           guest_info: isLoggedIn ? null : {
             name: guestName,
@@ -424,7 +424,7 @@ export default function CartDrawer({
             </div>
             <div className="flex justify-between text-[16px] font-semibold text-white border-t border-white/10 pt-3 mt-3">
               <span className="font-playfair">Total</span>
-              <span className="font-playfair">${(subtotal * 1.08).toFixed(2)}</span>
+              <span className="font-playfair">${subtotal.toFixed(2)}</span>
             </div>
           </div>
 

@@ -39,23 +39,23 @@ const exactItemImageMap: Record<string, string> = {
   'cauliflower carnival': '/Cauliflower Carnival.jpg',
   'chicken tikka mashup': '/Chicken Tikka Mashup.jpg',
   'chicken tikka trilogy': '/ChickenTikkaTrilogy.jpg',
-  'chili paneer crisp': '/Chili Paneer Crisp.jpg',
-  'clove bruschettas': '/Clove Bruschettas.jpg',
+  'chili paneer crisp': '/Missing Pictures update/Chili Paneer Crisp.PNG',
+  'clove bruschettas': '/Missing Pictures update/Clove Bruschettas.PNG',
   'clove butter chicken': '/Clove Butter Chicken.jpg',
   'clove tacos': '/Clove Tacos.jpg',
   'clovedalmakhani': '/CloveDalMakhani.jpg',
   'clove dal makhani': '/CloveDalMakhani.jpg',
   'creamy paneer melt': '/Creamy Paneer Melt.jpg',
   'crispy golden samosa': '/Crispy Golden Samosa.jpg',
-  'emarald palak royale': '/Emarald Palak Royale.jpg',
-  'emerald palak royale': '/Emarald Palak Royale.jpg',
+  'emarald palak royale': '/Missing Pictures update/Emarald Palak Royale.PNG',
+  'emerald palak royale': '/Missing Pictures update/Emarald Palak Royale.PNG',
   'firecracker chicken': '/Firecracker Chicken.jpg',
   'golden dal tadka': '/Golden Dal Tadka.jpg',
-  'guac n’ crunch bhel': '/Guac n’ Crunch Bhel .jpg',
-  'guac n crunch bhel': '/Guac n’ Crunch Bhel .jpg',
+  'guac n’ crunch bhel': '/Missing Pictures update/Guac n’ Crunch Bhel .jpeg',
+  'guac n crunch bhel': '/Missing Pictures update/Guac n’ Crunch Bhel .jpeg',
   'heritage g.o.a.t': '/Heritage G.O.A.T.jpg',
   'imperial kofta sphere': '/Imperial Kofta Sphere.jpg',
-  'monchow soup': '/Monchow Soup.jpg',
+  'monchow soup': '/Missing Pictures update/Monchow Soup.PNG',
   'paneer pocket rocket': '/Paneer Pocket Rocket.jpg',
   'paneer triple play': '/Paneer Triple Play .jpg',
   'parda biryani': '/Parda Biryani .jpg',
@@ -68,12 +68,12 @@ const exactItemImageMap: Record<string, string> = {
   'saffron lamb-gheeni bites': '/Saffron Lamb-GheeNi Bites.jpg',
   'saffron lamb': '/Saffron Lamb-GheeNi Bites.jpg',
   'the cauliflower carnival': '/The Cauliflower Carnival.jpg',
-  'the clove stack burger': '/The Clove Stack Burger.jpg',
+  'the clove stack burger': '/Missing Pictures update/The Clove Stack Burger.PNG',
   'the kebab affair': '/The Kebab Affair.jpg',
   'the okra onion orbit': '/The Okra Onion Orbit .jpg',
   'tomato velvet soup': '/Tomato Velvet Soup.jpg',
-  'wok n_ roll noodles': '/Wok n_ Roll Noodles.jpg',
-  'wok n roll noodles': '/Wok n_ Roll Noodles.jpg',
+  'wok n_ roll noodles': '/Missing Pictures update/Wok n_ Roll Noodles.PNG',
+  'wok n roll noodles': '/Missing Pictures update/Wok n_ Roll Noodles.PNG',
   'zesty eggplant delight': '/Zesty Eggplant Delight.jpg',
   
   // New dishes photos folder additions
@@ -96,12 +96,12 @@ const exactItemImageMap: Record<string, string> = {
   'lamb chop': '/dishes photos/Lamb Chop.jpeg',
   'manchurian munchies': '/dishes photos/Manchurian Munchies Medium.jpeg',
   'mango lassi': '/dishes photos/Mango Lassi.jpeg',
-  'masala rasso': '/dishes photos/Masala Rasso.jpeg',
+  'masala rasso': '/Missing Pictures update/Masala Rasso.jpeg',
   'masala soda': '/dishes photos/Masala Soda Medium.jpeg',
   'mint cucumber raita': '/dishes photos/Mint Cucumber Raita.jpeg',
   'mozarella fried cheese stick': '/dishes photos/Mozarella Fried cheese stick Medium.jpeg',
   'royal emperor chicken': '/dishes photos/Royal Emperor Chicken.jpeg',
-  'salmon platter': '/dishes photos/Salmon Platter Medium.jpeg',
+  'salmon platter': '/Missing Pictures update/Salmon Platter Medium.jpeg',
   'salted lassi': '/dishes photos/Salted Lassi.jpeg',
   'samosa exlosion': '/dishes photos/Samosa Exlosion.jpeg',
   'samosa explosion': '/dishes photos/Samosa Exlosion.jpeg',
@@ -109,7 +109,14 @@ const exactItemImageMap: Record<string, string> = {
   'tandoori shrimp': '/dishes photos/Tandoori Shrimp Medium.jpeg',
   'veg scroll': '/dishes photos/Veg Scroll.jpeg',
   'heritage goat': '/dishes photos/Heritage Goat.jpeg',
-  'tacos': '/dishes photos/Tacos.PNG'
+  'tacos': '/dishes photos/Tacos.PNG',
+
+  // Missing pictures update folder additions
+  'chicken rosso': '/Missing Pictures update/Chicken Rosso.png',
+  'paneer rosso': '/Missing Pictures update/Paneer Rosso.png',
+  'masala chai': '/Missing Pictures update/Masala Chai.png',
+  'tandoori fire shrimp': '/Missing Pictures update/Tandoori Fire Shrimp.jpg',
+  'tandoori roti': '/Missing Pictures update/Tandoori Roti.png'
 }
 
 function getItemImage(itemName: string, categoryName: string): string {
@@ -135,6 +142,38 @@ function getItemImage(itemName: string, categoryName: string): string {
 
   return categoryImageMap[categoryName] || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&q=85'
 }
+
+const isDineInOnly = (name: string) => {
+  const lowercaseName = name.toLowerCase();
+  
+  // Original dine-in only items
+  if (lowercaseName.includes('bruschetta') || lowercaseName.includes('midnight cacao')) {
+    return true;
+  }
+  
+  // Bread restriction: only Butter Naan and Garlic Naan available for online order this weekend
+  const isBread = lowercaseName.includes('naan') || 
+                  lowercaseName.includes('roti') || 
+                  lowercaseName.includes('paratha') || 
+                  lowercaseName.includes('kulcha') || 
+                  lowercaseName.includes('bread');
+  if (isBread) {
+    const trimmed = lowercaseName.trim();
+    return trimmed !== 'butter naan' && trimmed !== 'garlic naan';
+  }
+  
+  return false;
+};
+
+const isRestrictedBread = (name: string) => {
+  const lowercaseName = name.toLowerCase();
+  const isBread = lowercaseName.includes('naan') || 
+                  lowercaseName.includes('roti') || 
+                  lowercaseName.includes('paratha') || 
+                  lowercaseName.includes('kulcha') || 
+                  lowercaseName.includes('bread');
+  return isBread && lowercaseName.trim() !== 'butter naan' && lowercaseName.trim() !== 'garlic naan';
+};
 
 export default function Menu({ addToCart }: MenuProps) {
   const [menuData, setMenuData] = useState<MenuCategory[]>([])
@@ -222,7 +261,9 @@ export default function Menu({ addToCart }: MenuProps) {
                 id: item.id,
                 name: item.name,
                 price: priceString,
-                desc: item.description || '',
+                desc: item.name.toLowerCase().includes('midnight cacao') 
+                  ? 'Brownie with ice cream' 
+                  : (item.description || ''),
                 img: getItemImage(item.name, itemCat.name)
               })
             }
@@ -558,34 +599,46 @@ export default function Menu({ addToCart }: MenuProps) {
                       </div>
                       <div className="mt-3 sm:mt-4 flex items-center justify-between">
                         <span className="font-sans sm:font-playfair text-[15px] sm:text-[20px] text-amber-spice sm:font-bold">${item.price}</span>
-                        {/* Add button */}
-                        <button 
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            setSelectedItemForModal(item)
-                            setIsDetailOpen(true)
-                          }}
-                          className="hidden sm:block bg-amber-spice text-charcoal px-4 py-2 text-[11px] tracking-[2px] uppercase font-medium hover:bg-amber-deep transition-colors duration-200 rounded-lg"
-                        >
-                          + Add
-                        </button>
+                        {/* Add button or Dine-in Only indicator */}
+                        {isDineInOnly(item.name) ? (
+                          <span className="hidden sm:inline-block text-[10px] tracking-[1px] uppercase text-amber-spice bg-amber-spice/10 px-3 py-1.5 rounded font-semibold select-none border border-amber-spice/20">
+                            {isRestrictedBread(item.name) ? 'Unavailable' : 'Dine-in Only'}
+                          </span>
+                        ) : (
+                          <button 
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              setSelectedItemForModal(item)
+                              setIsDetailOpen(true)
+                            }}
+                            className="hidden sm:block bg-amber-spice text-charcoal px-4 py-2 text-[11px] tracking-[2px] uppercase font-medium hover:bg-amber-deep transition-colors duration-200 rounded-lg"
+                          >
+                            + Add
+                          </button>
+                        )}
                       </div>
                     </div>
 
                     {/* Image Content */}
                     <div className="w-[110px] h-[110px] sm:w-[180px] sm:h-full relative flex-shrink-0 order-2 sm:order-1 sm:overflow-hidden rounded-2xl sm:rounded-none ml-2 sm:ml-0">
                       <img src={item.img} alt={item.name} className="w-full h-full object-cover sm:group-hover:scale-[1.07] transition-transform duration-700 rounded-2xl sm:rounded-none" />
-                      {/* Mobile add button */}
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          setSelectedItemForModal(item)
-                          setIsDetailOpen(true)
-                        }}
-                        className="sm:hidden absolute -bottom-1 -right-1 bg-amber-spice w-9 h-9 rounded-full flex items-center justify-center shadow-[0_2px_10px_rgba(0,0,0,0.15)] text-charcoal hover:bg-amber-deep transition-colors z-10"
-                      >
-                        <Plus size={20} strokeWidth={2.5} />
-                      </button>
+                      {/* Mobile add button or Dine-in indicator */}
+                      {isDineInOnly(item.name) ? (
+                        <div className="sm:hidden absolute -bottom-1 -right-1 bg-charcoal/90 border border-amber-spice/40 text-amber-spice px-2 py-1 rounded text-[9px] font-bold uppercase tracking-wider shadow-lg z-10 select-none">
+                          {isRestrictedBread(item.name) ? 'Unavailable' : 'Dine-in'}
+                        </div>
+                      ) : (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setSelectedItemForModal(item)
+                            setIsDetailOpen(true)
+                          }}
+                          className="sm:hidden absolute -bottom-1 -right-1 bg-amber-spice w-9 h-9 rounded-full flex items-center justify-center shadow-[0_2px_10px_rgba(0,0,0,0.15)] text-charcoal hover:bg-amber-deep transition-colors z-10"
+                        >
+                          <Plus size={20} strokeWidth={2.5} />
+                        </button>
+                      )}
                     </div>
                   </div>
                 ))}

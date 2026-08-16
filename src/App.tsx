@@ -23,11 +23,11 @@ import WorkInProgress from './pages/WorkInProgress'
 function getSlotsForDate(date: Date, isToday: boolean): string[] {
   const day = date.getDay()
   const slots: string[] = []
-  
+
   if (day === 1) {
     return [] // Closed on Monday
   }
-  
+
   let ranges: { start: number; end: number }[] = []
   if (day >= 2 && day <= 4) {
     // Tue, Wed, Thu: 11:00 AM - 2:45 PM, 4:45 PM - 9:30 PM
@@ -52,13 +52,13 @@ function getSlotsForDate(date: Date, isToday: boolean): string[] {
       { start: 11 * 60, end: 21 * 60 + 30 }
     ]
   }
-  
+
   const prefix = isToday ? 'Today at ' : 'Tomorrow at '
-  
+
   // For today, only show times at least 30 minutes in the future
   const now = new Date()
   const currentMinutes = now.getHours() * 60 + now.getMinutes() + 30
-  
+
   ranges.forEach(range => {
     let current = range.start
     while (current <= range.end) {
@@ -73,17 +73,17 @@ function getSlotsForDate(date: Date, isToday: boolean): string[] {
       current += 30 // 30 minutes step
     }
   })
-  
+
   return slots
 }
 
 function generateTimeSlots(): string[] {
   const today = new Date()
   const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000)
-  
+
   const todaySlots = getSlotsForDate(today, true)
   const tomorrowSlots = getSlotsForDate(tomorrow, false)
-  
+
   const allSlots = [...todaySlots, ...tomorrowSlots]
   if (allSlots.length === 0) {
     return ['Next Available Slot']
@@ -93,7 +93,7 @@ function generateTimeSlots(): string[] {
 
 export default function App() {
   // Toggle this to show/hide the Work in Progress page
-  const showWorkInProgress = true
+  const showWorkInProgress = false
 
   if (showWorkInProgress) {
     return <WorkInProgress />
@@ -106,12 +106,12 @@ export default function App() {
   const [selectedTime, setSelectedTime] = useState('')
   const [session, setSession] = useState<Session | null>(null)
   const [toastMessage, setToastMessage] = useState<string | null>(null)
- 
+
   const showNotification = (msg: string) => {
     setToastMessage(msg)
     setTimeout(() => setToastMessage(null), 4000)
   }
- 
+
   const fetchCart = async (userId: string) => {
     try {
       const { data, error } = await supabase
@@ -165,12 +165,12 @@ export default function App() {
         fetchCart(session.user.id)
       }
     })
- 
+
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session)
-      
+
       if (event === 'SIGNED_IN' && session) {
         setIsLoginOpen(false)
         showNotification('Successfully logged in')
@@ -180,7 +180,7 @@ export default function App() {
         setCart([])
       }
     })
- 
+
     // Initialize time slots dynamically
     const slots = generateTimeSlots()
     setTimeSlots(slots)
@@ -209,8 +209,18 @@ export default function App() {
           return
         }
 
-        // Check the payment status on Vercel backend
-        const res = await fetch(`/api/check-payment?checkoutId=${pendingOrder.checkoutId}`)
+        // Check the payment status on Vercel backend and sync POS
+        const res = await fetch('/api/check-payment', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            checkoutId: pendingOrder.checkoutId,
+            orderData: pendingOrder
+          })
+        })
+
         if (!res.ok) {
           throw new Error('Failed to verify payment status')
         }
@@ -243,6 +253,7 @@ export default function App() {
               total: pendingOrder.total,
               pickup_time: pendingOrder.pickup_time,
               status: 'completed',
+              clover_order_id: checkoutData.cloverOrderId,
               created_at: new Date().toISOString(),
               guest_info: pendingOrder.guest_info
             }
@@ -282,7 +293,7 @@ export default function App() {
 
     return () => subscription.unsubscribe()
   }, [])
- 
+
   const handleLogout = async () => {
     await supabase.auth.signOut()
   }
