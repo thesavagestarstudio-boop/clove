@@ -132,19 +132,29 @@ export default function DishDetailModal({
 
               <div className="border-t border-linen-dark/20 mt-6 mx-6" />
 
-              {/* Special Instructions & Quantity OR Dine-in Only message */}
               {(() => {
                 const nameLower = item.name.toLowerCase();
-                const dineInOnly = nameLower.includes('bruschetta') || nameLower.includes('midnight cacao');
+                const isBread = nameLower.includes('naan') || 
+                                nameLower.includes('roti') || 
+                                nameLower.includes('paratha') || 
+                                nameLower.includes('kulcha') || 
+                                nameLower.includes('bread');
+                const isBreadRestricted = isBread && nameLower.trim() !== 'butter naan' && nameLower.trim() !== 'garlic naan';
+                const dineInOnly = nameLower.includes('bruschetta') || 
+                                   nameLower.includes('midnight cacao') ||
+                                   isBreadRestricted;
 
                 if (dineInOnly) {
                   return (
                     <div className="px-6 py-10 text-center">
                       <div className="inline-block bg-amber-spice/10 border border-amber-spice/30 text-amber-deep rounded-full px-4 py-1.5 text-[11px] font-bold uppercase tracking-[2px] mb-4">
-                        Dine-in Only
+                        {isBreadRestricted ? 'Unavailable' : 'Dine-in Only'}
                       </div>
                       <p className="text-[14px] text-stone/80 font-light leading-relaxed max-w-[380px] mx-auto">
-                        This item is crafted exclusively for our dine-in guests to preserve its texture, temperature, and presentation. It is not available for takeout.
+                        {isBreadRestricted 
+                          ? "No other naan’s are available this weekend only Butter Naan and Garlic Naan."
+                          : "This item is crafted exclusively for our dine-in guests to preserve its texture, temperature, and presentation. It is not available for takeout."
+                        }
                       </p>
                     </div>
                   );
@@ -209,16 +219,23 @@ export default function DishDetailModal({
               })()}
             </div>
 
-            {/* Sticky Bottom Add to Cart Bar */}
             <div className="absolute bottom-0 left-0 right-0 px-6 py-4 border-t border-linen-dark/25 bg-white/95 backdrop-blur-md z-10">
               {(() => {
                 const nameLower = item.name.toLowerCase();
-                const dineInOnly = nameLower.includes('bruschetta') || nameLower.includes('midnight cacao');
+                const isBread = nameLower.includes('naan') || 
+                                nameLower.includes('roti') || 
+                                nameLower.includes('paratha') || 
+                                nameLower.includes('kulcha') || 
+                                nameLower.includes('bread');
+                const isBreadRestricted = isBread && nameLower.trim() !== 'butter naan' && nameLower.trim() !== 'garlic naan';
+                const dineInOnly = nameLower.includes('bruschetta') || 
+                                   nameLower.includes('midnight cacao') ||
+                                   isBreadRestricted;
 
                 if (dineInOnly) {
                   return (
                     <div className="w-full py-4 bg-stone/10 text-stone/50 rounded-full text-center text-[11px] tracking-[3px] uppercase font-bold border border-stone/20 select-none">
-                      Not Available for Takeout
+                      {isBreadRestricted ? 'Unavailable' : 'Not Available for Takeout'}
                     </div>
                   );
                 }

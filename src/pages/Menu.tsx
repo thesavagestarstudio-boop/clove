@@ -145,7 +145,34 @@ function getItemImage(itemName: string, categoryName: string): string {
 
 const isDineInOnly = (name: string) => {
   const lowercaseName = name.toLowerCase();
-  return lowercaseName.includes('bruschetta') || lowercaseName.includes('midnight cacao');
+  
+  // Original dine-in only items
+  if (lowercaseName.includes('bruschetta') || lowercaseName.includes('midnight cacao')) {
+    return true;
+  }
+  
+  // Bread restriction: only Butter Naan and Garlic Naan available for online order this weekend
+  const isBread = lowercaseName.includes('naan') || 
+                  lowercaseName.includes('roti') || 
+                  lowercaseName.includes('paratha') || 
+                  lowercaseName.includes('kulcha') || 
+                  lowercaseName.includes('bread');
+  if (isBread) {
+    const trimmed = lowercaseName.trim();
+    return trimmed !== 'butter naan' && trimmed !== 'garlic naan';
+  }
+  
+  return false;
+};
+
+const isRestrictedBread = (name: string) => {
+  const lowercaseName = name.toLowerCase();
+  const isBread = lowercaseName.includes('naan') || 
+                  lowercaseName.includes('roti') || 
+                  lowercaseName.includes('paratha') || 
+                  lowercaseName.includes('kulcha') || 
+                  lowercaseName.includes('bread');
+  return isBread && lowercaseName.trim() !== 'butter naan' && lowercaseName.trim() !== 'garlic naan';
 };
 
 export default function Menu({ addToCart }: MenuProps) {
@@ -575,7 +602,7 @@ export default function Menu({ addToCart }: MenuProps) {
                         {/* Add button or Dine-in Only indicator */}
                         {isDineInOnly(item.name) ? (
                           <span className="hidden sm:inline-block text-[10px] tracking-[1px] uppercase text-amber-spice bg-amber-spice/10 px-3 py-1.5 rounded font-semibold select-none border border-amber-spice/20">
-                            Dine-in Only
+                            {isRestrictedBread(item.name) ? 'Unavailable' : 'Dine-in Only'}
                           </span>
                         ) : (
                           <button 
@@ -598,7 +625,7 @@ export default function Menu({ addToCart }: MenuProps) {
                       {/* Mobile add button or Dine-in indicator */}
                       {isDineInOnly(item.name) ? (
                         <div className="sm:hidden absolute -bottom-1 -right-1 bg-charcoal/90 border border-amber-spice/40 text-amber-spice px-2 py-1 rounded text-[9px] font-bold uppercase tracking-wider shadow-lg z-10 select-none">
-                          Dine-in
+                          {isRestrictedBread(item.name) ? 'Unavailable' : 'Dine-in'}
                         </div>
                       ) : (
                         <button
