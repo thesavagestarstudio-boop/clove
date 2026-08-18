@@ -1,6 +1,5 @@
-'use client'
-import { useRef } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useRef, useState, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { Phone, Mail, MapPin, Facebook, Instagram } from 'lucide-react'
 import { gsap } from 'gsap'
 import { useGSAP } from '@gsap/react'

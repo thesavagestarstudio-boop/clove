@@ -6,7 +6,6 @@ import { gsap } from 'gsap'
 import { useGSAP } from '@gsap/react'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { motion } from 'motion/react'
-import { Phone, Mail, MapPin, Facebook, Instagram } from 'lucide-react'
 
 gsap.registerPlugin(ScrollTrigger)
 
