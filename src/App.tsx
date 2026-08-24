@@ -301,9 +301,6 @@ export default function App() {
   const cartCount = cart.reduce((acc, i) => acc + i.qty, 0)
 
   const addToCart = async (item: MenuItem, qtyToAdd = 1, notes?: string) => {
-    showNotification("We are closed due to building maintance.")
-    return
-
     let finalQty = qtyToAdd
     setCart(prev => {
       const existing = prev.find(i => i.id === item.id)

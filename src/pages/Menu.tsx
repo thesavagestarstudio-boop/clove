@@ -476,9 +476,9 @@ export default function Menu({ addToCart }: MenuProps) {
         ref={mainRef}
       >
         {/* Info Banner */}
-        <div className="bg-red-950/40 border-b border-red-500/20 -mx-6 sm:-mx-10 -mt-10 mb-8 px-6 sm:px-10 py-3 flex items-center justify-center gap-2">
-          <Info size={18} className="text-red-400" />
-          <p className="text-[13px] text-red-200 font-medium">We are closed due to building maintance.</p>
+        <div className="bg-charcoal/40 border-b border-linen-dark/10 -mx-6 sm:-mx-10 -mt-10 mb-8 px-6 sm:px-10 py-3 flex items-center justify-center gap-2">
+          <Info size={18} className="text-cream/40" />
+          <p className="text-[13px] text-cream/75 font-light">Only accepting pickup orders</p>
         </div>
 
         {/* Store Header Info */}
