@@ -89,6 +89,9 @@ export default function CartDrawer({
   }
 
   const handleCheckout = async () => {
+    showNotification?.("We are closed due to building maintance.")
+    return
+
     if (!isLoggedIn && !showGuestForm) {
       setShowGuestForm(true)
       return
